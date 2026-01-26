@@ -1,0 +1,1240 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>mysql：约束 - Fancy 的小宇宙</title>
+
+  
+    <meta name="description" content="约束定义为了保证数据的完整性，SQL规范以约束的方式对表数据进行额外的条件限制  实体完整性（Entity Integrity） ：  同一个表中，不能存在两条完全相同无法区分的记录    域完整性（Domain Integrity） ：  年龄范围0-120，性别范围“男&#x2F;女”    引用完整性（Referential Integrity）   例如：员工所在部门，在部门表中要能找到这">
+<meta property="og:type" content="website">
+<meta property="og:title" content="约束">
+<meta property="og:url" content="https://back2zer0.github.io/wiki/mysql/%E7%BA%A6%E6%9D%9F/">
+<meta property="og:site_name" content="Fancy 的小宇宙">
+<meta property="og:description" content="约束定义为了保证数据的完整性，SQL规范以约束的方式对表数据进行额外的条件限制  实体完整性（Entity Integrity） ：  同一个表中，不能存在两条完全相同无法区分的记录    域完整性（Domain Integrity） ：  年龄范围0-120，性别范围“男&#x2F;女”    引用完整性（Referential Integrity）   例如：员工所在部门，在部门表中要能找到这">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+<meta property="article:published_time" content="2026-01-26T12:42:48.946Z">
+<meta property="article:modified_time" content="2026-01-26T12:42:48.946Z">
+<meta property="article:author" content="Fancy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+    <link rel="shortcut icon" href="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Website","@id":"https://back2zer0.github.io/wiki/mysql/%E7%BA%A6%E6%9D%9F/","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"name":"约束","description":"约束定义为了保证数据的完整性，SQL规范以约束的方式对表数据进行额外的条件限制\n\n实体完整性（Entity Integrity） ：\n\n同一个表中，不能存在两条完全相同无法区分的记录 \n\n\n域完整性（Domain Integrity） ：\n\n年龄范围0-120，性别范围“男&#x2F;女” \n\n\n引用完整性（Referential Integrity） \n\n例如：员工所在部门，在部门表中要能...","url":"https://back2zer0.github.io/wiki/mysql/%E7%BA%A6%E6%9D%9F/"}</script>
+  
+</head>
+<body>
+
+
+
+<div class="l_body content" id="start" layout="page" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/wiki/mysql/%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A"><div class="main">mysql</div><div class="sub normal cap">为学日益，为道日损</div><div class="sub hover cap" style="opacity:0"> fancy</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item" title="技术" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item active" title="认知" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="生活" href="/topic/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="其他平台" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/mysql/" placeholder="在技术专栏中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<widget class="widget-wrapper doc-tree post-list"><div class="widget-header dis-select"><span class="name">初级篇</span></div><div class="widget-body fs14"><a class="link" href="/wiki/mysql/%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/#start"><span class="toc-text">必知必会</span></a><a class="link" href="/wiki/mysql/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E5%87%BD%E6%95%B0/"><span class="toc-text">存储过程函数</span></a><a class="link" href="/wiki/mysql/%E8%A7%86%E5%9B%BE/"><span class="toc-text">视图</span></a><a class="link" href="/wiki/mysql/%E7%94%A8%E6%88%B7%E7%9A%84%E5%88%9B%E5%BB%BA%E3%80%81%E4%BF%AE%E6%94%B9%E5%92%8C%E5%88%A0%E9%99%A4/"><span class="toc-text">用户的创建、修改和删除</span></a><a class="link" href="/wiki/mysql/%E6%B8%B8%E6%A0%87%E5%92%8C%E8%A7%A6%E5%8F%91%E5%99%A8/"><span class="toc-text">游标和触发器</span></a><a class="link active" href="/wiki/mysql/%E7%BA%A6%E6%9D%9F/"><span class="toc-text">约束</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a><a class="link" href="/wiki/mysql/%E6%9D%82%E9%A1%B9/"><span class="toc-text">杂项</span></a></div><div class="widget-header dis-select"><span class="name">高级篇</span></div><div class="widget-body fs14"><a class="link" href="/wiki/mysql/%E6%9D%83%E9%99%90%E3%80%81%E7%94%A8%E6%88%B7%E3%80%81%E8%A7%92%E8%89%B2%E3%80%81%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/"><span class="toc-text">权限、用户、角色、配置文件</span></a></div></widget>
+
+
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/mysql/%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/">mysql</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2026-01-26T12:42:48.946Z">2026-01-26</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>约束</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h3 id="约束定义"><a href="#约束定义" class="headerlink" title="约束定义"></a>约束定义</h3><p>为了保证数据的完整性，SQL规范以约束的方式对<strong>表数据进行额外的条件限制</strong></p>
+<ul>
+<li><p>实体完整性（Entity Integrity） ：</p>
+<blockquote>
+<p>同一个表中，不能存在两条完全相同无法区分的记录 </p>
+</blockquote>
+</li>
+<li><p>域完整性（Domain Integrity） ：</p>
+<blockquote>
+<p>年龄范围0-120，性别范围“男&#x2F;女” </p>
+</blockquote>
+</li>
+<li><p>引用完整性（Referential Integrity） </p>
+<blockquote>
+<p>例如：员工所在部门，在部门表中要能找到这个部门 </p>
+</blockquote>
+</li>
+<li><p>用户自定义完整性（User-defined Integrity） </p>
+<blockquote>
+<p>例如：用户名唯一、密码不能为空等，本部门经理的工资不得高于本部门职工的平均工资的5倍。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>建表时规定约束（通过 CREATE TABLE 语句），或者在表创建之后通过 ALTER TABLE 语句规定 </p>
+<p>约束是表级的强制规定。 </p>
+<p>可以在<strong>创建表时规定约束（通过</strong> <strong>CREATE TABLE</strong> <strong>语句）</strong>，或者在<strong>表创建之后通过</strong> <strong>ALTER TABLE</strong> <strong>语句规定</strong> </p>
+<p><strong>约束</strong>。 </p>
+<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><ol>
+<li>根据约束数据列的限制，约束可分为：</li>
+</ol>
+<ul>
+<li><p><strong>单列约束</strong>：每个约束只约束一列 </p>
+</li>
+<li><p><strong>多列约束</strong>：每个约束可约束多列数据</p>
+</li>
+</ul>
+<ol start="2">
+<li>根据约束的作用范围，约束可分为：</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th align="center">位置</th>
+<th>支持的约束类型</th>
+<th>是否可以起约束名</th>
+<th>作用范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>列级约束</td>
+<td align="center">列的后面</td>
+<td>语法都支持，但外键没有效果</td>
+<td>不可以</td>
+<td>只能作用在一个列上</td>
+</tr>
+<tr>
+<td>表级约束</td>
+<td align="center">所有列的下面</td>
+<td>默认和非空不支持，其他支持</td>
+<td>可以（主键没有效果）</td>
+<td>可以作用在多个列上，</td>
+</tr>
+</tbody></table>
+<p><strong>不同约束属性：</strong></p>
+<ul>
+<li><p>NOT NULL 非空约束，规定某个字段不能为空</p>
+</li>
+<li><p>UNIQUE 唯一约束，规定某个字段在整个表中是唯一的</p>
+</li>
+<li><p>PRIMARY KEY 主键(非空且唯一)约束*</p>
+</li>
+<li><p>FOREIGN KEY 外键约束</p>
+</li>
+<li><p>CHECK 检查约束 </p>
+</li>
+<li><p>DEFAULT 默认值约束</p>
+</li>
+</ul>
+<p>注意： </p>
+<p>MySQL不支持check约束，但可以使用check约束，而没有任何效果。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#information_schema数据库名（系统库） </span><br><span class="line">#table_constraints表名称（专门存储各个表的约束） </span><br><span class="line">SELECT * FROM information_schema.table_constraints </span><br><span class="line">WHERE table_name = &#x27;表名称&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="不同约束"><a href="#不同约束" class="headerlink" title="不同约束"></a>不同约束</h3><h2 id="NOT-NULL"><a href="#NOT-NULL" class="headerlink" title="NOT NULL"></a>NOT NULL</h2><p>非空约束，规定某个字段不能为空</p>
+<ul>
+<li><p>默认所有的类型的值都可以是NULL，包括INT、FLOAT等数据类型 </p>
+</li>
+<li><p>非空约束只能针对列，不能组合非空 </p>
+</li>
+<li><p>空字符串’’不等于NULL，0也不等于NULL</p>
+</li>
+</ul>
+<p><strong>添加</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE 表名称( </span><br><span class="line">    字段名 数据类型, </span><br><span class="line">    字段名 数据类型 NOT NULL, </span><br><span class="line">    字段名 数据类型 NOT NULL );</span><br></pre></td></tr></table></figure>
+<p><strong>修改</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter table 表名称 modify 字段名 数据类型 not null;</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#去掉not null，相当于修改某个非注解字段，该字段允许为空 </span><br><span class="line">#1.</span><br><span class="line">alter table 表名称 modify 字段名 数据类型 NULL;</span><br><span class="line">#2.</span><br><span class="line">alter table 表名称 modify 字段名 数据类型;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="UNIQUE"><a href="#UNIQUE" class="headerlink" title="UNIQUE"></a>UNIQUE</h2><p>唯一约束，规定某个字段在整个表中是唯一的</p>
+<ul>
+<li><p>唯一约束可以是某一个列的值唯一，也可以多个列组合的值唯一。 </p>
+</li>
+<li><p>唯一性约束允许列值为空。 </p>
+</li>
+<li><p>在创建唯一约束的时候，如果不给唯一约束命名，就默认和列名相同。 </p>
+</li>
+<li><p>mysql 会给唯一约束的列上默认创建一个唯一索引。**</p>
+</li>
+</ul>
+<p><strong>添加</strong></p>
+<ol>
+<li>唯一约束</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">create table 表名称( </span><br><span class="line">    字段名 数据类型,</span><br><span class="line">    字段名 数据类型 unique, </span><br><span class="line">    字段名 数据类型 unique key, </span><br><span class="line">    字段名 数据类型 );</span><br><span class="line">    </span><br><span class="line">create table 表名称</span><br><span class="line">( 字段名 数据类型, </span><br><span class="line">  字段名 数据类型, </span><br><span class="line">  字段名 数据类型, </span><br><span class="line"> [constraint 约束名] unique key(字段名) );</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>组合约束</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">create table 表名称</span><br><span class="line">( 字段名 数据类型,</span><br><span class="line"> 字段名 数据类型, </span><br><span class="line"> 字段名 数据类型, </span><br><span class="line"> unique key(字段列表) </span><br><span class="line"> )</span><br><span class="line">#字段列表中写的是多个字段名，多个字段名用逗号分隔，表示那么是复合唯一，即多 个字段的组合是唯一的 );</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>修改</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#字段列表中如果是一个字段，表示该列的值唯一。如果是两个或更多个字段，那么复合唯一，即多个字段的组合是唯 一的</span><br><span class="line">#方式1：</span><br><span class="line">alter table 表名称 add unique key(字段列表);</span><br><span class="line">#方式2： </span><br><span class="line">alter table 表名称 modify 字段名 字段类型 unique;</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除</strong></p>
+<ul>
+<li><p>添加唯一性约束的列上也会自动创建唯一索引。 </p>
+</li>
+<li><p>删除唯一约束只能通过删除唯一索引的方式删除。 </p>
+<blockquote>
+<p>删除时需要指定唯一索引名，唯一索引名就和唯一约束名一样。 </p>
+</blockquote>
+</li>
+<li><p>如果创建唯一约束时未指定名称，如果是单列，就默认和列名相同；如果是组合列，那么默认和()中排在第一个的列名相同。也可以自定义唯一性约束名。</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE table_name DROP INDEX index_column;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：可以通过 	<code>show index from 表名称 </code>来查看表的索引。</p>
+</blockquote>
+<h2 id="PRIMARY-KEY"><a href="#PRIMARY-KEY" class="headerlink" title="PRIMARY KEY"></a>PRIMARY KEY</h2><p>主键(非空且唯一)约束</p>
+<ul>
+<li><p>主键约束相当于<strong>唯一约束</strong>+<strong>非空约束</strong>的组合，主键约束列不允许重复，也不允许出现空值。 </p>
+</li>
+<li><p><strong>一个表最多只能有一个主键约束</strong>，建立主键约束可以在列级别创建，也可以在表级别上创建。 </p>
+</li>
+<li><p>主键约束对应着表中的一列或者多列（复合主键） </p>
+<blockquote>
+<p>如果是多列组合的复合主键约束，那么这些列都不允许为空值，并且组合的值不允许重复。 </p>
+</blockquote>
+</li>
+<li><p><strong>MySQL</strong>的主键名总是PRIMARY**，就算自己命名了主键约束名也没用。 **</p>
+</li>
+<li><p><strong>当创建主键约束时，系统默认会在所在的列或列组合上建立对应的</strong>主键索引</p>
+<blockquote>
+<p>能够根据主键查询的，就根据主键查询，效率更高。</p>
+<p>如果删除主键约束了，主键约束对应的索引就自动删除了。 </p>
+</blockquote>
+</li>
+<li><p>不要修改主键字段的值。因为主键是数据记录的唯一标识，如果修改了主键的值，就有可能会破坏数据的完整性</p>
+</li>
+</ul>
+<p><strong>添加</strong></p>
+<ol>
+<li>唯一约束</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#列级模式 </span><br><span class="line">create table 表名称( </span><br><span class="line">    字段名 数据类型 primary key, #不要忘了，一个表最多一主键</span><br><span class="line">    字段名 数据类型, </span><br><span class="line">    字段名 数据类型 );</span><br><span class="line">#表级模式             </span><br><span class="line">create table 表名称( </span><br><span class="line">    字段名 数据类型, </span><br><span class="line">    字段名 数据类型, </span><br><span class="line">    字段名 数据类型, </span><br><span class="line">[constraint 约束名] primary key(字段名) </span><br><span class="line">  );</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>组合约束</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">create table 表名称( </span><br><span class="line">    字段名 数据类型, </span><br><span class="line">    字段名 数据类型, </span><br><span class="line">    字段名 数据类型, </span><br><span class="line">    primary key(字段名1,字段名2) #表示字段1和字段2的组合是唯一的，也可以有更多个字段</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><strong>修改</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE 表名称 </span><br><span class="line">ADD PRIMARY KEY(字段列表);</span><br><span class="line">#字段列表可以是一个字段，也可以是多个字段，如果是多 个字段的话，是复合主键</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">create table 表名称( </span><br><span class="line">    字段名 数据类型, </span><br><span class="line">    字段名 数据类型, </span><br><span class="line">    字段名 数据类型, </span><br><span class="line">    primary key(字段名1,字段名2) #表示字段1和字段2的组合是唯一的，也可以有更多个字段 </span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE 表名称 drop primary key;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>说明：删除主键约束，不需要指定主键名，因为一个表只有一个主键，删除主键约束后，非空还存在。</p>
+</blockquote>
+<h2 id="AUTO-INCREMENT-自增列"><a href="#AUTO-INCREMENT-自增列" class="headerlink" title="AUTO_INCREMENT 自增列"></a>AUTO_INCREMENT 自增列</h2><ul>
+<li><strong>一个表最多只能有一个自增长列</strong> </li>
+<li>当需要产生唯一标识符或顺序值时，可设置自增长 </li>
+<li>自增长列约束的列<strong>必须是键列</strong>（主键列，唯一键列） </li>
+<li>自增约束的列的数据类型必须是整数类型 </li>
+<li>如果自增列指定了 0 和 null，会在当前最大值的基础上自增；如果自增列手动指定了具体值，直接</li>
+</ul>
+<p>​       赋值为具体值。 </p>
+<p><strong>添加</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">create table 表名称( </span><br><span class="line">    字段名 数据类型 primary key auto_increment, #必须是键列</span><br><span class="line">    字段名 数据类型 unique key not null,       #一表最多一自增列</span><br><span class="line">    字段名 数据类型 unique key, </span><br><span class="line">    字段名 数据类型 not null default 默认值, </span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">create table 表名称( </span><br><span class="line">    字段名 数据类型 default 默认值 , </span><br><span class="line">    字段名 数据类型 unique key auto_increment, </span><br><span class="line">    字段名 数据类型 not null default 默认值,</span><br><span class="line">    primary key(字段名) );</span><br></pre></td></tr></table></figure>
+
+<p><strong>修改</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter table 表名称 modify 字段名 数据类型 auto_increment;</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">alter table 表名称 modify 字段名 数据类型; </span><br><span class="line">#去掉auto_increment相当于删除 </span><br></pre></td></tr></table></figure>
+
+<p><strong>扩展：</strong></p>
+<p>MySQL 8.0新特性：自增变量的持久化 </p>
+<blockquote>
+<p>在MySQL 8.0之前，自增主键AUTO_INCREMENT的值如果大于max(primary key)+1，在MySQL重启后，会重置AUTO_INCREMENT&#x3D;max(primary key)+1，这种现象在某些情况下会导致业务主键冲突或者其他难以发现的问题。 </p>
+</blockquote>
+<p>test:</p>
+<p>(创建的数据表中包含自增主键的id字段)</p>
+<p>MySQL 5.7版本中， 语句如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO test1 VALUES(0),(0),(0),(0);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT * FROM test1;</span><br><span class="line">+----+</span><br><span class="line">| id |</span><br><span class="line">+----+</span><br><span class="line">| 1 | </span><br><span class="line">| 2 | </span><br><span class="line">| 3 | </span><br><span class="line">| 4 |</span><br><span class="line">+----+</span><br><span class="line">4 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>再删再插</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DELETE FROM test1 WHERE id = 4; </span><br><span class="line">INSERT INTO test1 VALUES(0);</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT * FROM test1;</span><br><span class="line">+----+</span><br><span class="line">| id | </span><br><span class="line">+----+</span><br><span class="line">| 1 | </span><br><span class="line">| 2 | </span><br><span class="line">| 3 | </span><br><span class="line">| 5 | </span><br><span class="line">+----+</span><br></pre></td></tr></table></figure>
+
+<p>从结果可以看出，虽然删除了id为4的记录，但是再次插入空值时，并没有重用被删除的4，而是分配了5。 删除id为5的记录，结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE FROM test1 where id=5;</span><br></pre></td></tr></table></figure>
+
+<p><strong>重启数据库</strong>，重新插入一个空值,在插入，结果则会变成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">| id | </span><br><span class="line">+----+</span><br><span class="line">| 1 | </span><br><span class="line">| 2 | </span><br><span class="line">| 3 | </span><br><span class="line">| 4 |  #应该是6！</span><br><span class="line">+----+</span><br><span class="line">4 rows in set (0.00 sec)</span><br><span class="line">#自增主键没有持久化。</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在MySQL 5.7系统中，对于自增主键的分配规则，是由InnoDB数据字典内部一个 计数器 来决定的，而该计数器只在 内存中维护 ，并不会持久化到磁盘中。</p>
+<p>当数据库重启时，该计数器会被初始化</p>
+</blockquote>
+<p>但在8.0版本中的结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT * FROM test1;</span><br><span class="line">+----+</span><br><span class="line">| id |</span><br><span class="line">+----+</span><br><span class="line">| 1 | </span><br><span class="line">| 2 | </span><br><span class="line">| 3 | </span><br><span class="line">| 6 | </span><br><span class="line">+----+</span><br><span class="line">4 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p><strong>此之谓“自增主键持久化”</strong></p>
+<h2 id="FOREIGN-KEY-外键约束"><a href="#FOREIGN-KEY-外键约束" class="headerlink" title="FOREIGN KEY 外键约束"></a>FOREIGN KEY 外键约束</h2><p>限定某个表的某个字段的引用完整性</p>
+<p><strong>定义</strong></p>
+<p>主表和从表&#x2F;父表和子表 </p>
+<ul>
+<li><p>主表（父表）：被引用的表，被参考的表 </p>
+</li>
+<li><p>从表（子表）：引用别人的表，参考别人的表</p>
+</li>
+</ul>
+<blockquote>
+<p>例如：员工表的员工所在部门这个字段的值要参考部门表：部门表是主表，员工表是从表。 </p>
+</blockquote>
+<blockquote>
+<p>例如：学生表、课程表、选课表：选课表的学生和课程要分别参考学生表和课程表，学生表和课程表是主表，选课表是从表。</p>
+</blockquote>
+<p><strong>特点</strong> </p>
+<ul>
+<li><p>从表的外键列，必须引用&#x2F;参考主表的主键或唯一约束的列 </p>
+<blockquote>
+<p>因为被依赖&#x2F;被参考的值必须是唯一的 </p>
+</blockquote>
+</li>
+<li><p>在创建外键约束时，如果不给外键约束命名，<strong>默认名不是列名，而是自动产生一个外键名</strong></p>
+<blockquote>
+<p>例如 student_ibfk_1;），也可以指定外键约束名。 </p>
+</blockquote>
+</li>
+<li><p>创建(CREATE)表时就指定外键约束的话，先创建主表，再创建从表 </p>
+</li>
+<li><p>删表时，先删从表（或先删除外键约束），再删除主表 </p>
+</li>
+<li><p>当主表的记录被从表参照时，主表的记录将不允许删除</p>
+<blockquote>
+<p>如果要删除数据，需要先删除从表中依赖该记录的数据，然后才可以删除主表的数据 </p>
+</blockquote>
+</li>
+<li><p>在“从表”中指定外键约束，并且一个表可以建立多个外键约束 </p>
+</li>
+<li><p>从表的外键列与主表被参照的列名字可以不相同，但是数据类型必须一样，逻辑意义一致。如果类型不一样，创建子表时，就会出现错误。 </p>
+<blockquote>
+<p>例如：都是表示部门编号，都是int类型。 </p>
+</blockquote>
+</li>
+<li><p><strong>当创建外键约束时，系统默认会在所在的列上建立对应的普通索引</strong>。</p>
+<blockquote>
+<p>但是索引名是外键的约束名。（根据外键查询效率很高） </p>
+</blockquote>
+</li>
+<li><p>删除外键约束后，必须手动删除对应的索引</p>
+</li>
+</ul>
+<p><strong>添加</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">create table 主表名称</span><br><span class="line">( 字段1 数据类型 primary key, </span><br><span class="line">  字段2 数据类型 </span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">create table 从表名称( </span><br><span class="line">    字段1 数据类型 primary key, </span><br><span class="line">    字段2 数据类型, </span><br><span class="line">    [CONSTRAINT &lt;外键约束名称&gt;] FOREIGN KEY（从表的某个字段) references 主表名(被参考字段) );</span><br><span class="line">    </span><br><span class="line">#(从表的某个字段)的数据类型必须与主表名(被参考字段)的数据类型一致，逻辑意义也一样 </span><br><span class="line">#(从表的某个字段)的字段名可以与主表名(被参考字段)的字段名一样，也可以不一样</span><br><span class="line"></span><br><span class="line">-- FOREIGN KEY: 在表级指定子表中的列</span><br><span class="line">-- REFERENCES: 标示在父表中的列</span><br></pre></td></tr></table></figure>
+
+<p><strong>修改</strong></p>
+<p>一般情况下，表与表的关联都是提前设计好了的，因此会在创建表的时候就把外键约束定义好。</p>
+<blockquote>
+<p>如果需要修改表的设计（比如添加新的字段，增加新的关联关系），但没有预先定义外键约束，这时就要用修改表的方式来补充定义。 </p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE 从表名 </span><br><span class="line">ADD [CONSTRAINT 约束名] FOREIGN KEY (从表的字段) REFERENCES 主表名(被引用 字段) </span><br><span class="line">[on update xx][on delete xx];</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>总结：</strong></p>
+<p><strong>约束关系是针对双方的</strong> </p>
+<p><strong>添加了外键约束后，主表的修改和删除数据受约束</strong> </p>
+<p><strong>添加了外键约束后，从表的添加和修改数据受约束</strong> </p>
+<p><strong>在从表上建立外键，要求主表必须存在</strong> </p>
+<p><strong>删除主表时，要求从表从表先删除，或将从表中外键引用该主表的关系先删除</strong> </p>
+<p><strong>约束等级</strong> </p>
+<ul>
+<li><p>Cascade方式 ：在父表上update&#x2F;delete记录时，同步update&#x2F;delete掉子表的匹配记录 </p>
+</li>
+<li><p>Set null方式 ：在父表上update&#x2F;delete记录时，将子表上匹配记录的列设为null</p>
+<blockquote>
+<p>注意子表的外键列不能为not null</p>
+</blockquote>
+</li>
+<li><p>No action方式 ：如果子表中有匹配的记录，则不允许对父表对应候选键进行update&#x2F;delete操作 </p>
+</li>
+<li><p>Restrict方式 ：同no action， 都是立即检查外键约束 </p>
+</li>
+<li><p>Set default方式 （在可视化工具SQLyog中可能显示空白）：</p>
+<blockquote>
+<p>父表有变更时，子表将外键列设置 成一个默认的值，但Innodb不能识别。如果没有指定等级，就相当于Restrict方式。</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>&lt;对于外键约束，最好是采用: ON UPDATE CASCADE ON DELETE RESTRICT 的方式&gt;</strong></p>
+<p><strong>删除</strong></p>
+<ol>
+<li>第一步先查看约束名和删除外键约束</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM information_schema.table_constraints WHERE table_name = &#x27;表名称&#x27;;#查看某个表的约束名 </span><br><span class="line"></span><br><span class="line">ALTER TABLE 从表名 DROP FOREIGN KEY 外键约束名; </span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>第二步查看索引名和删除索引。（注意，只能手动删除）</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SHOW INDEX FROM 表名称; #查看某个表的索引名 </span><br><span class="line"></span><br><span class="line">ALTER TABLE 从表名 DROP INDEX 索引名; </span><br></pre></td></tr></table></figure>
+<p><strong>扩展</strong></p>
+<ul>
+<li>建外键约束，操作会受到限制，从语法层面受到限制。</li>
+</ul>
+<blockquote>
+<p>例如：在员工表中不可能添加一个员工信息，它的部门的值在部门表中找不到。 </p>
+</blockquote>
+<ul>
+<li>不建外键约束，操作不受限制，要保证数据的引用完整性 ，只能依靠程序员的自觉 。</li>
+</ul>
+<blockquote>
+<p>在 MySQL 里，外键约束是有成本的，需要消耗系统资源。对于大并发的 SQL 操作，有可能会不适合。比如大型网站的中央数据库，可能会 因为外键约束的系统开销而变得非常慢 。</p>
+<p>所以， MySQL 允许你不使用系统自带的外键约束，在应用层面完成检查数据一致性的逻辑。</p>
+<p>所以即使你不用外键约束，也要想办法通过应用层面的附加逻辑，来实现外键约束的功能，确保数据的一致性。 </p>
+</blockquote>
+<p><strong>6.10</strong> <strong>阿里开发规范</strong> </p>
+<p>[ 强制 ]不得使用外键与级联，一切外键概念必须在应用层解决。 </p>
+<p> <strong>说明</strong>：（概念解释）学生表中的 student_id 是主键，那么成绩表中的 student_id 则为外键。如果更新学 生表中的 student_id，同时触发成绩表中的 student_id 更新，即为级联更新。</p>
+<blockquote>
+<p>外键与级联更新适用于 单机低并发 ，不适合分布式 、 高并发集群 ；级联更新是强阻塞，存在数据库 更新风暴 的风险；外键影响数据库的 插入速度 。 </p>
+</blockquote>
+<h2 id="CHECK-检查约束"><a href="#CHECK-检查约束" class="headerlink" title="CHECK 检查约束"></a>CHECK 检查约束</h2><p><strong>作用</strong></p>
+<p>检查某个字段的值是否符号xx要求，一般指的是值的范围 </p>
+<p>注意：<strong>mysql5.7不支持</strong></p>
+<p>MySQL5.7 可以使用check约束，但check约束对数据验证没有任何作用。添加数据时，没有任何错误或警 </p>
+<p>告 但是MySQL 8.0中可以使用check约束了。</p>
+<p><strong>举例说明：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">create table employee( </span><br><span class="line">    eid int primary key, </span><br><span class="line">    ename varchar(5),</span><br><span class="line">    gender char check (&#x27;男&#x27; or &#x27;女&#x27;) </span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">insert into employee values(1,&#x27;张三&#x27;,&#x27;妖&#x27;);</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from employee; </span><br><span class="line">+-----+-------+--------+</span><br><span class="line">| eid | ename | gender | </span><br><span class="line">+-----+-------+--------+</span><br><span class="line">| 1   | 张三   |   妖   | </span><br><span class="line">+-----+-------+--------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE temp( </span><br><span class="line">    id INT AUTO_INCREMENT, </span><br><span class="line">    NAME VARCHAR(20),</span><br><span class="line">    age INT CHECK(age &gt; 20), #哇啊哦</span><br><span class="line">    PRIMARY KEY(id) </span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">age tinyint check(age &gt;20) </span><br><span class="line">sex char(2) check(sex in(‘男’,’女’))</span><br></pre></td></tr></table></figure>
+
+<h2 id="DEFAULT-默认值约束"><a href="#DEFAULT-默认值约束" class="headerlink" title="DEFAULT 默认值约束"></a>DEFAULT 默认值约束</h2><p><strong>添加</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">create table 表名称(</span><br><span class="line">    字段名 数据类型 primary key, </span><br><span class="line">    字段名 数据类型 unique key not null, </span><br><span class="line">    字段名 数据类型 unique key, </span><br><span class="line">    字段名 数据类型 not null default 默认值, # Ohhhhhhhh</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">create table 表名称( </span><br><span class="line">   字段名 数据类型 default 默认值 , </span><br><span class="line">   字段名 数据类型 not null default 默认值,#1</span><br><span class="line">   字段名 数据类型 not null default 默认值,#2</span><br><span class="line">   primary key(字段名), </span><br><span class="line">   unique key(字段名) );</span><br></pre></td></tr></table></figure>
+
+<p><strong>修改</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">alter table 表名称 modify 字段名 数据类型 default 默认值;</span><br><span class="line">#如果这个字段原来有非空约束，你还保留非空约束，那么在加默认值约束时，还得保留非空约束，否则非空约束就被 删除了 </span><br><span class="line"></span><br><span class="line">#同理，在给某个字段加非空约束也一样，如果这个字段原来有默认值约束，你想保留，也要在modify语句中保留默 认值约束，否则就删除了 </span><br><span class="line">alter table 表名称 modify 字段名 数据类型 default 默认值 not null;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>删除</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">alter table 表名称 modify 字段名 数据类型 ;</span><br><span class="line">#删除默认值约束，也不保留非空约束 </span><br><span class="line">alter table 表名称 modify 字段名 数据类型 not null; </span><br><span class="line">#删除默认值约束，保留非空约束 </span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="几个面试问题"><a href="#几个面试问题" class="headerlink" title="几个面试问题"></a>几个面试问题</h2><ul>
+<li><strong>面试1</strong>、为什么建表时，加** <strong>not null default ‘’</strong> <strong>或</strong> <strong>default 0</strong></li>
+</ul>
+<p>​      答：不想让表中出现null值。 </p>
+<ul>
+<li><p><strong>面试2</strong>、为什么不想要** <strong>null</strong> <strong>的值</strong> </p>
+<p>答:</p>
+<ol>
+<li>不好比较。null是一种特殊值，比较时只能用专门的is null 和 is not null来比较。碰到运算符，通</li>
+</ol>
+<p>常返回null。 </p>
+<ol start="2">
+<li>效率不高。影响提高索引效果。因此，我们往往在建表时 not null default ‘’ 或 default 0</li>
+</ol>
+</li>
+<li><p><strong>面试3</strong>、带AUTO_INCREMENT约束的字段值是从1开始的吗？ </p>
+<p>答：在MySQL中，默认AUTO_INCREMENT的初始值是1，每新增一条记录，字段值自动加1。设置自增属性（AUTO_INCREMENT）的时候，还可以指定第一条插入记录的自增字段的值，这样新插入的记录的自增字段值从初始值开始递增，如在表中插入第一条记录，同时指定id值为5，则以后插入的记录的id值就会从6开始往上增加。添加主键约束时，往往需要设置字段自动增加属性。 </p>
+</li>
+<li><p><strong>面试4</strong>、并不是每个表都可以任意选择存储引擎？</p>
+<p>外键约束（FOREIGN KEY）不能跨引擎使用。 </p>
+<blockquote>
+<p>MySQL支持多种存储引擎，每一个表都可以指定一个不同的存储引擎，需要注意的是：外键约束是用来 </p>
+</blockquote>
+<p>保证数据的参照完整性的，如果表之间需要关联外键，却指定了不同的存储引擎，那么这些表之间是不 </p>
+<p>能创建外键约束的。所以说，存储引擎的选择也不完全是随意的。</p>
+</li>
+</ul>
+</article>
+<div class="article-footer">
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/mysql/%E6%B8%B8%E6%A0%87%E5%92%8C%E8%A7%A6%E5%8F%91%E5%99%A8/">游标和触发器</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/mysql/%E6%9D%82%E9%A1%B9/">杂项</a></div></section></div>
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Fancy</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+<widget class="widget-wrapper ghrepo"><div class="widget-body"><div class="items data-service ds-ghinfo" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note"><a class="repo" href="https://github.com/Back2Zer0/md-CS_Note" target="_blank" rel="external nofollow noopener noreferrer"><div class="repo-name flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>Back2Zer0/md-CS_Note</div><div class="repo-desc"><span type="text" id="description">&nbsp;</span></div><div class="grid"><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z"></path></svg><span type="text" id="stargazers_count"></span></div><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg><span type="text" id="forks_count"></span></div><div class="flex-row data-service ds-ghinfo" index="0" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note/tags"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z"></path></svg><span type="text" id="latest-tag-name">0</span></div></div></a></div></div></widget>
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%A6%E6%9D%9F%E5%AE%9A%E4%B9%89"><span class="toc-text">约束定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-text">定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E7%B1%BB"><span class="toc-text">分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E7%BA%A6%E6%9D%9F"><span class="toc-text">不同约束</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NOT-NULL"><span class="toc-text">NOT NULL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UNIQUE"><span class="toc-text">UNIQUE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PRIMARY-KEY"><span class="toc-text">PRIMARY KEY</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AUTO-INCREMENT-%E8%87%AA%E5%A2%9E%E5%88%97"><span class="toc-text">AUTO_INCREMENT 自增列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FOREIGN-KEY-%E5%A4%96%E9%94%AE%E7%BA%A6%E6%9D%9F"><span class="toc-text">FOREIGN KEY 外键约束</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CHECK-%E6%A3%80%E6%9F%A5%E7%BA%A6%E6%9D%9F"><span class="toc-text">CHECK 检查约束</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DEFAULT-%E9%BB%98%E8%AE%A4%E5%80%BC%E7%BA%A6%E6%9D%9F"><span class="toc-text">DEFAULT 默认值约束</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%A0%E4%B8%AA%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98"><span class="toc-text">几个面试问题</span></a></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
