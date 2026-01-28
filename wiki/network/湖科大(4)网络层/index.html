@@ -1,0 +1,1609 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>network：湖科大(4)网络层 - Fancy 的小宇宙</title>
+
+  
+    <meta name="description" content="网络层 由于TCP&#x2F;IP体系结构的因特网的网际层提供的是简单灵活、无连接的、尽最大努力交付的数据报服务，因此本章主要围绕网际层如何传送IP数据报这个主题进行讨论。  网络层提供的两种服务 面向连接的虚电路服务  可靠的通信由&#x3D;&#x3D;网络&#x3D;&#x3D;来保证  必须建立网络层的连接—-虚电路VC(Virtual Circuit)  注意：虚电路表示这是一条逻辑上的">
+<meta property="og:type" content="website">
+<meta property="og:title" content="湖科大(4)网络层">
+<meta property="og:url" content="https://back2zer0.github.io/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(4)%E7%BD%91%E7%BB%9C%E5%B1%82/">
+<meta property="og:site_name" content="Fancy 的小宇宙">
+<meta property="og:description" content="网络层 由于TCP&#x2F;IP体系结构的因特网的网际层提供的是简单灵活、无连接的、尽最大努力交付的数据报服务，因此本章主要围绕网际层如何传送IP数据报这个主题进行讨论。  网络层提供的两种服务 面向连接的虚电路服务  可靠的通信由&#x3D;&#x3D;网络&#x3D;&#x3D;来保证  必须建立网络层的连接—-虚电路VC(Virtual Circuit)  注意：虚电路表示这是一条逻辑上的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+<meta property="article:published_time" content="2026-01-27T02:58:05.649Z">
+<meta property="article:modified_time" content="2026-01-27T02:58:05.649Z">
+<meta property="article:author" content="Fancy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+    <link rel="shortcut icon" href="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Website","@id":"https://back2zer0.github.io/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(4)%E7%BD%91%E7%BB%9C%E5%B1%82/","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"name":"湖科大(4)网络层","description":"网络层\n由于TCP&#x2F;IP体系结构的因特网的网际层提供的是简单灵活、无连接的、尽最大努力交付的数据报服务，因此本章主要围绕网际层如何传送IP数据报这个主题进行讨论。\n\n网络层提供的两种服务\n面向连接的虚电路服务\n\n可靠的通信由&#x3D;&#x3D;网络&#x3D;&#x3D;来保证\n\n必须建立网络层的连接—-虚电路VC(Virtual Circuit)\n\n注意：虚电路表示这是一条逻...","url":"https://back2zer0.github.io/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(4)%E7%BD%91%E7%BB%9C%E5%B1%82/"}</script>
+  
+</head>
+<body>
+
+
+
+<div class="l_body content" id="start" layout="page" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="https://picgo-1398775008.cos.ap-guangzhou.myqcloud.com/network-2-1118-svgrepo-com.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)"><div class="main">network</div><div class="sub normal cap">为学日益，为道日损</div><div class="sub hover cap" style="opacity:0"> fancy</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item" title="认知" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item active" title="技术" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="生活" href="/life/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="其他平台" href="/social/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/" placeholder="在技术专栏中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<widget class="widget-wrapper doc-tree post-list"><div class="widget-header dis-select"><span class="name">基本操作</span></div><div class="widget-body fs14"><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)/#start"><span class="toc-text">湖科大(1)</span></a><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(2)/"><span class="toc-text">湖科大(2)</span></a><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(3)%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/"><span class="toc-text">湖科大(3)数据链路层</span></a><a class="link active" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(4)%E7%BD%91%E7%BB%9C%E5%B1%82/"><span class="toc-text">湖科大(4)网络层</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(5)%E8%BF%90%E8%BE%93%E5%B1%82/"><span class="toc-text">湖科大(5)运输层</span></a><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(6)%E5%BA%94%E7%94%A8%E5%B1%82/"><span class="toc-text">湖科大(6)应用层</span></a></div><div class="widget-header dis-select"><span class="name">TCPIP网络编程</span></div><div class="widget-body fs14"><a class="link" href="/wiki/network/TCPIP1/"><span class="toc-text">TCPIP1</span></a></div></widget>
+
+<widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：网课</span></div><div class="widget-body"><a class="item wiki" href="/wiki/linux/linux%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/"><span class="title">linux学习笔记</span><span class="excerpt">主要用过的是Ubuntu和ArchLinux</span></a><a class="item wiki" href="/wiki/python/%E7%88%AC%E8%99%AB%E5%85%A5%E9%97%A81/"><span class="title">python学习笔记</span><span class="excerpt">一些爬虫基础和实战案例</span></a><a class="item wiki" href="/wiki/mysql/%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/"><span class="title">MySQL学习笔记</span><span class="excerpt">尚硅谷MySQL学习笔记</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)/">network</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2026-01-27T02:58:05.649Z">2026-01-27</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>湖科大(4)网络层</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h1 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h1><blockquote>
+<p>由于TCP&#x2F;IP体系结构的因特网的网际层提供的是简单灵活、无连接的、尽最大努力交付的数据报服务，因此本章主要围绕网际层如何传送IP数据报这个主题进行讨论。</p>
+</blockquote>
+<h2 id="网络层提供的两种服务"><a href="#网络层提供的两种服务" class="headerlink" title="网络层提供的两种服务"></a>网络层提供的两种服务</h2><ol>
+<li><p>面向连接的虚电路服务</p>
+<ul>
+<li><p>可靠的通信由&#x3D;&#x3D;网络&#x3D;&#x3D;来保证</p>
+</li>
+<li><p>必须<strong>建立网络层的连接—-虚电路VC</strong>(Virtual Circuit)</p>
+<blockquote>
+<p>注意：虚电路表示这是一条<strong>逻辑上的连接</strong>，数据分组都沿着这条逻辑链接按照存储转发方式传送。<strong>所以这不是真正建立一条物理连接。</strong></p>
+<p>采用电路交换的电话通信，则是先建立一条真正的连接。</p>
+<p>因此分组交换的虚连接与电路交换的连接只是类似，但并不完全一样。</p>
+</blockquote>
+</li>
+<li><p>通信双方<strong>沿着已建立的虚电路发送分组</strong></p>
+</li>
+<li><p><strong>目的主机的地址仅在连接建立阶段使用</strong>，之后每个分组的首部只需携带一条虚电路的编号(构成虚电路的每一段链路都有一个虚电路编号)。</p>
+</li>
+<li><p>这种通信方式如果再使用<strong>可靠传输</strong>的网络协议，就可使所发送的分组最终正确到达接收方(无差错按序到达、不丢失、不重复)。</p>
+</li>
+<li><p><strong>通信结束后，需要释放之前所建立的虚电路</strong></p>
+</li>
+<li><blockquote>
+<p>很多广域分组交换网都使用面向连接的虚电路服务，例如，曾经的X.25和逐渐过时的帧中继FR、异步传输模式ATM等。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>无连接的数据报服务</p>
+<ul>
+<li>可靠通信应当由&#x3D;&#x3D;用户主机&#x3D;&#x3D;来保证</li>
+<li><strong>不需要建立网络层连接</strong></li>
+<li>每个分组<strong>可走不同路径</strong></li>
+<li>每个分组的<strong>首部必须携带目的主机的完整地址</strong></li>
+<li>这种通信方式所传送的<strong>分组可能误码、丢失、重复和失序</strong></li>
+<li>由于<strong>网络本身不提供端到端的可靠传输服务</strong>，这就使网络中的路由器可以做得比较简单，而且价格低廉</li>
+<li>因特网采用了这种设计思想，也就是<strong>将复杂的网络处理功能置于因特网的边缘(用户主机和其内部的运输层)</strong>，而将相对简单的尽最大努力的分组交付功能置于因特网核心。<br>665</li>
+</ul>
+</li>
+</ol>
+<h2 id="IPv4"><a href="#IPv4" class="headerlink" title="IPv4"></a>IPv4</h2><p><strong>定义</strong>：</p>
+<p><strong>IPv4地址</strong>就是给因特网(Internet)上的  <strong>每一台主机(或路由器)的每一个接口 ** 分配一个  在全世界范围内是</strong>唯一的32比特的标识符**。</p>
+<blockquote>
+<p>IP地址由因特网名字和数字分配机构ICANN(Internet Corporation for Assigned Names and Numbers)进行分配。</p>
+<ul>
+<li>我国用户可向亚太网络信息中心APNIC(Asia Pacifc Network Information Center)申请IP地址，需要缴费。</li>
+<li>2011年2月3日，互联网号码分配管理局IANA(由ICANN行使职能)宣布，IPv4地址已经分配完毕</li>
+<li>我国在2014至2015年也逐步停止了向新用户和应用分配IPv4地址。同时全面开展商用部署IPv6.</li>
+</ul>
+</blockquote>
+<p><strong>表示方法</strong>：</p>
+<p>每八个比特一组，采用点分十进制表示方法。</p>
+<p><strong>IPv4的地址编制方法经历三个历史阶段：</strong></p>
+<h3 id="分类编址"><a href="#分类编址" class="headerlink" title="分类编址"></a>分类编址</h3><p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117110634327.png" alt="image-20240117110634327"></p>
+<p><strong>区分</strong>：</p>
+<p>注意 A、B、C类地址的<strong>二进制前缀</strong>，以及对应的<strong>网络号和主机号位数</strong>。</p>
+<ul>
+<li><p>A类地址网络号第1位固定为<code>0</code>，网络号后面部分不能全0，也不能全1，所以网络号范围是<code>1~126</code></p>
+<blockquote>
+<p>可指派网络数量：2^(8-1)^-2 &#x3D; 126 (减 2：除去<strong>最小网络号0和最大网络号127</strong>)</p>
+<p>每个网络中可分配IP地址数量：2^24^-2（(减2：除去主机号为全0的<strong>网络地址和全1的广播地址</strong>)</p>
+</blockquote>
+</li>
+<li><p>B类地址网络号前2位固定为<code>10</code>，网络号后面部分可以全取0或1，所以网络号范围是<code>128.0~191.255</code></p>
+<blockquote>
+<p>可指派网络数量：2^(16-2)^ &#x3D; 126 (幂减 2：除去前缀的前两位）</p>
+<p>每个网络中可分配IP地址数量：2^16^-2 &#x3D; 65534（减2：除去主机号为全0的<strong>网络地址和全1的广播地址</strong>)</p>
+<p>（根据2002年9月发表的RFC3330文档，<strong>B类地址不需要保留网络号</strong>，也就是 <strong>128.0 已经可以分配了。</strong>）</p>
+</blockquote>
+</li>
+<li><p>C类地址网络号前3位固定为<code>110</code>，网络后后面部分可以全取0或1，所以网络号范围是<code>192.0.0~223.255.255</code></p>
+<blockquote>
+<p>1指派网络数量：2^(24-3)^ &#x3D; 126 (幂减 2：除去前缀的前两位）</p>
+<p>每个网络中可分配IP地址数量：2^8^-2 &#x3D; 65534（减2：除去主机号为全0的<strong>网络地址和全1的广播地址</strong>)</p>
+<p>（根据2002年9月发表的RFC3330文档，<strong>B类地址不需要保留网络号</strong>，也就是 <strong>192.0 已经可以分配了。</strong>）</p>
+</blockquote>
+</li>
+<li><p>D类地址为多播地址，IP地址为<code>224.0.0.0~239.255.255.255</code></p>
+</li>
+</ul>
+<p><strong>注意：</strong></p>
+<ol>
+<li><p>[每类地址]都有一个最小网络号 0，即<strong>网络位全为 0</strong> 的地址保留不指派。都有一个最大网络号 255，作为广播地址不指派。</p>
+<blockquote>
+<p>第一个可指派网络号为1，最后一个网络号为254。</p>
+</blockquote>
+</li>
+<li><p>[A 类地址]的<strong>最大网络号127</strong> 保留，作为&#x3D;&#x3D;本地环回测试地址&#x3D;&#x3D;，不指派。</p>
+<blockquote>
+<p>最小的本地环回测试地址为 127.0.0.1</p>
+<p>最大的本地环回测试地址为 127.255.255.254</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="划分子网"><a href="#划分子网" class="headerlink" title="划分子网"></a>划分子网</h3><p><strong>应用场景：</strong></p>
+<blockquote>
+<p>比如一个单位有300台主机，此时需要申请<strong>一个B类网络地址</strong>，也就是有65534个IP地址。很容易得知，分配出去300个IP地址后，申请得到的B类网络还剩下很多IP地址。这些<strong>剩余IP地址只能由该单位的同一个网络使用。</strong></p>
+<p>当单位扩大规模，需要再添加两个子网的时，又要为这两个子网分别申请B类地址，这会花费一些不必要的支出，实际上子网1申请到的B类地址还有很多没用到，我们希望能够<strong>将这些剩余地址应用到其他子网中</strong>(节约地址)。</p>
+</blockquote>
+<p><strong>为新增网络申请新的网络号会带来以下弊端:</strong></p>
+<ul>
+<li><p>需要等待时间和花费更多的费用</p>
+</li>
+<li><p>会增加其他路由器中路由表记录的数量</p>
+</li>
+<li><p>浪费原有网络中剩余的大量IP地址</p>
+</li>
+</ul>
+<p><strong>划分子网：</strong></p>
+<p>灵魂是子网掩码。</p>
+<p>通过一个32比特的&#x3D;&#x3D;子网掩码&#x3D;&#x3D;可以表明分类IP地址的<strong>主机号部分被借用了几个比特作为子网号</strong></p>
+<ul>
+<li>子网掩码使用连续的**比特1对应网络号+子网号(**子网号来自原先的一部分主机号)</li>
+<li>子网掩码使用连续的比<strong>特0对应主机号</strong></li>
+<li>将划分子网的IPv4地址与其相应的子网掩码进行**(逻辑与运算)【即掩码是1的部分】**就可得到IPv4地址所在子网的网络地址</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117113146762.png" alt="image-20240117113146762"></p>
+<h3 id="无分类编址"><a href="#无分类编址" class="headerlink" title="无分类编址"></a>无分类编址</h3><p><strong>应用场景：</strong></p>
+<blockquote>
+<p>划分子网在一定程度上缓解了因特网发展中遇到的困难，但是<strong>数量巨大的C类网因为其地址空间太小并没有得到充分使用</strong>，而因特网的IP地址仍在加速消耗，<strong>整个IPv4地址空间面临全部耗尽的威胁。</strong></p>
+</blockquote>
+<p>1993年，IETF发布了&#x3D;&#x3D;无分类域间路由选择CIDR&#x3D;&#x3D;</p>
+<ul>
+<li><p>CIDR消除了传统的A类、B类和C类地址，以及划分子网的概念</p>
+</li>
+<li><p>CIDR可以更加有效地分配IPv4地址空间</p>
+</li>
+<li><p>CIDR使用**“斜线记法”**，或称CIDR记法。即在IPv4地址后面加上斜线”&#x2F;“，在斜线后面写上网络前缀所占比特数量</p>
+</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117113558807.png" alt="image-20240117113558807"></p>
+<p><strong>CIDR实际上是将网络前缀都相同的连续IP地址组成一个”CIDR地址块”</strong></p>
+<p>我们只要知道CIDR地址块中的任何一个地址，就可以知道该地址块的全部细节:</p>
+<ul>
+<li>地址块的最小地址</li>
+<li>地址块的最大地址</li>
+<li>地址块中的地址数量</li>
+<li>地址块聚合某类网络(A类、B类或C类)的数量</li>
+<li>地址掩码(也可继续称为子网掩码)</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117113717820.png" alt="image-20240117113717820"></p>
+<hr>
+<h3 id="IPv4划分地址块的不同应用"><a href="#IPv4划分地址块的不同应用" class="headerlink" title="IPv4划分地址块的不同应用"></a><strong>IPv4划分地址块的不同应用</strong></h3><blockquote>
+<p>给定一个IPv4地址块，如何将其划分成几个更小的地址块，并将这些地址块分配给互联网中的不同网络，进而可以给个网络中的主机和路由器接口分配IPv4地址。</p>
+</blockquote>
+<p>如何划分，有两种方法：</p>
+<ul>
+<li><p><strong>定长的子网掩码FLSM（Fixed Length Subnet Mask）</strong></p>
+<p>使用同一个子网掩码来划分子网，每个子网所分配的IP地址数量相<br>同，造成IP地址的浪费。</p>
+</li>
+<li><p><strong>变长的子网掩码VLSM（Variable Length Subnet Mask）</strong></p>
+<p>使用不同的子网掩码来划分子网，每个子网所分配的IP地址数量可以不同，尽可能减少对IP地址的浪费。</p>
+</li>
+</ul>
+<p><strong>下面举例说明：</strong></p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117114330819.png" alt="image-20240117114330819"></p>
+<ul>
+<li><strong>定长思路</strong></li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117114448941.png" alt="image-20240117114448941"></p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117114653148.png" alt="image-20240117114653148"></p>
+<p> <img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117114742389.png" alt="image-20240117114742389"></p>
+<hr>
+<ul>
+<li><strong>变长思路</strong></li>
+</ul>
+<blockquote>
+<p><strong>”假设申请到的地址块为218.75.230.0&#x2F;24，请使用变长的子网掩码给下图所示的小型互联网中的各设备分配IP地址“</strong></p>
+</blockquote>
+<p> 分析主机号位数和网络前缀位数。</p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117115206106.png" alt="image-20240117115206106"></p>
+<p>分析后可知，划分需求是：从地址块218.75.230.0&#x2F;24中取出<strong>5个地址块</strong>：</p>
+<p>(1个“&#x2F;27”地址块，3个“&#x2F;28”地址块，1个“&#x2F;30”地址块)，按需分配给下图所示的5个网络。</p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117115239254.png" alt="image-20240117115239254"></p>
+<p>按照先给大子块分配（网络地址块少，主机地址数量多，）的原则，先给网络N2划分。</p>
+<p>所以以网络N2为例：</p>
+<p><strong>218.75.230.0 是网络N2的网络地址，218.75.230.31是网络N2的广播地址。</strong></p>
+<p>中间即是网络N2的可分配地址。</p>
+<p>以此类推…….</p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117120114231.png" alt="image-20240117120114231"></p>
+<h3 id="IP数据报发送转发过程"><a href="#IP数据报发送转发过程" class="headerlink" title="IP数据报发送转发过程"></a>IP数据报发送转发过程</h3><p>同一个网络之间的主机可以直接通信，不同网络之间的主机通信需要路由器中转。</p>
+<p><strong>直接交付与间接交付</strong></p>
+<blockquote>
+<p>同一网络中的主机之间可以直接通信，属于直接交付。</p>
+<p>不同网络之间的主机通信，需要路由器中转，属于间接交付。</p>
+</blockquote>
+<p><strong>源主机如何判断目的主机是否和自己在同一个网络中？</strong></p>
+<blockquote>
+<p>将<strong>自身IP地址</strong>与子网掩码相与得到自身的网络号1，再将<strong>目的IP地址</strong>与自身子网掩码相与得到网络号2。<strong>若两个网络号相等，则说明处在同一个网络</strong>，不能则不再同一网络，属于间接交付。</p>
+</blockquote>
+<p><strong>主机如何知道应该把IP数据报交给哪个路由器进行转发呢？</strong></p>
+<blockquote>
+<p>用户为了能让本网络主机与其他网络主机进行通信，就必须给其指定本网络中的一个路由器，由该路由器进行帮忙转发。</p>
+<p><strong>所指定的路由器，称为&#x3D;&#x3D;默认网关&#x3D;&#x3D;。</strong></p>
+<p>所谓默认网关，即<strong>当路由表中查不到数据时会将数据发往的路由器端口IP地址</strong>。</p>
+</blockquote>
+<p><strong>路由器收到IP数据包后如何转发？</strong></p>
+<blockquote>
+<ol>
+<li><p>路由器首先会检查IP数据报的首部是否出错:</p>
+<p>若出错，丢弃该IP数据包并通告源主机；</p>
+<p>未出错，则进行转发。</p>
+</li>
+<li><p>根据IP数据包的目的地址，在路由表中查找匹配的条目：</p>
+<p>若找到匹配条目，则转发给条目中指示的吓一跳；</p>
+<p>若找不到，则丢弃该IP数据包并通告源主机。</p>
+</li>
+</ol>
+</blockquote>
+<p><strong>冲突域和广播域</strong></p>
+<ul>
+<li><p><strong>中继器和集线器</strong>工作在物理层，既不隔离冲突域也不隔离广播域。</p>
+</li>
+<li><p><strong>集线器、网桥和交换机</strong>(多端口网桥)工作在数据链路层，可以隔离冲突域，不能隔离广播域。</p>
+</li>
+<li><p><strong>路由器</strong>工作在网络层，既隔离冲突域，也隔离广播域。</p>
+<blockquote>
+<p>路由器隔离广播域。否则会有广播风暴。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="路由聚合"><a href="#路由聚合" class="headerlink" title="路由聚合"></a>路由聚合</h3><p>如路由器A上连接同一网络的多台主机，路由器B与A相连。若A将所有主机的具体IP地址都报给B，则路由器B中会增加多项路由条目。</p>
+<p>可实际上B向A中任意一个主机转发数据的时都是走同一个端口，因此我们可以将<strong>这些网络的共同前缀提取出来成为新的网络号，同时将剩余主机号置0放入路由器B中</strong></p>
+<p>如：<code>A</code>连接了<code>172.1.4.0/25</code>和<code>172.1.7.0/24</code>，则提取公共前缀聚合后变为<code>172.1.4.0/22</code></p>
+<h3 id="IPv4数据报首部格式"><a href="#IPv4数据报首部格式" class="headerlink" title="IPv4数据报首部格式"></a>IPv4数据报首部格式</h3><p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117165937047.png" alt="image-20240117165937047"></p>
+<ul>
+<li><p><strong>版本</strong></p>
+<p>占<code>4</code>比特，表示<code>IP</code>协议版本。通信双方使用的<code>IP</code>协议版本必须一致。目前广泛使用的<code>IP</code>协议版本为号为<code>4(IPv4)</code></p>
+</li>
+<li><p><strong>首部长度</strong></p>
+<p>占<code>4</code>比特，表示<code>IP</code>数据报首部长度。该字段取值<strong>以4字节为单位</strong></p>
+<p><strong>最小十进制取值为5，表示IP数据报首部只有20字节</strong>【<code>4</code>字节单位，所以取值<code>5</code>对应<code>20</code>字节】固定部分</p>
+<p><strong>最大十进制取值为15，表示IP数据报首部包含20字节固定部分和最大40字节可变部分</strong></p>
+</li>
+<li><p><strong>可选字段</strong></p>
+<p>长度从<code>1</code>到<code>40</code>个字节不等。<strong>用来支持排错、测量及安全等措施</strong></p>
+<p>可选字段增加了<code>IP</code>数据报的功能，但这同时也<strong>使得IP数据报的首部长度成为可变的。这就增加了每一个路由器处理IP数据报的开销</strong>。实际上可选字段很少被使用</p>
+</li>
+<li><p><strong>填充字段</strong></p>
+<p>确保首部长度为<code>4</code>字节长度的整数倍，使用全<code>0</code>进行填充</p>
+</li>
+<li><p><strong>区分服务</strong></p>
+<p>占<code>8</code>比特，利用该字段的不同数值可提供不同等级的服务质量，只有在使用区分服务时，该字段才起作用。一般情况下不使用该字段</p>
+</li>
+<li><p><strong>总长度</strong></p>
+<p>占<strong>16比特</strong>，表示<code>IP</code>数据报的总长度【首部+数据载荷】，最大取值为十进制<code>65535</code>，<strong>以字节为单位</strong></p>
+</li>
+<li><p><strong>标识</strong></p>
+<p>占<code>16</code>比特，<strong>属于同一个数据报的各分片数据报应该具有相同的标识【可理解为ID】</strong></p>
+<p><code>IP</code>软件维持一个计数器，每产生一个数据报，计数器值<code>+1</code>，并将此值赋给标识字段</p>
+</li>
+<li><p><strong>标志</strong></p>
+<p>占<code>3</code>比特，各比特含义如下</p>
+<ul>
+<li><code>DF</code>位：<code>1</code>表示不允许分片，<code>0</code>表示允许</li>
+<li><code>MF</code>位：<code>1</code>表示”后面还有分片”，<code>0</code>表示”这是最后一个分片”</li>
+<li>保留位：必须为<code>0</code></li>
+</ul>
+</li>
+<li><p><strong>片偏移(必须是整数)</strong></p>
+<p>占<code>13</code>比特，指出分片数据报的数据载荷部分偏移其在原数据报的位置有多少单位</p>
+<p><strong>片偏移以8个字节为单位</strong></p>
+</li>
+</ul>
+<blockquote>
+<p>举例子：</p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117170014968.png" alt="image-20240117170014968"></p>
+</blockquote>
+<ul>
+<li><p><strong>生存时间</strong></p>
+<p><strong>占8比特</strong>，最初以秒为单位，最大生存周期为<code>255</code>秒；路由器转发IP数据报时，将<code>IP</code>数据报首部中的该字段值减去<code>IP</code>数据报在本路由器上耗费的时间，若不为<code>0</code>【说明路由器消耗时间后还活着】就转发，否则丢弃</p>
+<p><strong>现在以”跳数”为单位，路由器转发IP数据报时，将IP数据报首部中的该字段值减1，若不为0就转发，否则丢弃</strong>【防止兜圈】</p>
+</li>
+<li><p><strong>协议</strong></p>
+<p>占<code>8</code>比特，指明<code>IPv4</code>数据报的数据部分是何种协议数据单元</p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/c09fe31d471c9ba2ba5f6594d044c17e.png" alt="12"></p>
+</li>
+<li><p><strong>首部检验和</strong></p>
+<p>占<strong>16比特，用来检测首部在传输过程中是否出现差错</strong>，比<code>CRC</code>检验码简单，称为因特网检验和</p>
+<p><code>IP</code>数据报每经过一个路由器，路由器都要重新计算首部检验和，因为某些字段【生存时间、标志、片偏移等】的取值可能发生变化</p>
+<p>由于<code>IP</code>层本身不提供可靠传输服务，并且计算首部校验和是一项耗时的操作，因此在<code>IPv6</code>中，路由器不再计算首部校验和，从而更快转发<code>IP</code>数据报</p>
+</li>
+<li><p><strong>源IP地址和目的IP地址</strong></p>
+<p>各占<strong>32比特</strong>，用来填写发送该<code>IP</code>数据报的源主机<code>IP</code>地址和接收该<code>IP</code>数据报的目的主机</p>
+</li>
+</ul>
+<hr>
+<h2 id="路由选择协议概述"><a href="#路由选择协议概述" class="headerlink" title="路由选择协议概述"></a>路由选择协议概述</h2><p>路由选择分为静态路由选择与动态路由选择。</p>
+<ul>
+<li><p>静态路由选择：</p>
+<p>1.由人工配置的网络路由、默认路由、特定主机路由、黑洞路由等都属于静态路由。<br>2.这种人工配置方式简单、开销小。但不能及时适应网络状态(流量、拓扑等)的变化。<br>3.一般只在小规模网络中采用。</p>
+</li>
+<li><p>动态路由选择：</p>
+<p>1.路由器通过路由选择协议自动获取路由信息。<br>2.比较复杂、开销比较大。能较好地适应网络状态的变化。<br>3.适用于大规模网络。</p>
+</li>
+</ul>
+<hr>
+<p>静态路由配置</p>
+<blockquote>
+<p>**概念：**是指用户或网络管理员使用路由器的相关命令给路由器人工配置路由表</p>
+<p><strong>可能由于：①配置错误 ②聚合了不存在的网络 ③网络故障 而出现路由环路错误</strong></p>
+<ul>
+<li><p>&#x3D;&#x3D;默认路由为：0.0.0.0&#x2F;0&#x3D;&#x3D;。</p>
+<p><strong>作用是当路由表不知道往哪里转发时，就会往默认路由指定的下一跳位置转发</strong>。</p>
+<p>根据网络号最长匹配原理，默认路由网络号长度为0，因此一定是最后一个被匹配的条目。</p>
+</li>
+<li><p>&#x3D;&#x3D;特定主机路由：具体主机IP&#x2F;32&#x3D;&#x3D;。网络号前缀长度32保证了这是第一个被匹配的静态条目。</p>
+</li>
+</ul>
+</blockquote>
+<p>如何防止错误路由导致IP数据报永久兜圈？</p>
+<blockquote>
+<p>在IP数据报首部设置生存时间TTL字段<br>IP数据报进入路由器后，TTL字段的值减1。若TTL的值不等于0，则被路由器转发，否则被丢弃<br>对于聚合后或由于网络故障而不存在的路由条目设置黑洞路由<br>所谓黑洞路由，即路由器应该丢弃的路由。</p>
+</blockquote>
+<h3 id="路由器基本结构"><a href="#路由器基本结构" class="headerlink" title="路由器基本结构"></a>路由器基本结构</h3><p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117143335400.png" alt="image-20240117143335400"></p>
+<ul>
+<li><p>路由选择部分的核心部件：路由选择处理机</p>
+<p>任务：根据所使用的路由选择协议周期性地与其他路由器进行路由信息交互，来更新路由表。 </p>
+</li>
+<li><p>分组转发部分：</p>
+<p>分三部分 1.交换结构 2.一组输入端口 2.一组输出端口。</p>
+</li>
+</ul>
+<hr>
+<p><strong>一些属性：</strong></p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117144426687.png" alt="image-20240117144426687"></p>
+<ul>
+<li><p>路由器处理不同信息时：</p>
+<ul>
+<li>当<strong>信号</strong>从某个端口进入路由器时，路由器会将信号从输入端口查表转发到对应输出端口。</li>
+<li>而如果是路由器之间交换路由信息的<strong>路由报文</strong>，则将这类分组送交路由选择处理机。</li>
+</ul>
+<blockquote>
+<p>路由选择处理机根据分组的内容来更新自己的路由表。</p>
+<ul>
+<li>路由表一般仅包含从目的网络到下一跳的映射</li>
+<li>路由表需要对网络拓扑变化的计算最优化</li>
+<li>转发表是从路由表得出的</li>
+<li>转发表的结构应当使查找过程最优化</li>
+</ul>
+<p>本课不严格区分路由表与转发表。</p>
+</blockquote>
+</li>
+<li><p>路由选择处理机除了处理收到的路由报文外，还会<strong>周期性给其他路由器发送自己所知道的路由信息。</strong></p>
+</li>
+<li><p>路由器各端口还应具有输入缓冲区和输出缓冲区。</p>
+<blockquote>
+<p>输入缓冲区用来暂存新进入路由器但还来不及处理的分组。</p>
+<p>输出缓冲区用来暂存已经处理完毕但还来不及发送的分组。</p>
+</blockquote>
+</li>
+<li><p>路由器的端口一般都具有输入和输出的功能。</p>
+</li>
+</ul>
+<h3 id="路由选择协议"><a href="#路由选择协议" class="headerlink" title="路由选择协议"></a>路由选择协议</h3><p>因特网所采用的的路由选择协议主要特点</p>
+<ul>
+<li><strong>自适应</strong>：动态路由选择，能较好地适应网络状态的变化</li>
+<li><strong>分布式</strong>：路由器之间交换路由信息，共同完成路由信息获取和更新。</li>
+<li><strong>分层次</strong>：将整个因特网划分为许多较小的网络群自治系统<code>AS</code></li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117142717918.png" alt="image-20240117142717918"> </p>
+<ul>
+<li><p>域间路由选择使用外部网关协议 EGP</p>
+<blockquote>
+<p>早期用网关代替路由器，现在可以用ERP代替EGP。</p>
+</blockquote>
+</li>
+<li><p>域内路由选择使用内部网关协议 IGP</p>
+<blockquote>
+<p>现在可以用IRP代替EGP。</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>EGP 和 IGP 只是路由选择协议的分类名称，不是具体协议。</p>
+</blockquote>
+<p> IGP 使用的协议具有独立性，和其他 IGP不相关。</p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117143126319.png" alt="image-20240117143126319"></p>
+<h3 id="路由信息协议RIP"><a href="#路由信息协议RIP" class="headerlink" title="路由信息协议RIP"></a>路由信息协议RIP</h3><p><strong>特点：</strong></p>
+<ul>
+<li><p>路由信息协议RIP(Routing Information Protocol)是内部网关协议IGP中最先得到广泛使用的协议之一，其相关标准文档为RFC 1058。</p>
+</li>
+<li><p><code>RIP</code> 要求自治系统AS内的每一个路由器都要维护从它自己到AS内其他每一个网络的距离记录。这是一组距离，称为“距离向量D-V(Distance-Vector)”</p>
+</li>
+<li><p><code>RIP</code>使用&#x3D;&#x3D;跳数&#x3D;&#x3D;作为度量<strong>来衡量到达目的网络的距离</strong></p>
+<ul>
+<li>路由器到直连网络的距离定义为<code>1</code></li>
+<li>路由器到非直连网络的距离定义为所经过的路由器数<code>+1</code></li>
+<li>允许一条路径最多只能包含15个路由器。<strong>“距离”等于16时相当于不可达</strong>。因此，RIP只适用于小型互联网</li>
+</ul>
+</li>
+<li><p><code>RIP</code>认为<strong>好的路由</strong>就是”距离短”的路由，也就是所<strong>通过路由器数量最少的路由</strong>。</p>
+</li>
+<li><p>当到达同一目的网络有多条”距离相等”的路由时，可以进行<strong>等价负载均衡</strong>。</p>
+</li>
+<li><p><code>RIP</code>包含以下三个要点</p>
+<ol>
+<li>和谁交换信息   仅和<strong>相邻路由器</strong>交换信息</li>
+<li>交换什么信息   交换的是<strong>自己路由表</strong>的信息</li>
+<li>何时交换信息   <strong>周期性交换</strong>信息（例如每30秒）</li>
+</ol>
+</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117151236487.png" alt="image-20240117151236487"></p>
+<p><strong>RIP存在的问题</strong></p>
+<blockquote>
+<p>存在”坏消息传播很慢”的问题，又称为<strong>路由环路(两个路由器相互学习错误路由，造成循环)<strong>或</strong>距离无穷计数问题</strong>。</p>
+<p>这是距离向量算法的一个固有问题，可以采取多种措施减少出现该问题的概率或减小该问题带来的危害。</p>
+</blockquote>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117152150562.png" alt="image-20240117152150562"></p>
+<p><strong>减少问题的措施：</strong></p>
+<ul>
+<li>限制最大路径距离为15(16表示不可达)。</li>
+<li>当路由表发生变化时就立即发送更新报文(即”触发更新”)，而不是周期性发送。</li>
+<li>让路由器记录收到某特定路由信息的接口，而不让同一路由信息再通过此接口反方向传送(即**“水平分割”“毒性反转”**)。</li>
+</ul>
+<h3 id="开放最短路径优先OSPF"><a href="#开放最短路径优先OSPF" class="headerlink" title="开放最短路径优先OSPF"></a><strong>开放最短路径优先OSPF</strong></h3><p><strong>属性</strong></p>
+<blockquote>
+<p>开放最短路径优先OSPF(0pen Shortest Path First)，是为克服RIP的缺点在1989年开发出来的。</p>
+</blockquote>
+<p><strong>“开放</strong>”表明OSPF协议不是受某一家厂商控制，而是公开发表的。<br>“**最短路径优先”**是因为使用了Dijkstra提出的最短路径算法SPF。</p>
+<blockquote>
+<p>简单来说就是得到一个带权有向图，以当前路由器为起点，通过迪杰斯特拉算法得到到达某个点的最短路径</p>
+</blockquote>
+<ul>
+<li>OSPF<strong>基于链路状态</strong>，而不像RIP那样是基于距离向量。</li>
+<li>采用SPF算法计算路由，从算法上保证了<strong>不会产生路由环路</strong>。</li>
+<li>OSPF<strong>不限制网络规模</strong>，更新效率高，<strong>收敛速度快</strong></li>
+<li>链路状态是指本路由器都<strong>和哪些路由器相邻</strong>，以及<strong>相应链路的”代价”</strong><ul>
+<li>“代价”的意思是费用、距离、时延、带宽等，这些由网络管理人员确定。</li>
+</ul>
+</li>
+</ul>
+<p><strong>OSPF五种分组</strong></p>
+<ol>
+<li><p><strong>问候</strong>(Hello)分组</p>
+<p>用来发现和维护邻居路由器的<strong>可达性</strong></p>
+</li>
+<li><p><strong>数据库描述</strong>(Database Description)分组</p>
+<p>向邻居路由器给出自己的链路状态数据库中的<strong>所有链路状态项目</strong>的摘要信息</p>
+</li>
+<li><p><strong>链路状态请求信息</strong>(Link State Request)分组</p>
+<p>向邻居路由器请求发送<strong>特定链路状态项目</strong>的详细信息</p>
+</li>
+<li><p><strong>链路状态更新LSU</strong>(Link State Update)分组 </p>
+<p>路由器使用这种分组将其链路状态进行<strong>洪泛发送</strong>，即用洪泛法对<strong>全网更新链路状态</strong></p>
+</li>
+<li><p><strong>链路状态确认</strong>(Link State Acknowledgement)分组</p>
+<p>这是对链路状态更新分组的<strong>确认分组</strong></p>
+</li>
+</ol>
+<p><strong>基本工作原理</strong></p>
+<ul>
+<li><p>OSPF相邻路由器之间通过交互问候(Hello)分组，建立和维护邻居关系。</p>
+<ul>
+<li><p>Hello分组封装在IP数据报中，发往组播地址224.0.0.5；</p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117153622741.png" alt="image-20240117153622741"></p>
+</li>
+<li><p>发送周期为10秒；</p>
+</li>
+<li><p>40秒未收到来自邻居路由器的Hello分组，则认为该邻居路由器不可达</p>
+</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117152412622.png" alt="image-20240117152412622"></p>
+</li>
+<li><p>使用OSPF的每个路由器都会产生<strong>链路状态通告LSA</strong>(link state advertisement)，包含以下内容</p>
+<ul>
+<li><strong>直连网络</strong>的链路状态信息</li>
+<li><strong>邻居路由器</strong>的链路状态信息</li>
+</ul>
+</li>
+<li><p>LSA被封装在<strong>链路状态更新分组LSU</strong>（update group）中，采用<strong>洪泛法发送</strong></p>
+<blockquote>
+<p>洪泛法意味着其他路由器收到该 LSU ，也会从自己其他所有接口转发该分组。</p>
+</blockquote>
+</li>
+<li><p>使用OSPF的每个路由器都有一个<strong>链路状态数据库LSDB</strong>，用于存储LSA</p>
+</li>
+<li><p>通过各路由器洪泛法发送封<strong>装有自己LSA的LSU分组</strong>，各路由器的LSDB最终达到一致</p>
+</li>
+<li><p>使用OSPF的各路由器<strong>基于LSDB进行最短路径优先SPF计算</strong>，构建出各种到达其他各路由器的最短路径，即构建各自的路由表</p>
+</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117155346212.png" alt="image-20240117155346212"></p>
+<p><strong>OSPF基本工作过程</strong></p>
+<ul>
+<li><p>相邻路由器之间周期性交互发送<strong>问候分组(Hello)</strong>，以便建立和维护邻居关系。</p>
+</li>
+<li><p>建立邻居关系后，<strong>给邻居路由器发送数据库描述分组(DD)</strong>，也就是将自己链路状态数据库中的所有链路状态项目的摘要信息发送给邻居路由器。</p>
+</li>
+<li><p>R1 收到 R2 的数据库描述分组后，若发现自己缺少其中某些链路状态项目，R1 则会发送链<strong>路状态请求分组(LSR)。</strong></p>
+</li>
+<li><p>R2 收到链路状态请求分组后，则会将其所缺少的链路状态项目的详细信息封装在**链路状态更新分组(LSU)**中发送给 R1 回去。</p>
+</li>
+<li><p>R1 收到链路状态更新分组后，将这些信息添加到自己的链路状态数据库中。</p>
+</li>
+<li><p>R1 给 R2 发送链路状态确认分组。</p>
+<blockquote>
+<p>R2也可以给 R1 请求自己所缺少的链路状态项目的相信信息。</p>
+</blockquote>
+</li>
+<li><p>最终，R1 和 R2 的链路状态数据库将达到一致（同步）。</p>
+<blockquote>
+<p>每30分钟或链路状态发生变化时，路由器都会发送链路状态更新分组，收到该分组的其他路由器也会洪泛转发并返回LS确认分组。</p>
+<p>这又称为新情况下的链路状态数据库同步。</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>邻居关系的建立</strong></p>
+<blockquote>
+<p>一条总线上有多台主机，则它们互为邻居，因此<strong>每个路由器都要向其他路由器发送问候分组和链路状态更新分组。<strong>为了减少所发送分组的数量，则</strong>需要用相应方法对邻居关系进行删减</strong>。</p>
+</blockquote>
+<p>OSPF采用选举<strong>指定路由器DR</strong>(Designated Router)和**备用的指定路由器BDR(**Backup Designated Router)的方法减少邻居数目</p>
+<ul>
+<li>所有的非DR&#x2F;BDR只与DR&#x2F;BDR建立邻居关系</li>
+<li>非DR&#x2F;BDR之间通过DR&#x2F;BDR交换信息</li>
+<li>当DR失效时由BDR顶上</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117160038201.png" alt="image-20240117160038201"></p>
+<blockquote>
+<p>这与交换机生成树协议选举根交换机类似。</p>
+</blockquote>
+<p><strong>区域</strong></p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117160903556.png" alt="image-20240117160903556"></p>
+<p>为了使OSPF能够用于规模很大的网络，OSPF把一个自治系统再划分为若干个更小的范围，叫做区域(Area)。</p>
+<p><strong>格式：</strong></p>
+<ul>
+<li><p>每个区域都有一个32比特的区域标识符</p>
+</li>
+<li><p>主干区域用于连通其他区域。其他区域的标识符不能为0且互不相同</p>
+</li>
+<li><p>每个区域的规模不能太大，一般所包含的路由器不能超过200个。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>好处：<strong>把利用洪泛法交换链路状态信息的范围局限于每一个区域而不是整个自治系统。这样</strong>减少了整个网络上的通信量。</strong></p>
+</blockquote>
+<p><strong>命名：</strong></p>
+<ul>
+<li><p>如果路由器的所有接口都在同一个区域内,则该路由器称为<strong>区域内路由器IR(internal router)</strong>。</p>
+</li>
+<li><p>为了本区域可以和自治系统内的其他区域连通，每个区域都会有一个<strong>区域边界路由器ABR(area border router)</strong>。</p>
+<blockquote>
+<p>区域边界路由器的一个接口连接自身所在区域，另一个接口连接主干区域。</p>
+</blockquote>
+</li>
+<li><p>**主干区域内路由器称为主干路由器。**区域边界路由器一定是主干路由器。</p>
+</li>
+<li><p>主干区域内还要有一个路由器<strong>专门和本自治区外的其他自治系统交换路由信息</strong>。这个路由器称为<strong>自治系统边界路由器ASBR(AS border router)</strong>。</p>
+</li>
+</ul>
+<p><strong>工作过程：</strong></p>
+<p>边界区域向主干区域发送自己所在区域的链路状态通告，向自己所在区域发送区域0，1，2的链路状态通告。</p>
+<blockquote>
+<p>分层次划分区域，增加了交换信息种类，让OSPF协议更复杂了。但这也使每个区域内部交换路由信息的通信量大大减小。因此OSPF能够使用在规模很大的自治系统中。</p>
+</blockquote>
+<h3 id="边界网关协议BGP"><a href="#边界网关协议BGP" class="headerlink" title="边界网关协议BGP"></a>边界网关协议BGP</h3><p><strong>应用场景:</strong></p>
+<p>1.内部网关协议IGP(如路由信息协议RIP或最短路径优先OSPF):</p>
+<ul>
+<li>设法使分组在一个自治系统内尽可能有效地从源网络传输到目的网络</li>
+<li>无需考虑自治系统外部其他方面的策略</li>
+</ul>
+<p>2.外部网关协议EGP(如边界网关协议BGP):</p>
+<ul>
+<li><p>在<strong>不同自治系统内，度量路由的”代价”(距离，宽带，费用等)可能不同</strong>。因此，对于自治系统之间的路由选择，使用”代价”作为度量来寻找最佳路由是不行的</p>
+<blockquote>
+<p>比如<code>A</code>系统路由选择度量是距离，<code>B</code>系统是带宽……那么<code>A</code>到系统<code>E</code>的路由怎样走最好呢？由于没有统一度量，所以不能直接得到最佳路由</p>
+</blockquote>
+</li>
+<li><p>自治系统之间的路由选择必须考虑相关策略(政治、经济、安全等)</p>
+<ul>
+<li>如中国的数据报尽量要绕开美国的自治系统</li>
+</ul>
+</li>
+<li><p>BGP只能是力求寻找一条能够到达目的网络且比较好的路由(不能兜圈子)而并非要寻找一条最佳路由</p>
+</li>
+</ul>
+<p><strong>基本工作原理</strong></p>
+<ul>
+<li><p>在配置BGP时，每个自治系统的管理员要选择至少一个路由器作为该自治系统的&#x3D;&#x3D;BGP发言人&#x3D;&#x3D;</p>
+</li>
+<li><p>不同自治系统的BGP发言人要交换路由信息：</p>
+<ul>
+<li><p>首先必须<strong>建立TCP连接，端口号为179</strong></p>
+</li>
+<li><p>在此TCP连接上<strong>交换BGP报文以建立BGP会话</strong></p>
+</li>
+<li><p>利用BGP会话<strong>交换路由信息</strong>(例如，增加新的路由，或撤销过时的路由，以及报告出错的情况等)</p>
+</li>
+<li><p>使用TCP连接交换路由信息的两个BGP发言人，<strong>彼此称为对方的邻站(neighbor)或对等站(peer)</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117164144991.png" alt="image-20240117164144991"></p>
+<ul>
+<li><p>BGP发言人除了运行BGP外，还必须运行自己所在自治系统所使用的<strong>内部网关协议IGP</strong>，例如OSPF或RIP</p>
+</li>
+<li><p><code>BGP</code>发言人<strong>交换网络可达性的信息</strong>(要到达某个网络所要经过的一系列自治系统)</p>
+</li>
+<li><p>当<code>BGP</code>发言人互相交换了网络可达性的信息后，各<code>BGP</code>发言人就根据所采用的策略从收到的路由信息中<strong>找出到达各自治系统的较好路由</strong>。也就是<strong>构造出树形结构(防环路)的自治系统连通图</strong></p>
+</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117164522541.png" alt="image-20240117164522541"></p>
+<p><strong>BGP-4中的报文</strong></p>
+<ol>
+<li><strong>OPEN(打开)报文</strong>：用来与相邻的另一个<code>BGP</code>发言人建立关系，使通信初始化</li>
+<li><strong>UPDATE(更新)报文</strong>：用来通告某一路由的信息，以及列出要撤销的多条路由</li>
+<li><strong>KEEPALIVE(保活)报文</strong>：用来周期性地证实邻站的连通性</li>
+<li><strong>NOTIFICATION(通知)报文</strong>：用来发送检测到的差错</li>
+</ol>
+<blockquote>
+<p>BGP协议刚刚运行时，BGP的邻站交换整个BGP路由表，以后只在发生变化时更新变化部分。</p>
+</blockquote>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240117165450536.png" alt="image-20240117165450536"></p>
+<h2 id="网际控制报文ICMP"><a href="#网际控制报文ICMP" class="headerlink" title="网际控制报文ICMP"></a>网际控制报文ICMP</h2><blockquote>
+<p>为了更有效地转发<code>IP</code>数据报和提高交付成功的机会，在网际层使用了网际控制报文协议<code>ICMP</code>（Internet Control Message Protocol）</p>
+</blockquote>
+<ul>
+<li>主机或路由器使用<code>ICMP</code>来发送<strong>差错报告报文和询问报文</strong></li>
+<li><code>ICMP</code>报文被封装在<code>IP</code><strong>数据报</strong>中发送</li>
+</ul>
+<p><strong>回答报文类型</strong></p>
+<ul>
+<li>终点不可达</li>
+</ul>
+<blockquote>
+<p><strong>当路由器或主机不能交付数据报时，就向源点发送终点不可达报文</strong>。具体可再根据<code>ICMP</code>的代码字段细分为目的网络不可达、目的主机不可达、目的协议不可达、目的端口不可达、目的网络位置、目的主机未知等<code>13</code>种错误</p>
+</blockquote>
+<ul>
+<li>源点抑制</li>
+</ul>
+<blockquote>
+<p><strong>当路由器或主机由于拥塞而丢弃数据报时，就向源点发送源点抑制报文</strong>，使源点知道应当把数据报发送速率放慢</p>
+</blockquote>
+<ul>
+<li>时间超过</li>
+</ul>
+<blockquote>
+<p>当路由器收到一个目的<code>IP</code>地址不是自己的<code>IP</code>数据报，会将其<strong>生存时间TTL字段</strong>值减<code>1</code>。若结果不为<code>0</code>，则将该<code>IP</code>数据报转发出去；<strong>若结果为0，除丢弃该IP数据报外，还要向源点发送时间超过报文</strong></p>
+<p>当终点在预先规定的时间内不能收到一个数据报的全部数据报片时，就把已收到的数据报片都丢弃，也会向源点发送时间超过报文</p>
+</blockquote>
+<ul>
+<li>参数问题</li>
+</ul>
+<blockquote>
+<p>当路由器或目的主机收到<code>IP</code>数据报后，根据其首部中的检验和字段发现首部在传输过程中<strong>出现了误码，就丢弃该数据报，并向源点发送参数问题报文</strong></p>
+</blockquote>
+<ul>
+<li>改变路由(重定向)</li>
+</ul>
+<blockquote>
+<p><strong>路由器把改变路由报文发送给主机，让主机知道下次应将数据报发送给另外的路由器(可通过更好的路由)</strong></p>
+<p>如主机<code>1</code>的默认路由是<code>R1</code>，信息经过<code>R1</code>时，<code>R1</code>发现最佳路由不是自己，而是<code>R2</code>，所以通过<code>ICMP</code>告知主机<code>1</code></p>
+</blockquote>
+<p><strong>不发送ICMP的情况</strong></p>
+<ol>
+<li>对<code>ICMP</code>差错报告报文不再发送<code>ICMP</code>差错报告报文</li>
+<li>对<strong>第一个分片的数据报片的所有后续数据报片</strong>都不发送<code>ICMP</code>差错报告报文</li>
+<li>对具有<strong>多播地址的数据报</strong>都不发送<code>ICMP</code>差错报告报文</li>
+<li>对具有<strong>特殊地址(如127.0.0.0或0.0.0.0)的数据报</strong>不发送<code>ICMP</code>差错报告报文</li>
+</ol>
+<p><strong>询问报文类型</strong></p>
+<p>&#x3D;&#x3D;回送请求和回答&#x3D;&#x3D;</p>
+<ul>
+<li><code>ICMP</code>回送请求报文是由主机或路由器向一个特定的目的主机发出的询问</li>
+<li>收到此报文的主机必须给源主机或路由器发送<code>ICMP</code>回送回答报文</li>
+<li>这种询问报文用来测试目的站是否可达及了解其有关状态</li>
+</ul>
+<p>&#x3D;&#x3D;时间戳请求和回答&#x3D;&#x3D;</p>
+<ul>
+<li><code>ICMP</code>时间戳请求报文是请某个主机或路由器回答当前的日期和时间</li>
+<li>在<code>ICMP</code>时间戳回答报文中有一个<code>32</code>比特的字段，其中写入的整数代表从<code>1900</code>年<code>1</code>月<code>1</code>日起到当前时刻一共有多少秒</li>
+<li>这种询问报文用来进行时钟同步和测量时间</li>
+</ul>
+<p><strong>ICMP应用举例</strong></p>
+<p><strong>分组网间探测PING</strong></p>
+<ul>
+<li>用来测试主机或路由器间的连通性【<code>eNSP</code>的<code>ping</code>命令】</li>
+<li>应用层直接使用网际层的<code>ICMP</code>(没有通过运输层的<code>TCP</code>或<code>UDP</code>)</li>
+<li>使用<code>ICMP</code>回送请求和回答报文</li>
+</ul>
+<p><strong>跟踪路由tracerouce</strong></p>
+<ul>
+<li><p>用来测试IP数据报从源主机到达目的主机要经过哪些路由器</p>
+</li>
+<li><p><code>Windows</code>版本</p>
+<ul>
+<li><code>tracert</code>命令</li>
+<li>应用层直接使用网际层<code>ICMP</code></li>
+<li>使用了<code>ICMP</code>回送请求和回答报文以及差错报告报文</li>
+</ul>
+</li>
+<li><p><code>Unix</code>版本</p>
+<ul>
+<li>traceroute 命令</li>
+<li>在运输层使用<code>UDP</code>协议</li>
+<li>仅使用 <code>ICMP</code>差错报告报文</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>实现方法</p>
+<p>由<strong>主机发送出去的数据包中的生存时间字段TTL由1开始逐渐增加</strong>，每个路由器都会返回一个时间超过报文，由此达到跟踪路由器的目的</p>
+</blockquote>
+<h2 id="虚拟专用网VPN和网络地址转换NAT"><a href="#虚拟专用网VPN和网络地址转换NAT" class="headerlink" title="虚拟专用网VPN和网络地址转换NAT"></a>虚拟专用网VPN和网络地址转换NAT</h2><h3 id="虚拟专用网VPN"><a href="#虚拟专用网VPN" class="headerlink" title="虚拟专用网VPN"></a>虚拟专用网VPN</h3><p><strong>利用公用的因特网作为本机构各专用网之间的通信载体，这样的专用网又称为虚拟专用网。</strong></p>
+<blockquote>
+<p>由于IPv4地址的紧缺，一个机构能够申请到的IPv4地址数量往往远小于本机构所拥有的主机数量。</p>
+</blockquote>
+<p>因此，<strong>虚拟专用网中的各主机所分配的地址应该是本机构可自由分配的专用地址</strong>，而不是需要申请的、在因特网上使用的公有地址。</p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240118095554079.png" alt="image-20240118095554079"></p>
+<blockquote>
+<p><strong>专用(私有)地址:</strong></p>
+<ul>
+<li>10.0.0.0~10.255.255.255(10&#x2F;8地址块)</li>
+<li>172.16.0.0~172.31.255.255(172.16&#x2F;12地址块)</li>
+<li>192.168.0.0~192.168.255.255(192.168&#x2F;16地址块)</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>注意：私有地址只能用于一个机构的内部通信，而不能用于和因特网上的主机通信。</p>
+<p>即私有地址只能用作本地地址而不能用作全球地址。</p>
+</blockquote>
+<p>所以所有路由器对目的地址是私有地址的IP数据报一律不进行转发。</p>
+<p>所有每个机构至少需要一个路由器具有合法的全球IP地址。这样各自的专用网才能利用公用的因特网进行通信。</p>
+<blockquote>
+<p>两个专用网内的主机间发送的数据报，是通过了公用的因特网，但在效果上就好像是在本机构的专用网上传送一样。</p>
+<p>数据报在因特网中可能要经过多个网络和路由器，但从逻辑上看，R1和R2之间好像是一条直通的点对点链路，因此也被称为IP隧道技术。</p>
+</blockquote>
+<p>如下图所示，同一机构内不同部门的内部网络所构成的虚拟专用网VPN又称为&#x3D;&#x3D;内联网VPN&#x3D;&#x3D;。</p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240118100142778.png" alt="image-20240118100142778"></p>
+<p>有时一个机构的VPN需要有某些外部机构(通常就是合作伙伴)参加进来。这样的VPN就称为&#x3D;&#x3D;外联网VPN&#x3D;&#x3D;。</p>
+<blockquote>
+<p>在外地工作的员工需要访问公司内部的专用网络时，只要在任何地点接入到因特网，运行驻留在员工PC中的VPN软件，在员工的PC和公司的主机之间建立VPN隧道，即可访问专用网络中的资源。这种VPN称为&#x3D;&#x3D;远程接入VPN&#x3D;&#x3D;。</p>
+</blockquote>
+<h3 id="网络地址转换NAT"><a href="#网络地址转换NAT" class="headerlink" title="网络地址转换NAT"></a>网络地址转换NAT</h3><p>应用场景：</p>
+<blockquote>
+<p>虽然因特网采用了无分类编址方式来减缓IPv4地址空间耗尽的速度，但由于因特网用户数目的激增，特别是大量小型办公室网络和家庭网络接入因特网的需求不断增加，IPv4地址空间即将面临耗尽的危险仍然没有被解除。<br>1994年提出了一种网络地址转换NAT的方法再次缓解了IPv4地址空间即将耗尽的问题。</p>
+</blockquote>
+<p><code>NAT</code>能使大量使用<strong>内部专用地址的专用网络用户共享少量外部全球地址</strong>来访问因特网上的主机和资源【为了节省<code>IPv4</code>地址】</p>
+<ul>
+<li><p>问题：该转换方法存在一个问题:如果NAT路由器具有N个全球IP地址，那么至多只能有N个内网主机能够<strong>同时</strong>和因特网上的主机通信。</p>
+</li>
+<li><p>解决：由于绝大多数的网络应用都是使用运输层协议<code>TCP</code>或<code>UDP</code>来传送数据，因此可以<strong>利用运输层的&#x3D;&#x3D;端口号&#x3D;&#x3D;和IP地址一起进行转换。</strong></p>
+</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240118101153880.png" alt="image-20240118101153880"></p>
+<p>这样，<strong>用一个全球IP地址就可以使多个拥有本地地址的主机同时和因特网上的主机进行通信</strong>。这种将端口号和<code>IP</code>地址一起进行转换的技术叫作<strong>网络地址与端口号转换NAPT</strong></p>
+<h2 id="杂项"><a href="#杂项" class="headerlink" title="杂项"></a>杂项</h2><p><strong>路由器隔离广播域</strong></p>
+<p>路由器属于网络层设备，默认情况下不对广播数据包进行转发，因此自然达到隔离的效果。</p>
+<p>路由器是连接不同网络的，广播只是在一个网络里面，所以路由器隔离开了不同网络之间的广播信号。</p>
+<p>广播是数据链路层的广播，网络层只有点对点。</p>
+<p><strong>整理</strong></p>
+<p>SMTP邮件发送是TGP，视频通话是UDP</p>
+<p>服务访问点：邻层实体之间的逻辑接口。</p>
+<p><strong>各层服务访问点</strong> SAP</p>
+<ul>
+<li>应用层 ：用户界面</li>
+<li>运输层：端口号</li>
+<li>网络层：IP地址</li>
+<li>数据链路层：Mac地址 </li>
+<li>物理层：网卡</li>
+</ul>
+<p><strong>各层协议数据单元</strong></p>
+<ul>
+<li><p>应用层：报文(message)</p>
+</li>
+<li><p>传输层：报文段(segment)：（TCP报文段，UDP数据报）</p>
+</li>
+<li><p>网络层：分组packet（如果无连接方式：数据报 datagram）</p>
+</li>
+<li><p>数据链路层：帧(frame)</p>
+<blockquote>
+<p>数据链路层又可分为两层 Mac层和llc层<br>LLC层是主要向上层提供服务的,Mac地址是网卡地址。</p>
+</blockquote>
+</li>
+<li><p>物理层：位(bit)</p>
+</li>
+</ul>
+</article>
+<div class="article-footer">
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(3)%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/">湖科大(3)数据链路层</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(5)%E8%BF%90%E8%BE%93%E5%B1%82/">湖科大(5)运输层</a></div></section></div>
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Fancy</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+<widget class="widget-wrapper ghrepo"><div class="widget-body"><div class="items data-service ds-ghinfo" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note"><a class="repo" href="https://github.com/Back2Zer0/md-CS_Note" target="_blank" rel="external nofollow noopener noreferrer"><div class="repo-name flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>Back2Zer0/md-CS_Note</div><div class="repo-desc"><span type="text" id="description">&nbsp;</span></div><div class="grid"><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z"></path></svg><span type="text" id="stargazers_count"></span></div><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg><span type="text" id="forks_count"></span></div><div class="flex-row data-service ds-ghinfo" index="0" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note/tags"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z"></path></svg><span type="text" id="latest-tag-name">0</span></div></div></a></div></div></widget>
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="toc-text">网络层</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82%E6%8F%90%E4%BE%9B%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%9C%8D%E5%8A%A1"><span class="toc-text">网络层提供的两种服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IPv4"><span class="toc-text">IPv4</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E7%B1%BB%E7%BC%96%E5%9D%80"><span class="toc-text">分类编址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%92%E5%88%86%E5%AD%90%E7%BD%91"><span class="toc-text">划分子网</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E5%88%86%E7%B1%BB%E7%BC%96%E5%9D%80"><span class="toc-text">无分类编址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IPv4%E5%88%92%E5%88%86%E5%9C%B0%E5%9D%80%E5%9D%97%E7%9A%84%E4%B8%8D%E5%90%8C%E5%BA%94%E7%94%A8"><span class="toc-text">IPv4划分地址块的不同应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IP%E6%95%B0%E6%8D%AE%E6%8A%A5%E5%8F%91%E9%80%81%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B"><span class="toc-text">IP数据报发送转发过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88"><span class="toc-text">路由聚合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IPv4%E6%95%B0%E6%8D%AE%E6%8A%A5%E9%A6%96%E9%83%A8%E6%A0%BC%E5%BC%8F"><span class="toc-text">IPv4数据报首部格式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%BF%B0"><span class="toc-text">路由选择协议概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"><span class="toc-text">路由器基本结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E5%8D%8F%E8%AE%AE"><span class="toc-text">路由选择协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E4%BF%A1%E6%81%AF%E5%8D%8F%E8%AE%AERIP"><span class="toc-text">路由信息协议RIP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E6%94%BE%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E4%BC%98%E5%85%88OSPF"><span class="toc-text">开放最短路径优先OSPF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%B9%E7%95%8C%E7%BD%91%E5%85%B3%E5%8D%8F%E8%AE%AEBGP"><span class="toc-text">边界网关协议BGP</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E9%99%85%E6%8E%A7%E5%88%B6%E6%8A%A5%E6%96%87ICMP"><span class="toc-text">网际控制报文ICMP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E4%B8%93%E7%94%A8%E7%BD%91VPN%E5%92%8C%E7%BD%91%E7%BB%9C%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2NAT"><span class="toc-text">虚拟专用网VPN和网络地址转换NAT</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E4%B8%93%E7%94%A8%E7%BD%91VPN"><span class="toc-text">虚拟专用网VPN</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2NAT"><span class="toc-text">网络地址转换NAT</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%82%E9%A1%B9"><span class="toc-text">杂项</span></a></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>

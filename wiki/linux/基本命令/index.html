@@ -1,0 +1,1653 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>mysql：基本命令 - Fancy 的小宇宙</title>
+
+  
+    <meta name="description" content="Linux 基本系统分区FHS（Filesystem Hierarchy Standard）—— 文件系统层次化标准。  Filesystem Hierarchy Standard（文件系统层次化标准）的缩写，多数Linux版本采用这种文件组织形式，类似于Windows操作系统中c盘的文件目录，FHS采用树形结构组织文件。FHS定义了系统中每个区域的用途、所需要的最小构成的文件和目录，同时还给出了">
+<meta property="og:type" content="website">
+<meta property="og:title" content="基本命令">
+<meta property="og:url" content="https://back2zer0.github.io/wiki/linux/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/">
+<meta property="og:site_name" content="Fancy 的小宇宙">
+<meta property="og:description" content="Linux 基本系统分区FHS（Filesystem Hierarchy Standard）—— 文件系统层次化标准。  Filesystem Hierarchy Standard（文件系统层次化标准）的缩写，多数Linux版本采用这种文件组织形式，类似于Windows操作系统中c盘的文件目录，FHS采用树形结构组织文件。FHS定义了系统中每个区域的用途、所需要的最小构成的文件和目录，同时还给出了">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+<meta property="article:published_time" content="2026-01-27T01:51:15.659Z">
+<meta property="article:modified_time" content="2026-01-27T01:51:15.659Z">
+<meta property="article:author" content="Fancy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+    <link rel="shortcut icon" href="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Website","@id":"https://back2zer0.github.io/wiki/linux/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"name":"基本命令","description":"Linux 基本系统分区FHS（Filesystem Hierarchy Standard）—— 文件系统层次化标准。\n\nFilesystem Hierarchy Standard（文件系统层次化标准）的缩写，多数Linux版本采用这种文件组织形式，类似于Windows操作系统中c盘的文件目录，FHS采用树形结构组织文件。FHS定义了系统中每个区域的用途、所需要的最小构成的文件和目录，同时还...","url":"https://back2zer0.github.io/wiki/linux/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/"}</script>
+  
+</head>
+<body>
+
+
+
+<div class="l_body content" id="start" layout="page" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="https://picgo-1398775008.cos.ap-guangzhou.myqcloud.com/linux-svgrepo-com.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/wiki/linux/linux%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86"><div class="main">mysql</div><div class="sub normal cap">为学日益，为道日损</div><div class="sub hover cap" style="opacity:0"> fancy</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item" title="认知" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item active" title="技术" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="生活" href="/life/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="其他平台" href="/social/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/" placeholder="在技术专栏中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<widget class="widget-wrapper doc-tree post-list"><div class="widget-header dis-select"><span class="name">基本操作</span></div><div class="widget-body fs14"><a class="link" href="/wiki/linux/linux%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/#start"><span class="toc-text">linux软件包管理</span></a><a class="link" href="/wiki/linux/Shell%E5%85%A5%E9%97%A8/"><span class="toc-text">Shell入门</span></a><a class="link" href="/wiki/linux/Vim%E6%8F%92%E4%BB%B6/"><span class="toc-text">Vim插件</span></a><a class="link" href="/wiki/linux/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/"><span class="toc-text">环境变量</span></a><a class="link active" href="/wiki/linux/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/"><span class="toc-text">基本命令</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a><a class="link" href="/wiki/linux/%E6%9D%82%E9%A1%B9/"><span class="toc-text">杂项</span></a></div><div class="widget-header dis-select"><span class="name">乐在其中</span></div><div class="widget-body fs14"><a class="link" href="/wiki/linux/%E4%B8%8A%E6%89%8B%E6%96%B0ubuntu%E6%9C%BA%E5%99%A8%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E5%B7%A5%E4%BD%9C/"><span class="toc-text">上手新ubuntu机器的初始化工作</span></a><a class="link" href="/wiki/linux/%E5%85%B3%E4%BA%8E%20vim%20-%20YouCompleteMe%20%E7%9A%84%E5%AE%89%E8%A3%85/"><span class="toc-text">关于 vim - YouCompleteMe 的安装</span></a></div></widget>
+
+<widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：网课</span></div><div class="widget-body"><a class="item wiki" href="/wiki/python/%E7%88%AC%E8%99%AB%E5%85%A5%E9%97%A81/"><span class="title">python学习笔记</span><span class="excerpt">一些爬虫基础和实战案例</span></a><a class="item wiki" href="/wiki/mysql/%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/"><span class="title">MySQL学习笔记</span><span class="excerpt">尚硅谷MySQL学习笔记</span></a><a class="item wiki" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)/"><span class="title">计网学习笔记</span><span class="excerpt">湖科大计算机网络课程和尹圣雨老师的TCPIP网络编程。</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/linux/linux%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/">mysql</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2026-01-27T01:51:15.659Z">2026-01-27</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>基本命令</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h1 id="Linux-基本"><a href="#Linux-基本" class="headerlink" title="Linux 基本"></a>Linux 基本</h1><h2 id="系统分区"><a href="#系统分区" class="headerlink" title="系统分区"></a>系统分区</h2><p>FHS（Filesystem Hierarchy Standard）—— <strong>文件系统层次化标准</strong>。</p>
+<blockquote>
+<p>Filesystem Hierarchy Standard（文件系统层次化标准）的缩写，多数Linux版本采用这种文件组织形式，类似于Windows操作系统中c盘的文件目录，FHS采用树形结构组织文件。FHS定义了系统中每个区域的用途、所需要的最小构成的文件和目录，同时还给出了例外处理与矛盾处理。</p>
+<p>—— 百度百科</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">符号</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>~</code></td>
+<td align="left">用户主目录</td>
+</tr>
+<tr>
+<td align="left"><code>-</code></td>
+<td align="left">上一次所在目录</td>
+</tr>
+<tr>
+<td align="left"><code>.</code></td>
+<td align="left">当前目录</td>
+</tr>
+<tr>
+<td align="left"><code>..</code></td>
+<td align="left">上级目录</td>
+</tr>
+</tbody></table>
+<p>Linux与Windows一样，它的主分区和拓展分区加起来不能超过四个，而且<strong>拓展分区不能放入数据文件且不能格式化</strong>，最多一个拓展分区。拓展分区里放的<strong>逻辑分区可以放数据和格式化。</strong></p>
+<p><strong>Linux 硬件全为文件</strong> 这一点与Windows不一样。</p>
+<p>下面介绍一些Linux的主要硬件文件名已经存放路径：</p>
+<ul>
+<li>IDE硬盘 &#x2F;dev&#x2F;hd[a-d]</li>
+<li>SCSI&#x2F;SATA&#x2F;USB硬盘 &#x2F;dev&#x2F;sd[a-p]</li>
+<li>光驱 &#x2F;dev&#x2F;cdrom或&#x2F;dev&#x2F;sr0</li>
+<li>软盘 &#x2F;dev&#x2F;fd[0-1]</li>
+<li>打印机（25针） &#x2F;dev&#x2F;lp[0-2]</li>
+<li>打印机（USB） &#x2F;dev&#x2F;usb&#x2F;lp[0-15]</li>
+<li>鼠标 &#x2F;dev&#x2F;mouse</li>
+</ul>
+<p>&#x3D;&#x3D;分区&#x3D;&#x3D;：把大硬盘分为小的逻辑分区<br>&#x3D;&#x3D;格式化&#x3D;&#x3D;：写入文件系统<br>&#x3D;&#x3D;分区设备文件名&#x3D;&#x3D;：给每个分区定义设备文件名<br>&#x3D;&#x3D;挂载&#x3D;&#x3D;：给每个分区分配挂载点</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<ol>
+<li>根分区 “&#x2F; ” 以下的子分区可以单独使用硬盘</li>
+<li>在虚拟机安装中 swap 的大小为内存的两倍但是超过2G没有意义，建议1000MB合适</li>
+<li>&#x2F;boot路径是为了让Linux系统可以顺利运行 里面最好不要存放数据 在虚拟机安装中分配200M左右大小就可以了</li>
+</ol>
+</blockquote>
+<h2 id="系统管理"><a href="#系统管理" class="headerlink" title="系统管理"></a>系统管理</h2><ul>
+<li><p>使用分号 <code>;</code> 分隔和执行多条命令</p>
+</li>
+<li><p>使用反斜线 <code>\</code> 多行输入</p>
+</li>
+<li><p>执行 <code>exit</code> 或 <code>ctrl d</code>（表示EOF），退出当前 shell</p>
+</li>
+<li><p><strong>ls</strong> 参数：</p>
+<ul>
+<li>-a 所有文件</li>
+<li>-l 详细信息</li>
+<li>-h 文件大小可读</li>
+<li>-F 类型指示</li>
+<li>-d 仅查看当前目录的信息</li>
+<li>-S 按文件大小排序</li>
+<li>-t 按修改时间排序</li>
+<li>-r 倒序</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>查看 Linux 内核版本</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">uname -r</span><br><span class="line">uname -n</span><br><span class="line">cat /proc/version</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>5.8.0-44-generic</p>
+<p>主版本号.次版本号.发布版本-修改版本</p>
+</blockquote>
+<p><strong>系统的运行级别：</strong></p>
+<p>runlevel 查询系统运行级别<br>logout 退出登陆命令</p>
+<p>共有六个级别：</p>
+<p>init 0-6<br>0：关机<br>1：单用户 进入选项菜单 只有root用户登陆进去 相当于Windows安全模式F8，只不过没有图形界面<br>2：不完全多用户，不含NFS服务，没有图形界面 NFS网络文件系统，Linux之间文件传输共享方式，除了NFS服务，和3一样。<br>3：完全多用户，没有图形界面<br>4：未分配，没有图形界面<br>5：图形界面<br>6：重启</p>
+<blockquote>
+<p>注意：在服务器中一定要在操作完成之后退出登陆，否则其他人会直接进入你的服务器，造成非常大的损失。最基本的安全意识一定要有！！！</p>
+</blockquote>
+<p><strong>日期</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">date [-s] &lt;date&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>内存</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">free -h</span><br></pre></td></tr></table></figure>
+
+<p><strong>进程</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps [-u]</span><br></pre></td></tr></table></figure>
+
+<p> <strong>查询 PID</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pidof &lt;ps&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在linux系统的目录&#x2F;var&#x2F;run下面一般我们都会看到很多的*.pid文件。而且往往新安装的程序在运行后也会在&#x2F;var&#x2F;run目录下面产生自己的pid文件。那么这些pid文件有什么作用呢？它的内容又是什么呢？ </p>
+<p>PID全称是Process Identification。</p>
+<p>PID是进程的代号，每个进程有唯一的PID编号。它是进程运行时系统随机分配的，不代表专门的进程。</p>
+<p>在运行时PID是不会改变标识符的，但是你终止程序后再运行PID标识符就会被系统回收，就可能会被继续分配给新运行的程序。</p>
+<p>范围是1~32768。</p>
+<ol>
+<li>pid文件的内容：pid文件为文本文件，内容只有一行, 记录了该进程的ID。</li>
+<li>pid文件的作用：防止进程启动多个副本。只有获得pid文件(固定路径固定文件名)写入权限(F_WRLCK)的进程才能正常启动并把自身的PID写入该文件中。其它同一个程序的多余进程则自动退出。</li>
+</ol>
+</blockquote>
+<p><strong>发送信号</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kill [-信号声明 | -信号编号] &lt;pid&gt;</span><br><span class="line"></span><br><span class="line">kill -l # 列出所有信号</span><br><span class="line"></span><br><span class="line">killall # 结束一个程序的所有进程</span><br></pre></td></tr></table></figure>
+
+<p> <strong>命令别名</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alias &lt;cmd&gt;=&lt;cmd&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>cmd：command</p>
+</blockquote>
+<p><strong>输入历史</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">history # 查看历史命令和编号</span><br><span class="line"></span><br><span class="line">!&lt;编号&gt; # 执行编号指定的历史命令</span><br></pre></td></tr></table></figure>
+
+<p><strong>主机名</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hostname [set-hostname] &lt;nm&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="软硬链接"><a href="#软硬链接" class="headerlink" title="软硬链接"></a>软硬链接</h2><ul>
+<li><p>软链接：<br>软链接的作用和Windows中的快捷方式是差不多的。他只不过是指向源文件安装路径的符号链接，所以大小也很小 。</p>
+<p>它的文件类型是lrwxrwxrwx 看似三种用户都可以拥有所有权限。其实，真正拥有的权限是源文件所决定的权限 ，所以这中显示也是软链接的一大特征之一。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ln</span> -s [原文件] [目标文件] 创建软链接</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这里的源文件路径一定要写成<strong>绝对路径</strong> ，否则链接不到。</p>
+</blockquote>
+</li>
+<li><p>硬链接：<br>硬链接就是把源文件拷贝到目标位置，而<strong>他与cp -p 最大的一点区别就是他可以同步更新。</strong></p>
+<p>源文件有变化 硬链接文件也会同时发生变化，但是如果源文件丢失或者被删除，硬链接也并不会消失。</p>
+<blockquote>
+<p>这里不同环境结果不一样。</p>
+<p>我的Ubuntu软连接文件也不会随着源文件丢失而丢失。只是无法访问而已。</p>
+</blockquote>
+<p>可以通过i节点来区分，源文件和硬链接文件的i节点是一样的，所以他们会同步更新，但是他不能跨分区放置硬链接比如：&#x2F;分区 硬链接 不能放到&#x2F;boot 分区 ，而且不能对目录使用。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ln</span> [原文件] [目标文件] 创建硬链接</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="权限处理"><a href="#权限处理" class="headerlink" title="权限处理"></a>权限处理</h2><h3 id="权限表示"><a href="#权限表示" class="headerlink" title="权限表示"></a>权限表示</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ls</span> -l</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>total 200k </p>
+<p>文件权限   权限计数  所有者 所属组  文件大小 最后修改时间   文件名</p>
+<p>drwxr-x— 16 fancyzzz fancyzzz 4.0k 7月11 14:26</p>
+<p>…</p>
+</blockquote>
+<p>一个文件10个符号位 ： -rwx rwx rwx</p>
+<p><strong>第一个符号位：</strong></p>
+<table>
+<thead>
+<tr>
+<th>d</th>
+<th>目录</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>l</td>
+<td>软连接</td>
+</tr>
+<tr>
+<td>b</td>
+<td>块设备</td>
+</tr>
+<tr>
+<td>c</td>
+<td>字符设备</td>
+</tr>
+<tr>
+<td>s</td>
+<td>socket</td>
+</tr>
+<tr>
+<td>p</td>
+<td>管道</td>
+</tr>
+<tr>
+<td>-</td>
+<td>普通文件</td>
+</tr>
+</tbody></table>
+<p><strong>后九位：</strong></p>
+<p>每三位一组，分别对应 User  Group  Other：</p>
+<ul>
+<li>r：读权限</li>
+<li>w: 写权限</li>
+<li>x:  执行权限</li>
+</ul>
+<h3 id="修改权限"><a href="#修改权限" class="headerlink" title="修改权限"></a>修改权限</h3><h4 id="1-复制权限设定："><a href="#1-复制权限设定：" class="headerlink" title="1.复制权限设定："></a>1.复制权限设定：</h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>chmod –reference&#x3D;dir1 dir2</td>
+<td>复制dir1目录的权限到dir2上</td>
+</tr>
+<tr>
+<td>chmod -R –reference&#x3D;dir1 dir2</td>
+<td>复制dir1目录的权限到dir2及dir2中的子文件上 -R 代表递归操作</td>
+</tr>
+</tbody></table>
+<h4 id="2-字符方式设定："><a href="#2-字符方式设定：" class="headerlink" title="2.字符方式设定："></a>2.字符方式设定：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> [&#123;u,g,o,a&#125;&#123;+,-,=&#125;&#123;r,w,x&#125;] [文件或者目录] </span><br></pre></td></tr></table></figure>
+
+<p>u ：所有者</p>
+<p>g ：所属组 </p>
+<p>o ：其他人 </p>
+<p>a ：所有用户 </p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>chmod （a;u;g;o) ( +;-;&#x3D;)(r;w;x) 文件名或目录名</td>
+<td>用字符方式设定文件或目录权限</td>
+</tr>
+<tr>
+<td>chmod -R（a;u;g;o) ( +;-;&#x3D;)(r;w;x) 目录名</td>
+<td>用字符方式设定目录以及该目录中文件权限</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>例如：chomd g+x,o+r &#x2F;tmp&#x2F;testfile 是把testfile文件的所有组增加执行权限，其他人增加读权限 </p>
+<p>chomd a&#x3D;rwx &#x2F;tmp&#x2F;testfile    是给 testfile文件的所有用户增加读写执行权限 </p>
+</blockquote>
+<h4 id="3-数字方式设定权限："><a href="#3-数字方式设定权限：" class="headerlink" title="3.数字方式设定权限："></a>3.数字方式设定权限：</h4><p>权限的布尔表示方式：用三位二进制数表示八种不同情况的权限，然后转化为十进制数，并用三位十进制数，表示三个不同身份的权限信息，用数字方式设定对比字符方式设定更具有便捷，准确，不容易出错的特点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> -R [rwx的和,rwx的和,rwx的和]] [文件或者目录]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>首先需要知道 r&#x3D;4 w&#x3D;2 x&#x3D;1<br>例如：rwxrw-r- - 它的权限位数字表示就是 764</p>
+</li>
+<li><p>具体算法：<br>r+w+x&#x3D;4+2+1&#x3D;7<br>r+w&#x3D;4+2+0&#x3D;6<br>r&#x3D;4+0+0&#x3D;4</p>
+</li>
+<li><p>-R：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> -R [rwx的和,rwx的和,rwx的和]] [文件或者目录]</span><br></pre></td></tr></table></figure>
+
+<p>这条命令与mkdir -p递归创建目录一样 这个命令把一个目录下的所有子目录的操作权限全部修改为同样的</p>
+</li>
+</ul>
+<blockquote>
+<p>我们仍需注意在文件与目录中的不同权限，他们具体可以实施的操作是什么。这一点非常重要，有许多人到现在也不太清楚，认为对文件有写权限就可以删除文件。这一点是非常错误的。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>代表字符</th>
+<th>权限</th>
+<th>对文件的含义</th>
+<th>对目录的含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>r</td>
+<td>读权限</td>
+<td>可以查看文件内容 可以cat&#x2F;more&#x2F;head&#x2F;tail&#x2F;less</td>
+<td>可以列出目录中的内容 可以ls</td>
+</tr>
+<tr>
+<td>w</td>
+<td>写权限</td>
+<td>可以修改文件内容 可以vim</td>
+<td>可以在目录中创建，删除文件；可以touch&#x2F;mkdir&#x2F;rmdir&#x2F;rm</td>
+</tr>
+<tr>
+<td>x</td>
+<td>执行权限</td>
+<td>可以执行文件 可以script(脚本) command(命令)</td>
+<td>可以进入目录 可以cd</td>
+</tr>
+</tbody></table>
+<h2 id="文件处理"><a href="#文件处理" class="headerlink" title="文件处理"></a>文件处理</h2><ul>
+<li><p>cat [文件名] 显示文件内容 只适合短的文件内容<br>cat -n [文件名] 显示行号 给文件内容的每一行标号<br>cat -A [文件名] 显示隐藏字符<br>tac [文件名] 逆序显示文件内容 倒着来 不支持-n</p>
+</li>
+<li><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">more [文件名] </span><br></pre></td></tr></table></figure>
+
+<p>一页一页显示文件内容 适合长的文件内容 <strong>空格或者f 翻页 回车（Enter）一行一行翻，换行 q或者Q ，退出</strong></p>
+</li>
+<li><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">less [文件名] </span><br></pre></td></tr></table></figure>
+
+<p>一页一页显示文件内容，只不过这条命令可以往回翻页，查看翻过的文件内容 page up向上翻页，↑箭头向上翻一行<br><strong>其他操作和more命令一样 在less命令中 可以按&#x2F;+需要查找文件内容的关键字查询内容，高亮内容即为含有关键字的内容，按n（表示next）可以查看下一个含有关键字的内容</strong></p>
+</li>
+<li><p>head [文件名] 显示文件最前几行 具体几行加n head -n 行数 [文件名] 没有指定 默认10行</p>
+</li>
+<li><p>tail [文件名] 显示文件最后几行 具体几行加n tail -n 行数 [文件名] 没有指定 默认10行 tail -f 动态显示文件末尾内容</p>
+</li>
+<li><p>移动：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv &#123;src&#125; &#123;target&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重命名：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv &#123;old&#125; &#123;new&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="目录处理"><a href="#目录处理" class="headerlink" title="目录处理"></a>目录处理</h2><p>（目录也算文件哦）</p>
+<ul>
+<li>创建</li>
+</ul>
+<p>mkdir 创建目录 在&#x2F;tmp&#x2F;目录下创建临时文件 只能创建&#x2F;tmp&#x2F;***** 二级目录<br>mkdir -p 可以递归创建 在没有一级目录的情况下新创建二级目录<br>pwd 显示当前所在路径</p>
+<ul>
+<li>跳级</li>
+</ul>
+<p>cd - 上一次的目录</p>
+<p>cd ~ 返回家目录</p>
+<p>cd . . 返回上一级目录(两个点连着）<br>rmdir 删除空目录 只能删除没有文件的空目录 （不经常使用）</p>
+<h2 id="增删改查"><a href="#增删改查" class="headerlink" title="增删改查"></a>增删改查</h2><ul>
+<li>touch [文件名] 在当前目录下创建空文件<br>touch[绝对路径+文件名]。 指明绝对路径，在绝对路径处创建文件<br><strong>“Program files” 加双引号创建带空格的文件名 不推荐使用 以后的查询，操作都需要用到 除了代表根分区的&#x2F; 以外 其他符号都可以</strong></li>
+<li>复制</li>
+</ul>
+<p>cp 复制文件 cp [原文件路径] [需要复制到的路径]<br>cp -r 复制目录<br>cp -p 保留原文件属性复制目录 比如保留创建时间 日志文件的复制需要用到<br>cp -rp 复制目录并且保留原文件属性<br>mv 剪切 改名（在同一个目录下为改名）</p>
+<ul>
+<li>删除</li>
+</ul>
+<p>rm 删除文件<br>rm -f 强制删除 不再询问<br>rm -r 删除目录 一般是rm -rf 连着用<br>control+C退出选项</p>
+<blockquote>
+<p>注意：<br>rm -rf 使用时一定要谨慎 切记 ！！！<br>使用时一定要谨慎 切记 ！！！<br>使用时一定要谨慎 切记 ！！！<br>rm -rf &#x2F;* 系统直接全部被删除！！！</p>
+</blockquote>
+<p>使用通配符时需要转义，例如<code>*.txt</code>应写成<code>\*.txt</code>。 </p>
+<p>查找</p>
+<ol>
+<li><p>文件搜索命令&#x3D;&#x3D;find&#x3D;&#x3D;</p>
+<ul>
+<li><p>find [搜索范围] [匹配条件] </p>
+<p>&#x3D;&#x3D;通配符查询&#x3D;&#x3D;</p>
+</li>
+<li><p>find [搜索范围] -name [关键字]</p>
+<blockquote>
+<p>在特定路径下搜索文件名作为关键字的文件或者目录</p>
+</blockquote>
+</li>
+<li><p>find [搜索范围] -name [关键字]*</p>
+<blockquote>
+<p>这样为带有关键字开头的任何文件都可以被搜索出来</p>
+</blockquote>
+</li>
+<li><p>find [搜索范围] -name * [关键字]*</p>
+<blockquote>
+<p>这样为带有关键字的任何文件都可以被搜索出来</p>
+</blockquote>
+</li>
+<li><p>find [搜索范围] -name [关键字]???</p>
+<blockquote>
+<p>这样搜索的是关键字后带三个字符的 几个问号为几个字符</p>
+</blockquote>
+<p>&#x3D;&#x3D;其他属性查询&#x3D;&#x3D;</p>
+</li>
+<li><p>find [搜索范围] -iname [关键字] 不区分大小写搜索</p>
+<blockquote>
+<p>注意：不能在服务区高峰时候使用查找命令。太占内存资源，搜索的范围路径越小越好，搜索条件越精准越好</p>
+</blockquote>
+<p>&#x3D;&#x3D;所属者查询&#x3D;&#x3D;</p>
+</li>
+<li><p>find [搜索范围] -user [所有者名] </p>
+<blockquote>
+<p>根据所有者查找</p>
+</blockquote>
+</li>
+<li><p>find [搜索范围] -group [所属组名] </p>
+<blockquote>
+<p>根据所属组查找</p>
+</blockquote>
+<p>&#x3D;&#x3D;根据时间查询&#x3D;&#x3D;</p>
+</li>
+<li><p>find [搜索范围] -amin [时间] </p>
+<blockquote>
+<p>查找时间以内被访问过的文件和目录 a：access</p>
+</blockquote>
+</li>
+<li><p>find [搜索范围] -cmin [时间] </p>
+<blockquote>
+<p>查找时间以内被修改过属性的文件和目录 c：change</p>
+</blockquote>
+</li>
+<li><p>find [搜索范围] -mmin [时间] </p>
+<blockquote>
+<p>查找时间以内被修改过内容的文件和目录 m：modift</p>
+</blockquote>
+<blockquote>
+<p>+：超过多长时间 -：多长时间以内</p>
+</blockquote>
+<p>&#x3D;&#x3D;根据数据大小查询&#x3D;&#x3D;</p>
+</li>
+<li><p>find [搜索范围] -size [数据块] 根据文件大小查找</p>
+<blockquote>
+<p>数据块前面加+表示查找大于这个大小的文件，-表示查找小于这个大小的文件，不加表示查找等于这个大小的文件(一般不常用<br>1个数据块&#x3D;512字节&#x3D;0.5K<br>size后接的数据只能为数据块 需要换算，比如需要查找大于100MB的文件<br>100MB&#x3D;102400KB&#x3D;204800<br>find &#x2F;etc -size +204800<br>数据块为Linux存储文件最小单位</p>
+</blockquote>
+</li>
+<li><p>find [搜索范围] -size [数据块] -a -size [数据块]</p>
+<blockquote>
+<p>-a：两个条件同时满足<br>-o：两个条件满足任意一个即可<br>find &#x2F;etc -size +163840 -a -size -204800<br>在&#x2F;etc下查找大于80MB小于100MB的文件</p>
+</blockquote>
+<p>&#x3D;&#x3D;查找特定类型&#x3D;&#x3D;</p>
+</li>
+<li><p>find [搜索范围] -name [关键字] -a -type f</p>
+<blockquote>
+<p>在特定路径下搜索文件名作为关键字的文件<br>-type 根据不同类型查找<br>f：文件<br>d：目录<br>l：软链接</p>
+</blockquote>
+</li>
+<li><p>find [搜索范围] -name [关键字] -exec ls -l {} \ ;</p>
+<blockquote>
+<p>查找到文件之后并且对其进行查看ls操作。<br>-exec：查找到文件之后并且对其进行各种操作 {} \ ;不能丢<br>-ok：用于询问确认 一般在删除操作的时候使用，比如：</p>
+</blockquote>
+</li>
+<li><p>find -user <strong>user_name</strong> -ok rm {} \ ;</p>
+<blockquote>
+<p>删除<strong>user_name</strong>用户的文件 他会挨个询问你是不是确定删除</p>
+</blockquote>
+</li>
+<li><p>find [搜索范围] -inum [i 节点值]</p>
+<blockquote>
+<p>根据 i 节点查询</p>
+</blockquote>
+</li>
+<li><p>find &#x2F;etc -inum 12345 -exec rm {} \ ;</p>
+<blockquote>
+<p>删除这个i节点文件 非常方便。也可以用来查询一个文件的硬链接</p>
+</blockquote>
+</li>
+<li><p>find &#x2F;etc inum 12345 -exec ls -l {} \ ;</p>
+<blockquote>
+<p>因为硬链接和文件肯定在同一个分区，并且i节点一样</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>文件搜索命令&#x3D;&#x3D;locate&#x3D;&#x3D;</p>
+<ul>
+<li><p>locate [文件名]</p>
+<blockquote>
+<p>在文件资料库中查找 速度更快</p>
+</blockquote>
+<p>locate -i 不区分大小写查找</p>
+<p>updatedb 更新文件资料库 因为locate并不是实时的</p>
+<blockquote>
+<p>(如果存放的文件在&#x2F;tmp 临时文件存放处下面 locate就找不到，文件资料库不存储临时文件内容)</p>
+</blockquote>
+</li>
+<li><p>which 查找命令存放位置，可以看到命令可以使用的使用者是谁，也可以查看命令别名 which rm 会显示 alias rm&#x3D;’rm -i’</p>
+</li>
+</ul>
+<blockquote>
+<p>我们所使用的rm只不过是别名 不是真正的rm命令，其实是rm -i命令，所以才会询问是否真的删除，真正的rm是不会询问的，比如：<br>&#x2F;bin&#x2F;rm &#x2F;tmp&#x2F;yangyang 文件直接删除不会询问是否删除 相当于加了 -f</p>
+</blockquote>
+<ul>
+<li><p>whereis 也可以找到命令的绝对路径，还可以找到查询命令的帮助信息文档所在位置</p>
+</li>
+<li><p>grep 在文件内查询字符串或者关键字列出来<br>grep -i 不区分大小写查找<br>grep -v 排除指定字符串</p>
+<blockquote>
+<p>比如： grep -v ^# &#x2F;etc&#x2F;inittab<br>查找排除#开头的注释行文件信息<br>^代表行首  ,  文件中#开头的行 为配置文件信息,脚本信息。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="用户管理命令"><a href="#用户管理命令" class="headerlink" title="用户管理命令"></a>用户管理命令</h2><p><strong>用户和用户组</strong></p>
+<p>创建用户时所在组称<strong>初始组&#x2F;主组</strong>，其后可以将其添加到其他组中，这些组称<strong>附加组</strong>，此外，还可以更换用户的主组。</p>
+<p>root 用户 uid 0</p>
+<p>系统用户 uid 1 - 1000</p>
+<p>普通用户 uid 1001+</p>
+<p>用户和用户组的配置文件</p>
+<ul>
+<li>&#x2F;etc&#x2F;passwd</li>
+<li>&#x2F;etc&#x2F;group</li>
+</ul>
+<p>创建用户&#x2F;组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">useradd &lt;unm&gt;</span><br><span class="line">groupadd &lt;gnm&gt;</span><br></pre></td></tr></table></figure>
+
+<p> 修改用户&#x2F;组</p>
+<p>修改信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">usermod [-u | -d | -g] &lt;unm&gt; # uid 主目录 主组</span><br><span class="line">groupmod [-n | -g | -o] &lt;gnm&gt; # 名称 gid 允许重复的gid</span><br></pre></td></tr></table></figure>
+
+<p>修改密码&#x2F;管理用户组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">passwd</span><br><span class="line">gpasswd [-A | -a | -d] # 指定管理员 添加用户 删除用户</span><br></pre></td></tr></table></figure>
+
+<p> 删除用户&#x2F;组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">userdel &lt;unm&gt;</span><br><span class="line">groupdel &lt;gnm&gt;</span><br></pre></td></tr></table></figure>
+
+<p>切换用户</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su &lt;unm&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><code>who</code> 查看登陆用户信息</p>
+<ol>
+<li>第一列 登陆用户名</li>
+<li>第二列 登陆终端 tty表示本地终端 pts表示远程登陆终端</li>
+<li>第三列 登陆时间</li>
+<li>第四列 登陆主机的IP地址 如果没有写表示本机登陆</li>
+</ol>
+<p><code>w</code> 查看登陆用户详细信息</p>
+<ul>
+<li><p><strong>第一行显示</strong><br>17:04:55 up 22 days, 21:32, | 2 users,| load average: 0.02, 0.02, 0.05</p>
+<ol>
+<li><p><code>17:04:55 </code>表示当前时间</p>
+</li>
+<li><p><code> up 22 days, 21:32</code> 表示服务区系统连续运行时间没有重启或者关机，衡量服务区稳定性</p>
+</li>
+<li><p><code>2 users</code> 表示当前总共有多少个用户登陆</p>
+</li>
+<li><p><code>load average: 0.02, 0.02, 0.05</code> 表示负载均衡指数，分别记录了过去一分钟，五分钟，十五分钟系统的负载情况，加起来除以三就是平均负载指数，系统的负载情况主要是指 CPU和内存的负载情况，数字大表示负载严重。</p>
+<blockquote>
+<p>uptime 命令也可以显示此项数据</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><p><strong>第二行显示</strong><br>USER TTY FROM LOGIN@ IDLE JCPU PCPU WHAT</p>
+<ol>
+<li><code>IDLE </code>表示用户登陆过来后空闲多久</li>
+<li><code>PCPU</code> 表示用户登陆后执行的操作占用的CPU的时间 CPU时间</li>
+<li><code>JCPU </code>表示累计占用的CPU时间</li>
+<li><code>WHAT </code>表示执行的操作</li>
+</ol>
+</li>
+</ul>
+<p> <strong>who 命令</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">root</span></span><br><span class="line">who am i</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">username pts/0        2020-04-21 14:41 (:1.0)</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">root</span></span><br><span class="line">who mom likes</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">username pts/0        2020-04-21 14:41 (:1.0)</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">pre user</span></span><br><span class="line">whoami</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">username</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">root</span></span><br><span class="line">who -m</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">username pts/0        2020-04-21 14:41 (:1.0)</span></span><br></pre></td></tr></table></figure>
+
+<p><code>pts/{num}</code>中的<code>pts</code>表示伪终端，<code>{num}</code>表示用户打开的伪终端序号。</p>
+<p>相对来说，<code>dev/tty</code>是真终端，<code>pts</code>是在某个真终端下的伪终端，可以存在多个。</p>
+<table>
+<thead>
+<tr>
+<th align="left">param</th>
+<th align="left">description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>-a</code></td>
+<td align="left">打印能打印的全部</td>
+</tr>
+<tr>
+<td align="left"><code>-d</code></td>
+<td align="left">打印死掉的进程</td>
+</tr>
+<tr>
+<td align="left"><code>-m</code></td>
+<td align="left">同<code>am i</code>，<code>mom likes</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="文件打包"><a href="#文件打包" class="headerlink" title="文件打包"></a>文件打包</h2><p><strong>打包和压缩的区别</strong></p>
+<blockquote>
+<ul>
+<li><p>打包  :  将多个文件和目录集中存储在一个文件中。</p>
+</li>
+<li><p>压缩  :  利用算法对文件进行处理，从而达到缩减占用磁盘空间的目的。</p>
+</li>
+</ul>
+<p>Linux下，常用打包命令有2个，分别是tar和dd;</p>
+<p>常用的压缩命令有很多，比如gzip、zip、bzip2等。</p>
+</blockquote>
+<p><strong>打包</strong></p>
+<p>打包，也称为归档(archive)，指的是一个文件或目录的集合，而这个集合被存储在一个文件中。</p>
+<blockquote>
+<p>归档文件没有经过压缩，因此，它占用的空间是其中所有文件和目录的总和。通常，归档总是会和系统备份联系在一起。</p>
+</blockquote>
+<p><strong>压缩</strong></p>
+<p>压缩是指利用算法将文件进行处理，已达到保留最大文件信息，而让文件体积变小的目的。</p>
+<blockquote>
+<p>其基本原理为，通过查找文件内的重复字节，建立一个相同字节的词典文件，并用一个代码表示。</p>
+</blockquote>
+<h3 id="打包工具"><a href="#打包工具" class="headerlink" title="打包工具"></a>打包工具</h3><h4 id="tar打包"><a href="#tar打包" class="headerlink" title="tar打包"></a>tar打包</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -cf &#123;pack&#125; &#123;dir&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>必选参数：</strong></p>
+<p><code>-f</code> :使用档案名字，该参数作为最后一个参数，后面只能接档案名。</p>
+<blockquote>
+<p>-f   是执行tar过程中需要携带的</p>
+</blockquote>
+<p><strong>可选参数：</strong></p>
+<ul>
+<li><p><code>-p</code>，保留文件属性（权限等）。</p>
+</li>
+<li><p><code>-h</code>，追踪链接并归档。</p>
+</li>
+<li><p><code>-P</code>保留绝对路径符，即路径前的<code>/</code>。若保留，则解压时会按照绝对路径进行解压。</p>
+<blockquote>
+<p>解压时也可通过<code>-P</code>参数指定是否通过绝对路径解压。不过，对于根本就不是绝对路径的文件，不会按照绝对路径解压。</p>
+</blockquote>
+</li>
+<li><p><code>-c</code>: 建立压缩档案</p>
+</li>
+<li><p><code>-x</code>：解压（会根据压缩格式自动进行识别）</p>
+</li>
+<li><p><code>-t</code>：查看内容</p>
+</li>
+<li><p><code>-r</code>：向压缩归档文件末尾追加文件</p>
+</li>
+<li><p><code>-u</code>：更新原压缩包中的文件</p>
+</li>
+</ul>
+<blockquote>
+<p>这些选项作为 tar 使用过程中根据执行的操作进行选择，必须要有其一。</p>
+</blockquote>
+<p>注意：默认尽可能地按照相对路径解压，防止意外覆盖文件。</p>
+<p> <strong>tar解包：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xf &#123;pack&#125; -C &#123;dir&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>-x</code>表示解包<code>-C {dir}</code>指定解包目录。</p>
+</blockquote>
+<ul>
+<li>可选参数<code>-P</code>保留绝对路径符，对于不是绝对路径的文件，不会按照绝对路径解压。</li>
+</ul>
+<p><strong>tar使用压缩工具：</strong></p>
+<p>压缩时只需要加上对应参数即可，例如<code>gzip</code>对应<code>-z</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zcf &#123;pack&#125; &#123;dir&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解包时统样：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxf &#123;pack&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">压缩文件格式</th>
+<th align="left">参数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>*.tar.gz</code></td>
+<td align="left"><code>-z</code></td>
+</tr>
+<tr>
+<td align="left"><code>*.tar.xz</code></td>
+<td align="left"><code>-J</code></td>
+</tr>
+<tr>
+<td align="left"><code>*tar.bz2</code></td>
+<td align="left"><code>-j</code></td>
+</tr>
+</tbody></table>
+<h3 id="压缩工具"><a href="#压缩工具" class="headerlink" title="压缩工具"></a>压缩工具</h3><p>下面为压缩或解压档案时的可选参数。</p>
+<ul>
+<li><p><code>-z</code>：有 gzip 属性的压缩及解压</p>
+</li>
+<li><p><code>-j</code>：有 bz2 属性的压缩及解压</p>
+</li>
+<li><p><code>-Z</code>：有compress属性的压缩及解压</p>
+</li>
+<li><p><code>-v</code>：显示所有打包及压缩解压过程</p>
+</li>
+<li><p><code>-O</code>：将文件解开到标准输出</p>
+</li>
+</ul>
+<h4 id="zip-压缩"><a href="#zip-压缩" class="headerlink" title="zip 压缩"></a>zip 压缩</h4><p> <strong>zip打包：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zip -r -q -9 -o &#123;pack&#125; &#123;dir&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>-r</code>表示递归打包子目录，<code>-q</code>是静默打包，不输出信息，<code>-9</code>是压缩质量，最高 9 最低 1，<code>-o</code>后紧跟输出的文件。</p>
+</blockquote>
+<p>另外还可以加一个参数<code>-e</code>进行加密打包。</p>
+<p>对于跨平台的换行问题，可以通过<code>-l</code>参数在打包的同时进行转换，将<code>LF</code>转换为<code>CRLF</code>。</p>
+<p><strong>unzip解包：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unzip -q &#123;pack&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以使用<code>-d {dir}</code>指定解压目录：<code>unzip -q {pack} -d {dir}</code>。</p>
+<p><code>-O</code>可以指定编码，例如<code>-O GBK</code>。</p>
+<p><code>unzip</code>可以用来查看压缩包信息，通过<code>-l</code>参数：<code>unzip -l {pack}</code>。</p>
+<h4 id="gzip压缩"><a href="#gzip压缩" class="headerlink" title="gzip压缩"></a>gzip压缩</h4><ul>
+<li><strong>gzip打包</strong></li>
+</ul>
+<p>gzip [文件名] 压缩文件 只能压缩文件不能压缩目录，而且不保留原文件</p>
+<blockquote>
+<p>压缩后格式为：.gz</p>
+</blockquote>
+<ul>
+<li><strong>gzip解包</strong></li>
+</ul>
+<p>gunzip [压缩包名] 解压缩.gz文件</p>
+<p>gzip -d [压缩包名] 也是一样的作用，解压缩.gz文件</p>
+<h4 id="bzip压缩"><a href="#bzip压缩" class="headerlink" title="bzip压缩"></a>bzip压缩</h4><p><strong>bzip 打包:</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bzip2 [选项] [文件名] 压缩文件</span><br></pre></td></tr></table></figure>
+
+<p><strong>大型文件一般用这个压缩</strong></p>
+<blockquote>
+<p>例子：<br>bzip2 -k Japan</p>
+</blockquote>
+<ul>
+<li><p>-k：保留原文件。如果不需保留可去掉。</p>
+</li>
+<li><p>可以与tar结合使用</p>
+<blockquote>
+<p>tar -cjfv Japan.tar.bz2 Japan</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>Bunzip 解包:</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bunzip2 [选项] [压缩文件名] 解压文件</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>-k：保留压缩包</p>
+</li>
+<li><p>与tar结合使用 :</p>
+<blockquote>
+<p>tar -xjfv Japan.tar.bz2 Japan</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="关机命令"><a href="#关机命令" class="headerlink" title="关机命令"></a>关机命令</h2><p><strong>关机&#x2F;重启</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">shutdown [-r | -h] &lt;time&gt;   #shutdown [选项] 时间</span><br><span class="line"></span><br><span class="line">shutdown -r now # 重启</span><br><span class="line">reboot</span><br><span class="line"></span><br><span class="line">shutdown -h now # 关机</span><br><span class="line">poweroff</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">时间选项里可以填具体时间比如：</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">now 现在关机</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">20:30 八点半关机</span></span><br><span class="line"></span><br><span class="line">shutdown -r +5 # 5min</span><br><span class="line">shutdown -h +5 # 5min</span><br><span class="line"></span><br><span class="line">shutdown -r 5:00 # 5:00</span><br><span class="line">shutdown -h 5:00 # 5:00</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-c：取消前一个关机命令</li>
+<li>-h：关机</li>
+<li>-r：重启</li>
+</ul>
+<blockquote>
+<p>在服务器上重启需要谨慎，需要先停掉服务，否则物理内存会坏<br>而且远程服务器只能重启，关机后需要管理员手动开机</p>
+</blockquote>
+<p><strong>其他关机命令：</strong></p>
+<ul>
+<li>halt</li>
+<li>poweroff 相当于直接断电</li>
+<li>init 0</li>
+</ul>
+<blockquote>
+<p>推荐使用shutdown关机，会保存正在运行的服务</p>
+</blockquote>
+<p><strong>其他重启命令：</strong><br>reboot</p>
+<h2 id="挂载命令"><a href="#挂载命令" class="headerlink" title="挂载命令"></a>挂载命令</h2><p>如果想要访问Linux中的根目录以外的文件，需要将它“关联”到根目录下的某一个目录来实现，这种关联操作就叫做“挂载”，这个目录就是“挂载点”，解除次关联关系的过程就是“卸载”。</p>
+<p>“挂载点”的目录有3个要求：</p>
+<p>（1）可以用mkdir命令新建目录（目录事先存在）。</p>
+<p>（2）挂载点目录不可被其他进程使用到。</p>
+<p>（3）挂载点下原有文件被隐藏。</p>
+<blockquote>
+<p>知乎：挂载可以理解为插乐高积木（我闺女最近很爱玩这个；），首先系统一定要先有一个根文件系统并挂载在”&#x2F;“上，你可以理解为你用乐高做了一个机器人，在系统启动后这就是根文件系统了。之后你想再挂载新文件系统，就好像你又用乐高插出一把剑（一个新的独立文件系统），你可以把剑插在机器人任何能插的地方，比如右手上。剑是独立的，你改变剑的形状并不影响机器人本身，将来你不想用这把剑了可以直接拆下来（卸载）收好，也可以再插（挂载）一把枪（另一个文件系统）上去。</p>
+<p>文件系统挂载时有覆盖（&#x2F;遮盖）关系，如果你所要挂载的挂载点（&#x2F;目录）下面有文件或已挂载的文件系统，那么新挂载的文件系统会遮盖其下面的内容。这点和乐高不同，比如你又做了一个新的机器人右手臂，你得自己把原右手臂连同手上的东西拆下来，再插上新作的。而实际的文件系统挂载不需要先卸载，新文件系统（右手臂）会直接从挂载点（右臂接口）开始覆盖（&#x2F;隐藏）挂载点（接口）以下所有的原内容。而卸载后原内容又会显现出来。</p>
+<p>来自用户：醉卧沙场</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount [-t 文件系统] 设备文件名 挂载点</span><br></pre></td></tr></table></figure>
+
+<p>mount 设备文件名&#x2F;挂载点 卸载光盘，设备文件名和挂载点两者任选其一</p>
+<ol>
+<li><p>放入光盘 :  虚拟机中放入，或者服务器下载ios文件</p>
+</li>
+<li><p>创建一个空目录，设为挂载点</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /media/cdrom /media </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>输入命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -t iso9660 /dev/sr0 /media/cdrom</span><br></pre></td></tr></table></figure>
+<p>设备文件名默认就是&#x2F;dev&#x2F;sr0，文件系统为iso9660 它是国际标准的cd文件格式，它告诉mount命令，我要挂载的是一个标准的cd。需要死记！！！</p>
+<blockquote>
+<p>&#x2F;dev&#x2F;cdrom也可以写 &#x2F;dev&#x2F;sr0<br>&#x2F;dev&#x2F;cdrom是sr0的软链接。</p>
+</blockquote>
+</li>
+<li><p>进入挂载后的盘符</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /media/cdrom</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>卸载光盘</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd  #先退出/media/cdrom</span><br><span class="line">umount /dev/sr0  #再输入命令：umount /dev/sr0</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：如果之前挂载过其他盘，需要卸载之后才能挂载，输入命令：</p>
+<p><code>umount /dev/sr0</code></p>
+</blockquote>
+</li>
+</ol>
+<h3 id="网络命令"><a href="#网络命令" class="headerlink" title="网络命令"></a>网络命令</h3><p>给在线用户发信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">write &lt;用户名&gt;</span><br></pre></td></tr></table></figure>
+
+<p>按Ctrl+D保存结束 只能给在线用户发 可以用w查询用户在线情况 不在线发不出去。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wall [信息] 发广播信息 </span><br></pre></td></tr></table></figure>
+
+<p>群发所有在线用户</p>
+<ul>
+<li><p><code>ping [IP地址] 测试网络连通性</code></p>
+</li>
+<li><p><code>ping -c</code> 指定发送次数</p>
+</li>
+<li><p><code>ifconfig</code> 查看网卡信息</p>
+<blockquote>
+<p>主要功能是查询当前本机IP地址</p>
+</blockquote>
+</li>
+<li><p><code>mail &lt;用户名&gt;</code>给不在线的用户发送邮件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mail &lt;friend_name&gt;</span><br><span class="line"></span><br><span class="line">Subject &lt;headline&gt; #输入标题</span><br><span class="line">&lt;content&gt;#正文</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Ctrl D 保存结束发送</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+</li>
+<li><p><code>h</code> 键查看邮箱列表</p>
+</li>
+<li><p><code>d [n]</code> 删除第n封邮件</p>
+</li>
+<li><p><code>q</code> 退出</p>
+</li>
+<li><p>last 列出目前与过去登陆系统的用户信息</p>
+</li>
+<li><p>lastlog 检查某特定用户上次登陆的时间</p>
+</li>
+<li><p>lastlog -u [uID] 检查uID用户上次登陆的时间</p>
+</li>
+<li><p>traceroute 显示数据包到主机间的路径<br>这里CentOS7用户也会出现traceroute命令不能使用的问题，直接下载traceroute就好了<br>yum install -y traceroute 安装</p>
+</li>
+<li><p>traceroute [网站网址] 可以检查网络哪个节点出现问题</p>
+</li>
+<li><p>netstat [选项] 显示网络相关信息</p>
+<ol>
+<li>-t TCP协议：传输控制协议</li>
+<li>-u UDP协议：用户数据报</li>
+<li>-l 监听</li>
+<li>-r 路由：网关</li>
+<li>-n 显示IP地址和端口号</li>
+</ol>
+</li>
+<li><p>netstat -tlun ：查询本机监听的端口</p>
+</li>
+<li><p>netstat -an ：查看本机所有的网络连接</p>
+</li>
+<li><p>netstat -rn ：查看本机路由（网关）</p>
+</li>
+<li><p>setup 配置网络 （redhat专有命令 ,在其他版本不存在）</p>
+<blockquote>
+<p>永久生效 , 和刚开始介绍的ifconfig命令不一样。<br>CentOS7使用 nmtui命令代替setup，不过是在虚拟机中调试</p>
+</blockquote>
+</li>
+</ul>
+</article>
+<div class="article-footer">
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/linux/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/">环境变量</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/linux/%E6%9D%82%E9%A1%B9/">杂项</a></div></section></div>
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Fancy</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+<widget class="widget-wrapper ghrepo"><div class="widget-body"><div class="items data-service ds-ghinfo" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note"><a class="repo" href="https://github.com/Back2Zer0/md-CS_Note" target="_blank" rel="external nofollow noopener noreferrer"><div class="repo-name flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>Back2Zer0/md-CS_Note</div><div class="repo-desc"><span type="text" id="description">&nbsp;</span></div><div class="grid"><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z"></path></svg><span type="text" id="stargazers_count"></span></div><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg><span type="text" id="forks_count"></span></div><div class="flex-row data-service ds-ghinfo" index="0" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note/tags"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z"></path></svg><span type="text" id="latest-tag-name">0</span></div></div></a></div></div></widget>
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux-%E5%9F%BA%E6%9C%AC"><span class="toc-text">Linux 基本</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%88%86%E5%8C%BA"><span class="toc-text">系统分区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86"><span class="toc-text">系统管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E7%A1%AC%E9%93%BE%E6%8E%A5"><span class="toc-text">软硬链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E5%A4%84%E7%90%86"><span class="toc-text">权限处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E8%A1%A8%E7%A4%BA"><span class="toc-text">权限表示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%9D%83%E9%99%90"><span class="toc-text">修改权限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%A4%8D%E5%88%B6%E6%9D%83%E9%99%90%E8%AE%BE%E5%AE%9A%EF%BC%9A"><span class="toc-text">1.复制权限设定：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%AD%97%E7%AC%A6%E6%96%B9%E5%BC%8F%E8%AE%BE%E5%AE%9A%EF%BC%9A"><span class="toc-text">2.字符方式设定：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%95%B0%E5%AD%97%E6%96%B9%E5%BC%8F%E8%AE%BE%E5%AE%9A%E6%9D%83%E9%99%90%EF%BC%9A"><span class="toc-text">3.数字方式设定权限：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86"><span class="toc-text">文件处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E5%A4%84%E7%90%86"><span class="toc-text">目录处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5"><span class="toc-text">增删改查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4"><span class="toc-text">用户管理命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%89%93%E5%8C%85"><span class="toc-text">文件打包</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%93%E5%8C%85%E5%B7%A5%E5%85%B7"><span class="toc-text">打包工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tar%E6%89%93%E5%8C%85"><span class="toc-text">tar打包</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E5%B7%A5%E5%85%B7"><span class="toc-text">压缩工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#zip-%E5%8E%8B%E7%BC%A9"><span class="toc-text">zip 压缩</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#gzip%E5%8E%8B%E7%BC%A9"><span class="toc-text">gzip压缩</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bzip%E5%8E%8B%E7%BC%A9"><span class="toc-text">bzip压缩</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E6%9C%BA%E5%91%BD%E4%BB%A4"><span class="toc-text">关机命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%82%E8%BD%BD%E5%91%BD%E4%BB%A4"><span class="toc-text">挂载命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%91%BD%E4%BB%A4"><span class="toc-text">网络命令</span></a></li></ol></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>

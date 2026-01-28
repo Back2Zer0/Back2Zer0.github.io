@@ -1,0 +1,1100 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>NOTE：程序是怎么跑起来的 - Fancy 的小宇宙</title>
+
+  
+    <meta name="description" content="前言一个小原理 CPU在时钟信号的控制下解释、执行内存中存储的程序，按照程序中的指令从内存或I&#x2F;O中把数据输入到CPU中，在CPU内部进行运算，再把运算结果输出到内存或I&#x2F;O中。无论是小型微型计算机，还是个人的高性能计算机，原理都基本相同。 计算机的三个根本基础 &#x3D;&#x3D;计算机是执行输入、运算、输出的机器&#x3D;&#x3D;。 计算机的硬件由大量集成电路">
+<meta property="og:type" content="website">
+<meta property="og:title" content="程序是怎么跑起来的">
+<meta property="og:url" content="https://back2zer0.github.io/wiki/NOTE/%E7%A8%8B%E5%BA%8F%E6%98%AF%E6%80%8E%E4%B9%88%E8%B7%91%E8%B5%B7%E6%9D%A5%E7%9A%84/">
+<meta property="og:site_name" content="Fancy 的小宇宙">
+<meta property="og:description" content="前言一个小原理 CPU在时钟信号的控制下解释、执行内存中存储的程序，按照程序中的指令从内存或I&#x2F;O中把数据输入到CPU中，在CPU内部进行运算，再把运算结果输出到内存或I&#x2F;O中。无论是小型微型计算机，还是个人的高性能计算机，原理都基本相同。 计算机的三个根本基础 &#x3D;&#x3D;计算机是执行输入、运算、输出的机器&#x3D;&#x3D;。 计算机的硬件由大量集成电路">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+<meta property="article:published_time" content="2026-01-28T02:30:05.750Z">
+<meta property="article:modified_time" content="2026-01-28T02:30:05.750Z">
+<meta property="article:author" content="Fancy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+    <link rel="shortcut icon" href="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Website","@id":"https://back2zer0.github.io/wiki/NOTE/%E7%A8%8B%E5%BA%8F%E6%98%AF%E6%80%8E%E4%B9%88%E8%B7%91%E8%B5%B7%E6%9D%A5%E7%9A%84/","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"name":"程序是怎么跑起来的","description":"\n\n前言一个小原理\nCPU在时钟信号的控制下解释、执行内存中存储的程序，按照程序中的指令从内存或I&#x2F;O中把数据输入到CPU中，在CPU内部进行运算，再把运算结果输出到内存或I&#x2F;O中。无论是小型微型计算机，还是个人的高性能计算机，原理都基本相同。\n计算机的三个根本基础\n&#x3D;&#x3D;计算机是执行输入、运算、输出的机器&#x3D;&#x3D;。\n计算机的硬件由大量集...","url":"https://back2zer0.github.io/wiki/NOTE/%E7%A8%8B%E5%BA%8F%E6%98%AF%E6%80%8E%E4%B9%88%E8%B7%91%E8%B5%B7%E6%9D%A5%E7%9A%84/"}</script>
+  
+</head>
+<body>
+
+
+
+<div class="l_body content" id="start" layout="page" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="https://picgo-1398775008.cos.ap-guangzhou.myqcloud.com/beaker-svgrepo-com.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/wiki/NOTE/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B03b1b"><div class="main">NOTE</div><div class="sub normal cap">为学日益，为道日损</div><div class="sub hover cap" style="opacity:0"> fancy</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item" title="认知" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item active" title="技术" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="生活" href="/life/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="其他平台" href="/social/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/" placeholder="在技术专栏中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<widget class="widget-wrapper doc-tree post-list"><div class="widget-body fs14"><a class="link" href="/wiki/NOTE/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B03b1b/#start"><span class="toc-text">线性代数3b1b</span></a><a class="link" href="/wiki/NOTE/Crash%20Course%20CS/"><span class="toc-text">Crash Course CS</span></a><a class="link active" href="/wiki/NOTE/%E7%A8%8B%E5%BA%8F%E6%98%AF%E6%80%8E%E4%B9%88%E8%B7%91%E8%B5%B7%E6%9D%A5%E7%9A%84/"><span class="toc-text">程序是怎么跑起来的</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a><a class="link" href="/wiki/NOTE/%E9%AB%98%E6%95%B0%E5%92%8C408%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3/"><span class="toc-text">高数和408的一些理解</span></a><a class="link" href="/wiki/NOTE/%E8%8B%B1%E8%AF%AD%E9%9A%8F%E7%AC%94/"><span class="toc-text">英语随笔</span></a><a class="link" href="/wiki/NOTE/script/"><span class="toc-text">script</span></a><a class="link" href="/wiki/NOTE/Vim%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><span class="toc-text">Vim 学习笔记</span></a></div></widget>
+
+<widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：看闲书</span></div><div class="widget-body"><a class="item wiki" href="/wiki/algorithm/%E8%83%8C%E5%8C%85DP/"><span class="title">那段学算法的日子</span><span class="excerpt">AcWing和Leetcode，还有一些比赛题目。</span></a><a class="item wiki" href="/wiki/cpp/effective%20cpp/"><span class="title">C++</span><span class="excerpt">主要来源是AcWing和Leetcode，还有一些比赛题目。</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/NOTE/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B03b1b/">NOTE</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2026-01-28T02:30:05.750Z">2026-01-28</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>程序是怎么跑起来的</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content">
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><strong>一个小原理</strong></p>
+<p>CPU在时钟信号的控制下解释、执行内存中存储的程序，按照程序中的指令从内存或I&#x2F;O中把数据输入到CPU中，在CPU内部进行运算，再把运算结果输出到内存或I&#x2F;O中。<br>无论是小型微型<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E8%AE%A1%E7%AE%97%E6%9C%BA&spm=1001.2101.3001.7020">计算机</a>，还是个人的高性能计算机，原理都基本相同。</p>
+<h2 id="计算机的三个根本基础"><a href="#计算机的三个根本基础" class="headerlink" title="计算机的三个根本基础"></a>计算机的三个根本基础</h2><ol>
+<li><p>&#x3D;&#x3D;计算机是执行输入、运算、输出的机器&#x3D;&#x3D;。</p>
+<p>计算机的硬件由大量<strong>集成电路 IC(intergrated Circuit)</strong> 组成。每块 IC 上都有很多<strong>引脚</strong>。</p>
+<p>无论多么复杂的程序，最终都是由一个个 “输入、运算、输出” 组合出的流程单位实现的。</p>
+<blockquote>
+<p>三者必须成套出现，缺一不可。</p>
+</blockquote>
+</li>
+<li><p>&#x3D;&#x3D;程序是指令和数据的集合&#x3D;&#x3D;</p>
+<p>指令：控制计算机进行<strong>输入、运算、输出</strong>的<strong>命令</strong>。</p>
+<p>数据：分两类。一类作为指令执行对象的<strong>输入数据</strong>，一类是从指令的执行结果得到的输出数据。</p>
+</li>
+<li><p>&#x3D;&#x3D;计算机的处理方式和人们的思维习惯不同&#x3D;&#x3D;</p>
+<p>“汉诺塔”问题</p>
+</li>
+</ol>
+<blockquote>
+<p>硬件和软件，好比小霸王游戏机和插入游戏机的游戏卡一样。</p>
+<p>也可以比作人的肉体和精神。缺一不可，相辅相成。</p>
+</blockquote>
+<p><img src="C:\Users\fancy\Desktop\018a00a442d1f8798f738be5020c5da.jpg" alt="018a00a442d1f8798f738be5020c5da"></p>
+<hr>
+<p><strong>应用</strong></p>
+<p>根据三大原则理解一项“不好理解”的话：</p>
+<blockquote>
+<p>2020年2月14日 微软公司率先提出了作为新一代互联网平台的*.NET*技术。作为.NET核心的XML Web服务使用通用技术SOAP、XML,促使企业间的计算机协同工作。 </p>
+</blockquote>
+<p>三大原则的理解：</p>
+<p>计算机只是个执行<strong>程序</strong>的机器，程序是<strong>指令</strong>和<strong>数据</strong>的集合。</p>
+<ul>
+<li><p>指令：SOAP是关于调用指令的规范，</p>
+</li>
+<li><p>数据：XML是定义数据格式的规范，</p>
+</li>
+<li><p>更方便执行程序：部署在其他计算机上能执行某种运算的程序叫做 XML Web 服务。</p>
+</li>
+</ul>
+<h2 id="TCP-IP-网络的简单理解"><a href="#TCP-IP-网络的简单理解" class="headerlink" title="TCP&#x2F;IP 网络的简单理解"></a>TCP&#x2F;IP 网络的简单理解</h2><p><strong>TCP&#x2F;IP</strong>：传输控制协议和网际协议：Transmission Control Protocol&#x2F;Internet Protocol。</p>
+<p><strong>LAN</strong> ：Local Area Network （局域网）把办公室内的小规模网络称作LAN；</p>
+<p><strong>WAN</strong>：Wide Area Network   (广域网)    把互联网一样联结企业和企业的大规模网络叫做WAN。</p>
+<blockquote>
+<p>以家用路由器为例，WAN口连光猫，从而连接到网络。LAN口连电脑之类的电子设备，即有线网络。</p>
+</blockquote>
+<p><strong>MAC</strong> : Media Access Control：标识网卡的编号。</p>
+<blockquote>
+<p>几乎所有网卡上市前都分配了一个不可变更的 MAC 地址。</p>
+</blockquote>
+<p><strong>网卡</strong> NIC Network Interface Card ：每一块网卡的ROM（Read Only Memory 只读存储器）里，都预先烧录了唯一的MAC地址。</p>
+<blockquote>
+<p>由制造厂商的编号和产品编号两部分组成，所以独一无二。</p>
+</blockquote>
+<p><strong>服务器</strong> Server ：服务的提供者。</p>
+<p><strong>客户端</strong> Client ：服务的利用者。</p>
+<blockquote>
+<p>在服务器上运行的程序为客户端提供服务。</p>
+</blockquote>
+<p><strong>集线器</strong> Hub：把各台计算机的网线相互连接在一起的集线设备。</p>
+<p><strong>路由器</strong> Router：把局部区域内的网络和互联网连接起来的设备。</p>
+<blockquote>
+<p>路由器则负责把LAN接入到WAN上：一端连接互联网提供商的路由器，服务商继续将他们的路由器连接到其他地方，直到汇入互联网主干线缆上。</p>
+</blockquote>
+<p>以企业内的LAN为一个基本单位，通过服务提供商的路由器把他们和其他企业的LAN互连起来，共同组成互联网。</p>
+<p><img src="C:\Users\fancy\Desktop\177727e574b19c9156094617375c0df.jpg" alt="177727e574b19c9156094617375c0df"></p>
+<p><strong>光猫</strong>  Optical Network Unit，ONU：通常由网络服务提供商提供给用户。它充当了将光纤信号转换为电信号的桥梁，以便我们可以连接到宽带互联网。</p>
+<blockquote>
+<p>光猫通常与光纤入户（FTTH）连接，并将光信号转换为以太网信号，以供我们使用。</p>
+</blockquote>
+<p><img src="C:\Users\fancy\Desktop\8cf4c070f1a4c3b2ee858e44f727ad6.jpg" alt="8cf4c070f1a4c3b2ee858e44f727ad6"></p>
+<p><strong>IP 地址</strong>：MAC地址花样繁多，查找效率太慢。因此必须对计算机进行分组管理，除了硬件上的MAC地址，还需要设定一个软件编号，即IP 地址。</p>
+<blockquote>
+<p>设定好 IP 地址的计算机为 ”主机(Host)“ 。路由器也是计算机，也有IP地址。IP地址的值也是独一无二的。</p>
+<p>IP 地址中，把表示分组（LAN）的部分叫做”网络地址“，把表示计算机的部分叫做“主机地址”。</p>
+</blockquote>
+<p>**子网掩码：**标识出 32 byte 的IP地址里，哪一位到哪一位是网络地址，哪一位到哪一位是主机地址。 </p>
+<blockquote>
+<p>转换成二进制后，值为1的则是网络地址，值为0的即主机地址。</p>
+</blockquote>
+<p><strong>DHCP</strong> ：Dynamic Host Configuration Protocol（动态主机设置协议）</p>
+<p>记录着可以被分配到 LAN 内计算机的 IP 地址范围和子网掩码的值</p>
+<p><strong>默认网关</strong> Gateway：通常把路由器 IP 地址设置在网关上。可以说 路由器就是从 LAN 通往互联网世界的入口（网关）。</p>
+<blockquote>
+<p>路由器的 IP 地址也可以从 DHCP 服务器获取。</p>
+</blockquote>
+<hr>
+<h3 id="向路由器更进一步"><a href="#向路由器更进一步" class="headerlink" title="向路由器更进一步"></a>向路由器更进一步</h3><p><strong>路由器是决定数据传输路径的设备。</strong></p>
+<p>分组管理下，IP 地址中的网络地址部分能代表一个 LAN 中的全体计算机。</p>
+<p>互联网则是路由器把多个LAN连接起来的大网。</p>
+<blockquote>
+<p>路由器的工作原理是查看附加到数据上的<strong>IP地址中的网络地址部分</strong>。</p>
+<p>不属于LAN内计算机的ip地址，会被附加到数据的发送目的地字段上。这会被LAN内计算机忽略，但不会被路由器忽略。</p>
+<p>只要不是发给LAN内的，就发送到LAN外。</p>
+</blockquote>
+<p>分布在世界各地的 LAN 中的路由器交换着信息。这种信息叫做“路由表”，用来记录数据应该转发到哪里。</p>
+<blockquote>
+<p>路由器的路由表中只会记录通往相邻路由器的路径，而不会记录世界上所有传输路径。</p>
+</blockquote>
+<p><img src="C:\Users\fancy\Desktop\a018a6913c2100c23a03ce9515922eb.jpg" alt="a018a6913c2100c23a03ce9515922eb"></p>
+<p><strong>几条命令：</strong></p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">route <span class="built_in">print</span> #输出路径</span><br></pre></td></tr></table></figure>
+
+<p>该指令将输出五列：</p>
+<table>
+<thead>
+<tr>
+<th>Network Destination 网络目标</th>
+<th>Netmask 子网掩码</th>
+<th>Gateway</th>
+<th>Interface 接口</th>
+<th>Metric 跃点数（权值）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据发送的目的地</td>
+<td>区分网络地址&#x2F;主机地址</td>
+<td>路由器IP地址</td>
+<td>路由器要转发的目的端口</td>
+<td>路径权重，由算法决定选择传输最优路径</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>如果目的地的IP就在本LAN中，则无需路由器转发，直接到达。</p>
+</blockquote>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tracert &lt;host_name&gt; #追踪路由转发过程,主机名是一个网址/计算机名</span><br></pre></td></tr></table></figure>
+
+<p>可以看到互联网服务商到本计算机LAN内的过程。</p>
+<h3 id="DNS服务器"><a href="#DNS服务器" class="headerlink" title="DNS服务器"></a>DNS服务器</h3><p><strong>DNS</strong> ：Domain Name System 域名系统。</p>
+<p><strong>FQDN</strong> ：Fully Qualified Domain Name 完整限定域名：把主机名和域名结合起来的域名。</p>
+<blockquote>
+<ul>
+<li><p>DNS 如同助记符一样，代替了难以记忆的 IP 地址。DNS 服务器能够自动把 FQDN 解析为 IP 地址（此过程为域名解析）。</p>
+</li>
+<li><p>DNS 服务器通常部署在各个 LAN 中，里面记录着 FQDN 和 IP 地址的对应关系表。</p>
+</li>
+<li><p>世界范围内，各个DNS服务器是相互合作的，一台DNS服务器解析不了，就会询问另一台。询问成功后就会存储在本地DNS服务器中。</p>
+</li>
+</ul>
+</blockquote>
+<p>通常《主机名.域名》即FQDN。</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nlookup  #询问DNS服务器</span><br></pre></td></tr></table></figure>
+
+<p>默认输出本机 LAN 内的 FQDN 和 IP 地址。</p>
+<p>也可以查询其他域名的 FQDN 和IP。</p>
+<h3 id="IP-地址和-MAC-地址的对应关系"><a href="#IP-地址和-MAC-地址的对应关系" class="headerlink" title="IP 地址和 MAC 地址的对应关系"></a>IP 地址和 MAC 地址的对应关系</h3><p>作为被标识为最终接收者的网卡是MAC。</p>
+<p>IP地址转换到MAC地址，需要一个程序：ARP（Address Resolution Protocol 地址解析协议）</p>
+<p>ARP会向所有LAN内计算机广播（broadcast）询问，如果有某台计算机回复了 MAC 地址，则该计算机的 IP 和 MAC 对应明确了。</p>
+<blockquote>
+<p>为提高查询效率，ARP会缓存。缓存构成的表叫ARP缓存表。</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arp -a  #查询ARP缓存表</span><br></pre></td></tr></table></figure></blockquote>
+<h3 id="TCP-的作用以及-TCP-IP网络的层级模型"><a href="#TCP-的作用以及-TCP-IP网络的层级模型" class="headerlink" title="TCP 的作用以及 TCP&#x2F;IP网络的层级模型"></a>TCP 的作用以及 TCP&#x2F;IP网络的层级模型</h3><p>IP 协议：指定数据发送目的地的IP地址 以及通过路由器转发数据。</p>
+<p>TCP 协议：通过数据发送者和接收者相互回应对方发来的确认信息，可靠的传输数据。（握手 handshake）</p>
+<blockquote>
+<p>TCP协议还有一个规定是先把原始的大数据分割成以“包”（packet）为单位的数据单元，然后再发送。接受者则需要把收到的包重新拼装在一起还原原始数据。</p>
+</blockquote>
+<p>计算机发送的数据，是以包为单位的，附加了各种各样信息的数据。</p>
+<p>硬件上发送数据的是网卡，网卡之上是设备驱动程序（控制网卡这类硬件的程序），驱动程序之上是实现了IP协议的程序，IP程序之上是实现TCP协议的程序，再往上才是应用程序。</p>
+<blockquote>
+<p>TCP协议使用TCP端口号识别上层应用程序，并且预先定义好了一些端口用于专门用途。</p>
+</blockquote>
+<p><img src="C:\Users\fancy\Desktop\7e2599363afa37f05e21625a43628b5.jpg" alt="7e2599363afa37f05e21625a43628b5"></p>
+<h2 id="基本概念的阐述"><a href="#基本概念的阐述" class="headerlink" title="基本概念的阐述"></a>基本概念的阐述</h2><p><strong>概念：</strong></p>
+<ul>
+<li><p><strong>机器语言</strong>：用0和1两个二进制数书写的编程语言。</p>
+<blockquote>
+<p>最贴合硬件。机器语言相同，不同的CPU类型会得到不同的结果。</p>
+</blockquote>
+</li>
+<li><p><strong>汇编语言</strong>：亦称为符号语言。在汇编语言中，用<strong>助记符</strong>代替机器指令的操作码，用<strong>地址符号或数字</strong>代替指令或操作数的<strong>地址</strong></p>
+<blockquote>
+<p>人类所能读懂的，最贴合底层的语言。<strong>设备不同，机器语言指令集也不同。</strong></p>
+<p>语法：标签，操作码，操作数。</p>
+<p>标签为某行代码对应的内存地址起名字。</p>
+<p>操作码是 做什么 的指令。</p>
+<p>操作数是 指令执行对象。</p>
+</blockquote>
+</li>
+<li><p><strong>编译</strong>：把 C语言 等编程语言编写的文件（源文件）转换成用机器语言（原生代码）编写的文件。</p>
+</li>
+<li><p><strong>编码</strong>：计算机用数字表示一切。</p>
+<blockquote>
+<p>以字符举例：计算机内部会先把文字转换成相应的数字再做处理，这样的数字叫做“字符编码”。</p>
+</blockquote>
+</li>
+<li><p><strong>面向组件编程</strong>：通过将组件（程序零件）组装到一起完成程序；</p>
+</li>
+<li><p><strong>面向对象编程</strong>：对现实世界的业务进行建模，再把模型搬到程序中。</p>
+</li>
+<li><p><strong>IC 卡</strong>：IC card。计算机内部主要由各种 IC 元件 组成。</p>
+<p>功能各异的 IC 主要有三种：CPU、内存、I&#x2F;O 。</p>
+<blockquote>
+<p>CPU（central processing unit）中央处理器 :  运算数据并控制内存和I&#x2F;O。（解释执行程序内容）</p>
+<p>内存：存储指令和数据</p>
+<p>I&#x2F;O：负责数据的输入和输出工作。</p>
+</blockquote>
+</li>
+<li><p><strong>时钟信号</strong>:</p>
+<p><strong>含义</strong> 是 由内含晶振的、被称为时钟发生器的元件发出的滴答滴答的电信号。</p>
+<p><strong>作用</strong> 是 作为计时器，保证电子组件同步运作。</p>
+<p><strong>单位</strong> 是 Hz 频率。即时钟发生器发送给 CPU 的电信号的频率。</p>
+<blockquote>
+<p>把发出一次滴答的时间称作一个时钟周期。</p>
+<p>频率大小可以衡量CPU的运转速度。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p><strong>xml</strong>：Extensible Markup Language 可扩展标记语言 ：用于定义任意标记语言的元语言</p>
+<p><strong>html</strong>：HyperText Markup Language 超文本标记语言 ：一般用来标记编写网页</p>
+<p><strong>把通过添加标签为数据赋予意义的行为称为 ”标记“。为标记定义规则的语言 即标记语言。</strong></p>
+<blockquote>
+<p>html用于编写网页，或者说决定了可用于编写网页的标签。</p>
+</blockquote>
+<h3 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h3><p>可使用的标签种类决定了标记语言的规范及用途。</p>
+<blockquote>
+<p>web浏览器会对html的标签进行解析，把由它们标记的信息渲染成我们乐于阅读的网页。</p>
+</blockquote>
+<p>XML 的最大优越性便是，其使用者可以<strong>随心所欲的创造标签</strong>，这也是它作为元语言的根本。</p>
+<p>XML 仅仅限定了进行标记时标签的书写格式，其数据是<strong>纯文本格式</strong>的，只包含字符。</p>
+<blockquote>
+<p>遵循xml约束所写的文件就是xml文件。</p>
+<p>现在的web服务器都集成了xml解析器，可以用这个功能来检查xml文件的书写格式。</p>
+</blockquote>
+<p>xml主要用途：为在互联网上<strong>交换的信息赋予意义</strong>。</p>
+<p>W3C的推荐标准是<strong>不依赖于特定厂商</strong>的通用规范。XML即是一种<strong>通用</strong>的数据交换格式。</p>
+<blockquote>
+<p>万维网联盟（World Wide Web Consortium，简称 W3C）创建于1994年，是Web技术领域具有权威和影响力的国际中立性技术标准机构。</p>
+<p><strong>CSV</strong>也是通用的数据交换格式之一。</p>
+</blockquote>
+<p>缺点：因为创造了标签，xml文件的尺寸也往往更大。</p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3><h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p><strong>命名空间</strong></p>
+<p>标签名字相同，每个人赋予它的意义并不一定相同。所以一个W3C推荐标准是 XML命名空间（Namespace in XML）。</p>
+<blockquote>
+<p>命名空间通常是一个能代表企业或个人的字符串，用于修饰限定标签的名字。</p>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xmlns=&lt;&quot;namespace_name&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>完整的XML文档有三个部分</strong>：XML声明、XML实例、DTD（Document Type Definition 文档类型描述）</p>
+<ul>
+<li>XML声明形如：</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;Shift_jIS&quot;</span>?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>XML实例是文档中通过标签被标记的部分</p>
+</li>
+<li><p>DTD负责定义XML实例的结构</p>
+<p>形如：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">xxx</span>[</span></span><br><span class="line"><span class="meta">一些格式要求</span></span><br><span class="line"><span class="meta">]&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>可以省略。</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>解析XML的组件</strong></p>
+<p>DOM（Document Object Model，文档对象模型）</p>
+<p>SAX（Simple API for XML)</p>
+<p><strong>分布式计算</strong></p>
+<p>SOAP（Simple Object Access Protocol，简单对象访问协议）可用于 分布式计算。</p>
+<blockquote>
+<p>分布式计算：把程序分散部署在用网络连接起来的多台计算机上，相互协作，发挥整体计算能力</p>
+</blockquote>
+<p>调用程序时所需的参数信息 和 程序执行后的返回结果 都可以用通用数据格式 XML 标识。</p>
+<blockquote>
+<p>往往多台计算机协作使用时，XML这种通用传输协议会非常实用。</p>
+<p>就好比上大学遇到五湖四海的朋友时，普通话沟通往往最有效率。</p>
+</blockquote>
+</article>
+<div class="article-footer">
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/NOTE/Crash%20Course%20CS/">Crash Course CS</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/NOTE/%E9%AB%98%E6%95%B0%E5%92%8C408%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3/">高数和408的一些理解</a></div></section></div>
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Fancy</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+<widget class="widget-wrapper ghrepo"><div class="widget-body"><div class="items data-service ds-ghinfo" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note"><a class="repo" href="https://github.com/Back2Zer0/md-CS_Note" target="_blank" rel="external nofollow noopener noreferrer"><div class="repo-name flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>Back2Zer0/md-CS_Note</div><div class="repo-desc"><span type="text" id="description">&nbsp;</span></div><div class="grid"><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z"></path></svg><span type="text" id="stargazers_count"></span></div><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg><span type="text" id="forks_count"></span></div><div class="flex-row data-service ds-ghinfo" index="0" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note/tags"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z"></path></svg><span type="text" id="latest-tag-name">0</span></div></div></a></div></div></widget>
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E4%B8%89%E4%B8%AA%E6%A0%B9%E6%9C%AC%E5%9F%BA%E7%A1%80"><span class="toc-text">计算机的三个根本基础</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP-IP-%E7%BD%91%E7%BB%9C%E7%9A%84%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3"><span class="toc-text">TCP&#x2F;IP 网络的简单理解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E8%B7%AF%E7%94%B1%E5%99%A8%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5"><span class="toc-text">向路由器更进一步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DNS%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">DNS服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IP-%E5%9C%B0%E5%9D%80%E5%92%8C-MAC-%E5%9C%B0%E5%9D%80%E7%9A%84%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB"><span class="toc-text">IP 地址和 MAC 地址的对应关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP-%E7%9A%84%E4%BD%9C%E7%94%A8%E4%BB%A5%E5%8F%8A-TCP-IP%E7%BD%91%E7%BB%9C%E7%9A%84%E5%B1%82%E7%BA%A7%E6%A8%A1%E5%9E%8B"><span class="toc-text">TCP 的作用以及 TCP&#x2F;IP网络的层级模型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E7%9A%84%E9%98%90%E8%BF%B0"><span class="toc-text">基本概念的阐述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XML"><span class="toc-text">XML</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF"><span class="toc-text">优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text"></span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84"><span class="toc-text">结构</span></a></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>

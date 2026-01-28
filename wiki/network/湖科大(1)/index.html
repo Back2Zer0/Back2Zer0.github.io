@@ -1,0 +1,1359 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>network：湖科大(1) - Fancy 的小宇宙</title>
+
+  
+    <meta name="description" content="第一章因特网概述网络、互联网和因特网 网络（Network）由若干结点（Node) 和连接这些结点的链路(link)组成。  互联网 ( Network of Networks ):多个网络通过路由器互连构成的覆盖范围更大的网络（网络的网络）。  因特网(Internet)：世界上最大的互连网络  区分  internet(互联网)：通用名词，泛指多个计算机网络互连的网络，通信协议随意。 Inte">
+<meta property="og:type" content="website">
+<meta property="og:title" content="湖科大(1)">
+<meta property="og:url" content="https://back2zer0.github.io/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)/">
+<meta property="og:site_name" content="Fancy 的小宇宙">
+<meta property="og:description" content="第一章因特网概述网络、互联网和因特网 网络（Network）由若干结点（Node) 和连接这些结点的链路(link)组成。  互联网 ( Network of Networks ):多个网络通过路由器互连构成的覆盖范围更大的网络（网络的网络）。  因特网(Internet)：世界上最大的互连网络  区分  internet(互联网)：通用名词，泛指多个计算机网络互连的网络，通信协议随意。 Inte">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+<meta property="article:published_time" content="2026-01-27T02:57:35.478Z">
+<meta property="article:modified_time" content="2026-01-27T02:57:35.478Z">
+<meta property="article:author" content="Fancy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+    <link rel="shortcut icon" href="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Website","@id":"https://back2zer0.github.io/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)/","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"name":"湖科大(1)","description":"第一章因特网概述网络、互联网和因特网\n网络（Network）由若干结点（Node) 和连接这些结点的链路(link)组成。\n\n互联网 ( Network of Networks ):多个网络通过路由器互连构成的覆盖范围更大的网络（网络的网络）。\n\n因特网(Internet)：世界上最大的互连网络\n\n区分\n\ninternet(互联网)：通用名词，泛指多个计算机网络互连的网络，通信协议随意。\nI...","url":"https://back2zer0.github.io/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)/"}</script>
+  
+</head>
+<body>
+
+
+
+<div class="l_body content" id="start" layout="page" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="https://picgo-1398775008.cos.ap-guangzhou.myqcloud.com/network-2-1118-svgrepo-com.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)"><div class="main">network</div><div class="sub normal cap">为学日益，为道日损</div><div class="sub hover cap" style="opacity:0"> fancy</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item" title="认知" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item active" title="技术" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="生活" href="/life/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="其他平台" href="/social/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/" placeholder="在技术专栏中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<widget class="widget-wrapper doc-tree post-list"><div class="widget-header dis-select"><span class="name">基本操作</span></div><div class="widget-body fs14"><a class="link active" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)/#start"><span class="toc-text">湖科大(1)</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(2)/"><span class="toc-text">湖科大(2)</span></a><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(3)%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/"><span class="toc-text">湖科大(3)数据链路层</span></a><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(4)%E7%BD%91%E7%BB%9C%E5%B1%82/"><span class="toc-text">湖科大(4)网络层</span></a><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(5)%E8%BF%90%E8%BE%93%E5%B1%82/"><span class="toc-text">湖科大(5)运输层</span></a><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(6)%E5%BA%94%E7%94%A8%E5%B1%82/"><span class="toc-text">湖科大(6)应用层</span></a></div><div class="widget-header dis-select"><span class="name">TCPIP网络编程</span></div><div class="widget-body fs14"><a class="link" href="/wiki/network/TCPIP1/"><span class="toc-text">TCPIP1</span></a></div></widget>
+
+<widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：网课</span></div><div class="widget-body"><a class="item wiki" href="/wiki/linux/linux%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/"><span class="title">linux学习笔记</span><span class="excerpt">主要用过的是Ubuntu和ArchLinux</span></a><a class="item wiki" href="/wiki/python/%E7%88%AC%E8%99%AB%E5%85%A5%E9%97%A81/"><span class="title">python学习笔记</span><span class="excerpt">一些爬虫基础和实战案例</span></a><a class="item wiki" href="/wiki/mysql/%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/"><span class="title">MySQL学习笔记</span><span class="excerpt">尚硅谷MySQL学习笔记</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)/">network</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2026-01-27T02:57:35.478Z">2026-01-27</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>湖科大(1)</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h3 id="第一章"><a href="#第一章" class="headerlink" title="第一章"></a>第一章</h3><h2 id="因特网概述"><a href="#因特网概述" class="headerlink" title="因特网概述"></a>因特网概述</h2><h1 id="网络、互联网和因特网"><a href="#网络、互联网和因特网" class="headerlink" title="网络、互联网和因特网"></a>网络、互联网和因特网</h1><ul>
+<li><p><strong>网络</strong>（Network）由若干<strong>结点</strong>（Node) 和连接这些结点的<strong>链路</strong>(link)组成。</p>
+</li>
+<li><p><strong>互联网</strong> ( Network of Networks ):多个网络通过路由器互连构成的覆盖范围更大的网络（网络的网络）。</p>
+</li>
+<li><p><strong>因特网</strong>(Internet)：世界上最大的互连网络</p>
+<blockquote>
+<p><strong>区分</strong></p>
+<ul>
+<li>internet(互联网)：通用名词，泛指多个计算机网络互连的网络，通信协议随意。</li>
+<li>Internet (因特网)：专有名词，指一个前身为ARPANET的特定计算机网络，采用TCP&#x2F;IP协议族作为通信规则。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h1 id="因特网发展的三个阶段"><a href="#因特网发展的三个阶段" class="headerlink" title="因特网发展的三个阶段"></a>因特网发展的三个阶段</h1><p>单个网络ARPANET → 三级结构因特网 → 多层次ISP结构因特网</p>
+<blockquote>
+<p>因特网服务提供者&#x3D;&#x3D;ISP&#x3D;&#x3D;：Internet Service Provider    （联通、移动、电信）</p>
+<p>ISP 拥有通信线路和路由器（大型）等网络设备，因此普通用户往往通过 ISP 接入因特网，这时 ISP 会从因特网管理机构为用户申请IP地址。</p>
+<p>另：用户也能作为ISP。你只需要购买些调制解调器之类的东西，让其他人连接你。</p>
+</blockquote>
+<h1 id="因特网的标准化工作"><a href="#因特网的标准化工作" class="headerlink" title="因特网的标准化工作"></a>因特网的标准化工作</h1><p>相关部门： ISOC —— IAB —— IETF 和 IRTF </p>
+<p>因特网制定标准<strong>面向公众</strong>。</p>
+<p>正式标准<strong>制定阶段</strong>：</p>
+<ol>
+<li><p>因特网草案</p>
+</li>
+<li><p>建议标准 （RFC文档）</p>
+</li>
+<li><p>草案标准</p>
+</li>
+<li><p>因特网标准</p>
+</li>
+</ol>
+<h1 id="因特网的组成"><a href="#因特网的组成" class="headerlink" title="因特网的组成"></a>因特网的组成</h1><ul>
+<li>边缘部分：所有因特网上的主机。部分是用户直接使用，来通信和共享资源。</li>
+<li>核心部分：大量网络和连接网络的路由器。它们为边缘部分提供服务。</li>
+</ul>
+<h2 id="交换方式"><a href="#交换方式" class="headerlink" title="交换方式"></a>交换方式</h2><h1 id="电路交换-Circuit-Switching"><a href="#电路交换-Circuit-Switching" class="headerlink" title="电路交换(Circuit Switching)"></a>电路交换(Circuit Switching)</h1><ul>
+<li><p>电话交换机接通电话线的方式称为电路交换。</p>
+</li>
+<li><p><strong>交换</strong>即按照某种方式动态分配传输线路的资源。</p>
+</li>
+<li><p>电路交换三个步骤：</p>
+<ol>
+<li>建立连接（分配通信资源）</li>
+<li>通话（一直占用通信资源）</li>
+<li>释放连接（归还通信资源）</li>
+</ol>
+<blockquote>
+<p>这个连接是一条专用的物理通路。</p>
+</blockquote>
+</li>
+</ul>
+<p>建立连接的传输：比特流直达。</p>
+<h1 id="分组交换-Packet-Switching"><a href="#分组交换-Packet-Switching" class="headerlink" title="分组交换(Packet Switching)"></a>分组交换(Packet Switching)</h1><p>传输信息在发送时，将<strong>信息分段</strong>，每一段根据一定规则<strong>添加首部信息</strong>(包头)，构成分组，称为包。分组交换机会根据包头信息进行<strong>合理传输</strong>。到达目的地后去掉包头，还原信息。</p>
+<blockquote>
+<ul>
+<li><p>合理传输意味着包的传输可以走不同路径。</p>
+</li>
+<li><p>分组传输意味着传输有乱序性：分组到达目的地后顺序可能不同。</p>
+</li>
+</ul>
+<p>(这会造成潜在的分组丢失、误码、重复问题)</p>
+</blockquote>
+<p><strong>三个主体</strong>：发送方，路由器，接收方。</p>
+<table>
+<thead>
+<tr>
+<th>主体</th>
+<th>任务</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>发送方</td>
+<td>构造分组，发送分组</td>
+</tr>
+<tr>
+<td>路由器</td>
+<td>缓存分组，转发分组</td>
+</tr>
+<tr>
+<td>接收方</td>
+<td>接收分组，还原报文</td>
+</tr>
+</tbody></table>
+<p><strong>分组存储转发</strong>：减少了转发时延，避免长报文长时间占用链路，方便差错控制。</p>
+<h1 id="报文交换-Message-Switching"><a href="#报文交换-Message-Switching" class="headerlink" title="报文交换(Message Switching)"></a>报文交换(Message Switching)</h1><blockquote>
+<p>主要用于早期电报通信网络。现已被分组交换取代。</p>
+</blockquote>
+<p>随时发送报文，不需要建立连接。先传送到相邻结点交换机，存下来后存储转发到下一相邻结点交换机。</p>
+<p>**报文存储转发：**不限制报文大小，需要结点交换机有较大缓存空间。</p>
+<hr>
+<h1 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h1><table>
+<thead>
+<tr>
+<th>交换方式</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>电路交换</td>
+<td>1) 通信时延小<br/>2) 有序传输<br/>3) 没有冲突<br/>4) 适用范围广<br/>5) 实时性强<br/>6) 控制简单</td>
+<td>1)建立连接时间长<br/>2)线路独占，使用效率低<br/>3)灵活性差<br/>4)难以规格化</td>
+</tr>
+<tr>
+<td>报文交换</td>
+<td>1)无需建立连接<br/>2)动态分配线路<br/>3)提局线路可靠性<br/>4)提高线路利用率<br/>5)提供多目标服务</td>
+<td>1)起了转发时延<br/>2)需要较大存储缓存空间<br/>3)需要传输额外的信息量</td>
+</tr>
+<tr>
+<td>分组交换</td>
+<td>1)无需建立连接                             <br/>2)线路利用率高                               <br/>3)简化了存储管理                            <br/>4)加速传输                                     <br/>5)减少出错概率和重发数据量</td>
+<td>1)引起了转发时延<br/>2)需要传输额外的信息量<br/>3)对于数据报服务，存在失序、丢失或重复分组的问题：对于虚电路服务，存在呼叫建立、数据传输和虚电路释放三个过程</td>
+</tr>
+</tbody></table>
+<h2 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h2><h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><blockquote>
+<p>计算机网络精确定义未统一。</p>
+</blockquote>
+<p>简单定义：一些<strong>互相连接</strong>的、<strong>自治</strong>的计算机的<strong>集合</strong>。</p>
+<blockquote>
+<ul>
+<li>互连：计算机间可以通过有线或无线的方式进行数据通信；</li>
+<li>自治：指有自己硬件软件的，单独运行使用的独立计算机</li>
+<li>集合：至少两台计算机。</li>
+</ul>
+</blockquote>
+<p>精准定义：计算机网络主要由一些通用的，可编程的<strong>硬件互连</strong>而成的。这些可编程的硬件能够用来<strong>传送</strong>多种不同类型的<strong>数据</strong>，并能够<strong>支持</strong>广泛和日益增长的<strong>应用</strong>。</p>
+<blockquote>
+<p>这些硬件并非专门用来实现某一特定目的 （例如，传送数据或视频信号），而是能传送不同类型数据，包括应用。</p>
+<p>硬件包括智能手表等。</p>
+</blockquote>
+<h1 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h1><p><strong>按交换技术分类：</strong></p>
+<ul>
+<li>电路交换网络</li>
+<li>报文交换网络</li>
+<li>分组交换网络</li>
+</ul>
+<p><strong>按使用者分类：</strong></p>
+<ul>
+<li>公用网：大型网络，一般由电信公司出资构建。普通用户缴费参与。</li>
+<li>专用网：针对特定单位、特定系统的专用网。</li>
+</ul>
+<p><strong>按传输介质分类：</strong></p>
+<ul>
+<li>有线网络：双绞线网络、光纤网络。</li>
+<li>无线网络：wifi</li>
+</ul>
+<p><strong>按覆盖范围分类：</strong></p>
+<ul>
+<li><p>广域网WAN（Wide Area Network）</p>
+<blockquote>
+<p>作用范围通常为几十到几千公里，因而有时也称为远程网（long haul network）。</p>
+<p>任务是通过长距离（例如，跨越不同的国家）运送主机所发送的数据。</p>
+<p>广域网是互联网的核心部分。</p>
+</blockquote>
+</li>
+<li><p>城域网MAN</p>
+<blockquote>
+<p>作用范围一般是一个城市，可跨越几个街区甚至整个城市</p>
+</blockquote>
+</li>
+<li><p>局域网LAN</p>
+<blockquote>
+<p>一般用微型计算机或工作站通过高速通信线路相连（速率通常在 10 Mbit&#x2F;s 以上），但地理上范围较小（1 km 左右）</p>
+</blockquote>
+</li>
+<li><p>个域网PAN</p>
+<blockquote>
+<p>就是在个人工作的地方把个人使用的电子设备用无线技术连接起来的网络。</p>
+<p>(无线耳机，蓝牙设备)</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>按拓扑结构分类：</strong></p>
+<ul>
+<li><p>总线型网络</p>
+<p>优点：建网容易，增减结点方便。节省线路。</p>
+<p>缺点：1.重负载通信效率不高。2.一处故障，全线瘫痪。</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/BloothOfYouth/image/raw/master//20201016103958.png" alt="image-20201007005149993"></p>
+<ul>
+<li><p>星型网络</p>
+<p>中央设备：早期计算机，中期集线器，后期路由器&#x2F;交换机。</p>
+<p>优点：便于网络集中控制和管理。</p>
+<p>缺点：成本高，中央设备对故障敏感。</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/BloothOfYouth/image/raw/master//20201016104005.png" alt="image-20201007005203129"></p>
+<ul>
+<li>环形网络</li>
+</ul>
+<p><img src="https://gitee.com/BloothOfYouth/image/raw/master//20201016104009.png" alt="image-20201007005212345"></p>
+<ul>
+<li><p>网状型网络</p>
+<p>优点：可靠性高</p>
+<p>缺点：控制复杂、线路成本高</p>
+</li>
+</ul>
+<p> <img src="https://gitee.com/BloothOfYouth/image/raw/master//20201016104015.png" alt="image-20201007005249137"> </p>
+<h2 id="性能指标"><a href="#性能指标" class="headerlink" title="性能指标"></a>性能指标</h2><h2 id="速率"><a href="#速率" class="headerlink" title="速率"></a>速率</h2><blockquote>
+<p>商家声称的的250G硬盘买来在电脑上显示的居然是236G。不是商家作假，而是因为两个数据单位不同。</p>
+<p>现实中的测量单位，1k &#x3D; 1000b，计算机中资源单位，1K &#x3D; 1024 Bit ，这是视角问题。</p>
+<p>速率单位和比特单位的视角同理。</p>
+<p><strong>(注意区分M、K等单位后 B和b 的大小写)</strong></p>
+</blockquote>
+<ul>
+<li><p>比特：计算机的<strong>数据量单位</strong>，信息学的信息量单位。</p>
+<p>Byte，bit ， 1KB &#x3D; 2^10B</p>
+</li>
+<li><p>速率：计网主机在数字信道上，传送比特的<strong>速率单位</strong>，也称比特率、数据率。</p>
+<p>bit&#x2F;s, bps , b&#x2F;s  , 1kb&#x2F;s &#x3D; 1000 b&#x2F;s</p>
+</li>
+</ul>
+<p>示例题：</p>
+<p><img src="https://gitee.com/BloothOfYouth/image/raw/master//20201016104026.png" alt="image-20201007012439769"></p>
+<h2 id="带宽"><a href="#带宽" class="headerlink" title="带宽"></a>带宽</h2><ul>
+<li><p>在模拟信号系统：不同频率成分占据的<strong>频率范围</strong></p>
+<p>单位：Hz (kHz , MHz , GHz)</p>
+</li>
+<li><p>在计网中：网络带宽，表示单位时间内从网络一点到另一点所能通过的“<strong>最高数据率</strong>”</p>
+<p>单位：b&#x2F;s (kb&#x2F;s , Mb&#x2F;s , Gb&#x2F;s , Tb&#x2F;s)</p>
+<blockquote>
+<p>表示网络通信线路传送数据的能力</p>
+</blockquote>
+</li>
+</ul>
+<p>两者有密切联系。一条通信线路的频带宽度越宽，传输效率的最高数据率越高。</p>
+<blockquote>
+<p>朋友问：你家出口网速有多大，回答是200M(兆) ，这里省略了比特每秒。</p>
+<p>正确描述：完整速率为200M&#x2F;bs</p>
+</blockquote>
+<h2 id="吞吐量"><a href="#吞吐量" class="headerlink" title="吞吐量"></a>吞吐量</h2><p><strong>&#x3D;&#x3D;吞吐量&#x3D;&#x3D;</strong>：在单位时间内通过某个网络（信道、接口）的数据量。</p>
+<p>经常用于描述测量网络的情况，也就是有多少数据量能通过网络。</p>
+<blockquote>
+<p>吞吐量受网络带宽和额定速率限制。</p>
+</blockquote>
+<blockquote>
+<p>带宽1 Gb&#x2F;s的以太网，代表其额定速率是1 Gb&#x2F;s，这个数值也是该以太网的<strong>吞吐量的绝对上限值</strong>。因此，对于带宽1 Gb&#x2F;s的以太网，可能实际吞吐量只有 700 Mb&#x2F;s，甚至更低。</p>
+<p>注意：吞吐量还可以用每秒传送的字节数或帧数表示</p>
+</blockquote>
+<h2 id="时延"><a href="#时延" class="headerlink" title="时延"></a>时延</h2><p>&#x3D;&#x3D;时延&#x3D;&#x3D; : 数据（一个报文或分组，甚至比特）从网络（或链路）的一端传送到另一端所需的时间。</p>
+<p>网络时延由几部分组成：</p>
+<ul>
+<li>发送时延</li>
+</ul>
+<p>主机或路由器发送数据帧所需要的时间，也就是从发送数据帧的第一个比特算起，到该帧的最后一个比特发送完毕所需的时间。</p>
+<blockquote>
+<p>计算：分组长度(b)&#x2F;发送速率(b&#x2F;s)</p>
+</blockquote>
+<ul>
+<li>传播时延</li>
+</ul>
+<p>电磁波在信道中传播一定的距离需要花费的时间。</p>
+<blockquote>
+<p>计算：信道长度(m)&#x2F;电磁波传播速率(m&#x2F;s)</p>
+</blockquote>
+<ul>
+<li>处理时延</li>
+</ul>
+<p>主机或路由器在收到分组时要花费一定时间进行处理</p>
+<ul>
+<li>排队时延</li>
+</ul>
+<p>分组在进过网络传输时，要经过许多路由器。但分组在进入路由器后要先在输入队列中排队等待处理。</p>
+<blockquote>
+<p>有时会把排队时延看成<strong>处理时延 一部分</strong></p>
+<p>总时延 &#x3D; 发送时延 + 传播时延 + 处理时延 （处理时延 + 排队时延）</p>
+</blockquote>
+<p><strong>注意点</strong></p>
+<ol>
+<li><p><strong>构建设备时，不同设备和传输介质的传送速率的速度应该近似。否则速度快的会制约于速度慢的部分。</strong></p>
+<blockquote>
+<p>主机发送速率受网卡发送速率和信道带宽、接口速率影响，其中速率最慢的部分会决定整个发送速率。</p>
+</blockquote>
+</li>
+<li><p><strong>电磁波在自由空间和网络传输介质中的传播速度是不一样的。</strong></p>
+<table>
+<thead>
+<tr>
+<th>介质</th>
+<th>速度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>自由空间</td>
+<td>3.0  * 10^8</td>
+</tr>
+<tr>
+<td>铜线</td>
+<td>2.3  * 10^8</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<p>|光纤       | 2.0  * 10^8|</p>
+<ol start="3">
+<li><p><strong>当处理时延忽略不计时，发送时延 和 传播时延 谁占主导，要具体情况具体分析。</strong></p>
+<blockquote>
+<p>例如同样传播距离和带宽，数据块长度不同会导致决定因素的不同。</p>
+</blockquote>
+</li>
+</ol>
+<p><img src="https://gitee.com/BloothOfYouth/image/raw/master//20201016104050.png" alt="image-20201007015401505"></p>
+<h2 id="时延带宽积"><a href="#时延带宽积" class="headerlink" title="时延带宽积"></a>时延带宽积</h2><p>时延带宽积 &#x3D; 传播时延 * 带宽</p>
+<ul>
+<li>发送端连续发送数据，第一个比特到达终点，发送端视作已发送了时延带宽积的比特</li>
+<li>链路又称为 以比特为单位的链路长度</li>
+</ul>
+<blockquote>
+<p>类似圆柱体体积，物理意义上的单位比特数量</p>
+</blockquote>
+<h2 id="往返时间"><a href="#往返时间" class="headerlink" title="往返时间"></a>往返时间</h2><p>互联网上的信息不仅仅单方向传输而是双向交互的。因此，我们有时很需要知道<strong>双向交互一次所需的时间</strong>。</p>
+<p>RTT: Round Trip Time</p>
+<p><img src="https://gitee.com/BloothOfYouth/image/raw/master//20201016104104.png" alt="image-20201007115647631"></p>
+<h2 id="利用率"><a href="#利用率" class="headerlink" title="利用率"></a>利用率</h2><p>利用率有<strong>信道利用率</strong>和<strong>网络利用率</strong>两种。</p>
+<ul>
+<li>信道利用率：用来表示某信道有百分之几的时间是被利用的(有数据通过) </li>
+<li>网络利用率：全网络的信道利用率的加权平均。</li>
+</ul>
+<blockquote>
+<p>1.利用率并非越高越好</p>
+<p>根据排队论，当某信道的利用率增大时，该信道引起的时延也会迅速增加，因此利用率并非越高越好 </p>
+<p>2.利用率不能太低</p>
+<p>这会浪费通信资源</p>
+</blockquote>
+<p>因此要使用一些机制动态调整网络通信量。</p>
+<p><img src="https://gitee.com/BloothOfYouth/image/raw/master//20201016104110.png" alt="image-20201012164544306"></p>
+<h2 id="丢包率"><a href="#丢包率" class="headerlink" title="丢包率"></a>丢包率</h2><p><img src="https://gitee.com/BloothOfYouth/image/raw/master//20201016104116.png" alt="image-20201007132900210"></p>
+<p>&#x3D;&#x3D;丢包率&#x3D;&#x3D;：分组的丢失率， 指在一定时间范围内，传输过程中丢失的分组数量与总分组数量的比率 。</p>
+<blockquote>
+<p>具体分为：接口丢包率，节点丢包率，链路丢包率，路径丢包率，网络丢包率等。</p>
+</blockquote>
+<p><strong>丢包的两种情况：</strong></p>
+<ol>
+<li>分组在传输过程中出现误码，被节点丢弃；</li>
+<li>分组到达一台队列已满的分组交换机时被丢弃，在通信量较大时就可能造成网络拥堵。</li>
+</ol>
+<blockquote>
+<p>丢包率反应网络拥堵情况 :</p>
+<ul>
+<li><p>无拥塞时丢包率为0</p>
+</li>
+<li><p>轻度拥塞，1%~4%</p>
+</li>
+<li><p>严重拥塞，5%~15%</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="计算机网络体系结构"><a href="#计算机网络体系结构" class="headerlink" title="计算机网络体系结构"></a>计算机网络体系结构</h2><h1 id="常见的计算机网络体系结构"><a href="#常见的计算机网络体系结构" class="headerlink" title="常见的计算机网络体系结构"></a>常见的计算机网络体系结构</h1><ol>
+<li><p>OSI体系结构：七层，国际标准化组织设计，是法律上的国际标准</p>
+<blockquote>
+<p>结构从下往上是物理层，数据链路层，网络层，运输层，会话层，表示层，应用层 </p>
+</blockquote>
+</li>
+<li><p>TCP&#x2F;IP体系结构：因特网结构，事实上的国际标准(市场决定)。</p>
+<blockquote>
+<p>从下往上依次是网络接口层，网际层，运输层，应用层 </p>
+</blockquote>
+<p>对于TCP&#x2F;IP：</p>
+<ul>
+<li><p>网际层：<strong>IP是TCP&#x2F;IP体系结构是网际层的核心协议</strong>。</p>
+<p>这个协议可以将不同的<strong>网络接口</strong>进行互连，并向其上的TCP<strong>协议</strong>和UDP<strong>协议</strong>提供<strong>网络互连服务</strong> 。</p>
+<blockquote>
+<p>IP中文意思叫网际，所以网络层又称网际层。</p>
+</blockquote>
+</li>
+<li><p>运输层：TCP和UDP是TCP&#x2F;IP体系结构是运输层 的两个重要协议。</p>
+<p> TCP协议在享受IP协议提供的<strong>网络互连服务</strong>的基础上，可<strong>向应用层</strong>的相应协议提供可靠传输的服务；UDP协议在……可向应用层的相关协议提供不可靠传输服务。</p>
+</li>
+<li><p>应用层：TCP&#x2F;IP体系结构的应用层包含了大量的应用层协议HTTP-SMTP  DNS-RTP </p>
+</li>
+<li><p>路由器和主机都带有TCP&#x2F;IP协议族，路由器一般只包括网络接口层和网际层</p>
+<blockquote>
+<p>网络接口层没什么具体内容，目的是为了连接世界上各种不同接口。</p>
+<p>这也意味着该体系结构本质上只有上面三层，</p>
+</blockquote>
+<p> <img src="https://upload-images.jianshu.io/upload_images/24878825-6800e214b18c47c3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/931/format/webp" alt="img"></p>
+<blockquote>
+<p>TCP&#x2F;IP两协议的承上启下重要作用说明了为什么该结构叫TCP&#x2F;IP协议。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>五层协议原理体系结构，适用于教学，从下到上依次是物理层，数据链路层，网络层，运输层，应用层 </p>
+<p>TCP&#x2F;IP协议的网络接口层为了灵活性没有什么具体内容，不方便学习。结合OSI和TCP&#x2F;IP诞生了原理体系结构，将网络接口层换成了数据链路层和物理层。</p>
+</li>
+</ol>
+<h2 id="体系结构分层的必要性"><a href="#体系结构分层的必要性" class="headerlink" title="体系结构分层的必要性"></a>体系结构分层的必要性</h2><p><strong>物理层</strong> ：使用何种信号来传输比特的问题</p>
+<p>采用什么传输媒体(介质)</p>
+<p>采用什么物理接口</p>
+<p>使用什么信号</p>
+<ul>
+<li><p>第一，严格来说，传输媒体并不属于物理层</p>
+</li>
+<li><p>计算机传输的信号，并不是图示的方波信号</p>
+</li>
+</ul>
+<p><strong>数据链路层</strong> ：分组在一个网络上传输的问题</p>
+<ul>
+<li><p>如何标识网络中的各个主机-例如IP地址（前三段标识网络，最后一个数标识主机）</p>
+<blockquote>
+<p>这样也能知道目的地址和发送地址</p>
+</blockquote>
+</li>
+<li><p>如何从信号所表示的一连串比特流中区分出地址和数据</p>
+</li>
+<li><p>如何协调各主机征用总线（两个异向信号碰撞）</p>
+<blockquote>
+<p> 总线型现已淘汰，代替的是交换式以太网：以太网交换机将多台主机互联。</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>网络层</strong>：分组在多个网络上传输的问题</p>
+<ul>
+<li>如何标识各网络以及网络中的各主机（网络和主机共同编址，如IP地址）</li>
+</ul>
+<blockquote>
+<p>192.168.1 这前三个数据就是一个共同网络编址</p>
+</blockquote>
+<ul>
+<li>路由器如何转发分组，如何进行路由选择（多个路径走哪个）</li>
+</ul>
+<p><strong>运输层</strong>：进程之间基于网络的通信问题</p>
+<ul>
+<li><p>如何解决进程之间基于网络的通信问题</p>
+</li>
+<li><p>出现传输错误，如何处理</p>
+</li>
+</ul>
+<p><strong>应用层</strong>：通过应用进程的交互来实现特定网络应用的问题</p>
+<p>制定应用层协议，按之编写app，通过应用进程间的交互完成特定网络应用。</p>
+<hr>
+<h2 id="计算机网络体系结构分层思想举例"><a href="#计算机网络体系结构分层思想举例" class="headerlink" title="计算机网络体系结构分层思想举例"></a><strong>计算机网络体系结构分层思想举例</strong></h2><p>• 例子：通过计算机访问一个网站<br>• 1：应用层按HTTP协议的规定构建一个HTTP请求报文，然后交付给运输层处理<br>• 2：运输层给HTTP请求报文添加一个TCP首部，使之成为TCP报文段，然后 将TCP报文段 交付给网络层处理</p>
+<blockquote>
+<p>TCP报文段的首部格式作用是区分应用进程以及实现可靠传输</p>
+</blockquote>
+<p>• 3：网络层给TCP报文段添加一个IP首部，使之成为IP数据报，然后交付给数据链路层</p>
+<blockquote>
+<p>IP数据报的首部格式作用是使IP数据报可以在互联网传输，也就是被路由器转发</p>
+</blockquote>
+<p>• 4：数据链路层给IP数据报添加一个首部和一个尾部，使之成为帧，然后交付给物理层</p>
+<blockquote>
+<ul>
+<li>该首部的作用主要是为了让帧能够在一段链路上或一个网络上传输，能够被相应的目的主机接收</li>
+<li>该尾部的作用是让目的主机检查所接收到的帧是否有误码</li>
+</ul>
+</blockquote>
+<p>• 5：物理层先将帧看做是比特流，会在该比特流前面添加前导码,然后物理层将比特流变换成相应的信号发送给传输媒体，</p>
+<blockquote>
+<p>这里的网络N1假设是以太网</p>
+<p>前导码的作用是为了让目的主机做好接收帧的准备  </p>
+</blockquote>
+<p>• 6:信号通过传输媒体到达路由器</p>
+<p>• 7：路由器会把这些反向操作一遍再转换成比特流给Web服务器，Web服务器接收到后经过层层筛选接收HTTP请求报文</p>
+<blockquote>
+<p>路由器中：</p>
+<ul>
+<li><p><strong>物理层</strong>将<strong>信号</strong>变为<strong>比特流</strong>，然后去掉<strong>前导码</strong>后，将其交付给<strong>数据链路层</strong></p>
+</li>
+<li><p><strong>数据链路层</strong>将<strong>帧</strong>的<strong>首部</strong>和<strong>尾部</strong>去掉后，将其交付给<strong>网络层</strong>，这实际交付的是<strong>IP数据报</strong></p>
+</li>
+<li><p><strong>网络层</strong>解析<strong>IP数据报</strong>的<strong>首部</strong>，从中提取<strong>目的网络地址</strong></p>
+</li>
+<li><p>提取<strong>目的网络地址</strong>后查找<strong>自身路由表</strong>。确定<strong>转发端口</strong>， 以便进行转发</p>
+</li>
+<li><p><strong>网络层</strong>将<strong>IP数据报</strong>交付给<strong>数据链路层</strong> </p>
+</li>
+<li><p><strong>数据链路层</strong>给<strong>IP数据报</strong>添加一个<strong>首部</strong>和一个<strong>尾部</strong>，使之成为<strong>帧</strong> </p>
+</li>
+<li><p><strong>数据链路层</strong>将帧交付给<strong>物理层</strong> </p>
+</li>
+<li><p><strong>物理层</strong>先将<strong>帧</strong>看成<strong>比特流</strong>，这里的网络N2假设是以太网，所以<strong>物理层</strong>还会给该<strong>比特流</strong>前面添加<strong>前导码</strong> </p>
+</li>
+<li><p>物理层将装有<strong>前导码</strong>的<strong>比特流</strong>变换成相应的<strong>信号</strong>发送给传输媒体，信号通过传输媒体到达<strong>Web服务器</strong></p>
+</li>
+</ul>
+</blockquote>
+<p>•8： 然后Web服务器给主机发送HTTP响应报文啊吧啊吧，方法和请求一样</p>
+<p> <img src="https://cdn.nlark.com/yuque/0/2021/png/2145785/1613888339662-f64fc712-5943-4b67-a097-433f4f7445ff.png?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_41,text_QW9tc2ly,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10/resize,w_750,limit_0" alt="img"> </p>
+<p>注意：报文和帧都是通过底层内存的固定排布，来让计算机理解数据哪一部分对应的东西。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/24878825-dc02183dcf759d9e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1200/format/webp" alt="img"></p>
+<blockquote>
+<p><strong>注意报文上的位</strong></p>
+</blockquote>
+<h2 id="计算机网络体系结构中的专业术语"><a href="#计算机网络体系结构中的专业术语" class="headerlink" title="计算机网络体系结构中的专业术语"></a>计算机网络体系结构中的专业术语</h2><h1 id="实体"><a href="#实体" class="headerlink" title="实体"></a>实体</h1><ul>
+<li>实体：任何可发送或接收信息的<strong>硬件</strong>或<strong>软件进程</strong></li>
+<li>对等实体：收发双方<strong>相等层次中的实体</strong>，比如收发的两个应用层</li>
+</ul>
+<h1 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h1><p>&#x3D;&#x3D;定义&#x3D;&#x3D;：控制两个对等实体进行逻辑通信的规则的集合</p>
+<p><strong>协议三要素</strong>：语法，语义，同步</p>
+<ul>
+<li>语法：定义所交换信息的格式</li>
+<li>语义：定义收发双方所要操作完成的操作</li>
+<li>同步：定义收发双方的时序关系</li>
+</ul>
+<blockquote>
+<p>应用层使用应用层协议（例如HTTP, SMTP）进行通信，运输层应用运输层协议（例如TCP, UDP）进行通信，依次类推</p>
+</blockquote>
+<h1 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h1><ul>
+<li><p>在协议的控制下，两个对等实体间的逻辑通信使得本层能够向上一层提供服务、</p>
+</li>
+<li><p>要实现本层协议，还需要使用下面一层所提供的服务</p>
+</li>
+<li><p>协议是水平的，服务是垂直的</p>
+</li>
+<li><p>实体看的见相邻下层所提供的服务，但并不知道实现该服务的具体协议，也就是说，下面的协议对上面的实体是透明的【就好比我们可以享受 手机提供的服务，但不需要弄懂手机运行的原理】</p>
+</li>
+<li><p><strong>服务原语</strong>：上层使用下层所提供的服务必须通过与下层交换一些命令</p>
+</li>
+<li><p>服务访问点：在同一系统中相邻两层的实体交换信息的逻辑接口，用于区分不同的服务类型，</p>
+<blockquote>
+<p>如数据链路层的服务访问点为帧的“类型”字段；</p>
+<p>网络层的服务访问点为IP数据包首部中的“协议字段”；</p>
+<p>运输层的服务访问点为“端口号”。</p>
+</blockquote>
+</li>
+<li><p>协议数据单元-PDU:对等层次之间传送的数据包称为该层的协议数据单元，</p>
+<blockquote>
+<p>例如物理层的数据包就是比特流，以此类推有帧，分组&#x2F;IP数据报</p>
+</blockquote>
+</li>
+<li><p>服务数据单元-SDU:同一系统内，层与层之间交换到数据包称为服务数据单元。</p>
+</li>
+<li><p>多个SDU可以合成为一个PDU；一个SDU也可划分为几个PDU。</p>
+</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/24878825-f24a75796ed2c7f6.png?imageMogr2/auto-orient/strip%7CimageView2/2/format/webp" alt="img"></p>
+</article>
+<div class="article-footer">
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(2)/">湖科大(2)</a></div></section></div>
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Fancy</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+<widget class="widget-wrapper ghrepo"><div class="widget-body"><div class="items data-service ds-ghinfo" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note"><a class="repo" href="https://github.com/Back2Zer0/md-CS_Note" target="_blank" rel="external nofollow noopener noreferrer"><div class="repo-name flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>Back2Zer0/md-CS_Note</div><div class="repo-desc"><span type="text" id="description">&nbsp;</span></div><div class="grid"><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z"></path></svg><span type="text" id="stargazers_count"></span></div><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg><span type="text" id="forks_count"></span></div><div class="flex-row data-service ds-ghinfo" index="0" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note/tags"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z"></path></svg><span type="text" id="latest-tag-name">0</span></div></div></a></div></div></widget>
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0"><span class="toc-text">第一章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%A0%E7%89%B9%E7%BD%91%E6%A6%82%E8%BF%B0"><span class="toc-text">因特网概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E3%80%81%E4%BA%92%E8%81%94%E7%BD%91%E5%92%8C%E5%9B%A0%E7%89%B9%E7%BD%91"><span class="toc-text">网络、互联网和因特网</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%A0%E7%89%B9%E7%BD%91%E5%8F%91%E5%B1%95%E7%9A%84%E4%B8%89%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="toc-text">因特网发展的三个阶段</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%A0%E7%89%B9%E7%BD%91%E7%9A%84%E6%A0%87%E5%87%86%E5%8C%96%E5%B7%A5%E4%BD%9C"><span class="toc-text">因特网的标准化工作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%A0%E7%89%B9%E7%BD%91%E7%9A%84%E7%BB%84%E6%88%90"><span class="toc-text">因特网的组成</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E6%96%B9%E5%BC%8F"><span class="toc-text">交换方式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%94%B5%E8%B7%AF%E4%BA%A4%E6%8D%A2-Circuit-Switching"><span class="toc-text">电路交换(Circuit Switching)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E7%BB%84%E4%BA%A4%E6%8D%A2-Packet-Switching"><span class="toc-text">分组交换(Packet Switching)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8A%A5%E6%96%87%E4%BA%A4%E6%8D%A2-Message-Switching"><span class="toc-text">报文交换(Message Switching)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E6%AF%94"><span class="toc-text">对比</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C"><span class="toc-text">计算机网络</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-text">定义</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E7%B1%BB"><span class="toc-text">分类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87"><span class="toc-text">性能指标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9F%E7%8E%87"><span class="toc-text">速率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%A6%E5%AE%BD"><span class="toc-text">带宽</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%9E%E5%90%90%E9%87%8F"><span class="toc-text">吞吐量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%B6%E5%BB%B6"><span class="toc-text">时延</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%B6%E5%BB%B6%E5%B8%A6%E5%AE%BD%E7%A7%AF"><span class="toc-text">时延带宽积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%80%E8%BF%94%E6%97%B6%E9%97%B4"><span class="toc-text">往返时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E7%8E%87"><span class="toc-text">利用率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%A2%E5%8C%85%E7%8E%87"><span class="toc-text">丢包率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-text">计算机网络体系结构</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-text">常见的计算机网络体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%88%86%E5%B1%82%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7"><span class="toc-text">体系结构分层的必要性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%88%86%E5%B1%82%E6%80%9D%E6%83%B3%E4%B8%BE%E4%BE%8B"><span class="toc-text">计算机网络体系结构分层思想举例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E4%B8%AD%E7%9A%84%E4%B8%93%E4%B8%9A%E6%9C%AF%E8%AF%AD"><span class="toc-text">计算机网络体系结构中的专业术语</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E4%BD%93"><span class="toc-text">实体</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8D%8F%E8%AE%AE"><span class="toc-text">协议</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1"><span class="toc-text">服务</span></a></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>

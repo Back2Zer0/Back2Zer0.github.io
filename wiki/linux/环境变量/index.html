@@ -1,0 +1,1165 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>mysql：环境变量 - Fancy 的小宇宙</title>
+
+  
+    <meta name="description" content="三种变量在 Linux 中，变量依照作用域分为三种，分别是环境变量、普通变量、导出变量。  环境变量可以理解为 Windows 中的环境变量，在任一终端总可以直接访问到。  公共变量被存放在&#x2F;etc&#x2F;profile文件中，用户变量被存放在~&#x2F;.profile中。 1cat &#x2F;etc&#x2F;profile   普通变量仅在当前进程可用，在子进程中无法访问。  可以通过declare {var}声明变量或使">
+<meta property="og:type" content="website">
+<meta property="og:title" content="环境变量">
+<meta property="og:url" content="https://back2zer0.github.io/wiki/linux/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/">
+<meta property="og:site_name" content="Fancy 的小宇宙">
+<meta property="og:description" content="三种变量在 Linux 中，变量依照作用域分为三种，分别是环境变量、普通变量、导出变量。  环境变量可以理解为 Windows 中的环境变量，在任一终端总可以直接访问到。  公共变量被存放在&#x2F;etc&#x2F;profile文件中，用户变量被存放在~&#x2F;.profile中。 1cat &#x2F;etc&#x2F;profile   普通变量仅在当前进程可用，在子进程中无法访问。  可以通过declare {var}声明变量或使">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+<meta property="article:published_time" content="2026-01-27T01:51:06.721Z">
+<meta property="article:modified_time" content="2026-01-27T01:51:06.721Z">
+<meta property="article:author" content="Fancy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+    <link rel="shortcut icon" href="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Website","@id":"https://back2zer0.github.io/wiki/linux/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"name":"环境变量","description":"三种变量在 Linux 中，变量依照作用域分为三种，分别是环境变量、普通变量、导出变量。\n\n环境变量可以理解为 Windows 中的环境变量，在任一终端总可以直接访问到。\n\n公共变量被存放在/etc/profile文件中，用户变量被存放在~/.profile中。\n1cat /etc/profile\n\n\n普通变量仅在当前进程可用，在子进程中无法访问。\n\n可以通过declare {var}声明变...","url":"https://back2zer0.github.io/wiki/linux/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/"}</script>
+  
+</head>
+<body>
+
+
+
+<div class="l_body content" id="start" layout="page" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="https://picgo-1398775008.cos.ap-guangzhou.myqcloud.com/linux-svgrepo-com.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/wiki/linux/linux%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86"><div class="main">mysql</div><div class="sub normal cap">为学日益，为道日损</div><div class="sub hover cap" style="opacity:0"> fancy</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item" title="认知" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item active" title="技术" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="生活" href="/life/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="其他平台" href="/social/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/" placeholder="在技术专栏中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<widget class="widget-wrapper doc-tree post-list"><div class="widget-header dis-select"><span class="name">基本操作</span></div><div class="widget-body fs14"><a class="link" href="/wiki/linux/linux%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/#start"><span class="toc-text">linux软件包管理</span></a><a class="link" href="/wiki/linux/Shell%E5%85%A5%E9%97%A8/"><span class="toc-text">Shell入门</span></a><a class="link" href="/wiki/linux/Vim%E6%8F%92%E4%BB%B6/"><span class="toc-text">Vim插件</span></a><a class="link active" href="/wiki/linux/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/"><span class="toc-text">环境变量</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a><a class="link" href="/wiki/linux/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/"><span class="toc-text">基本命令</span></a><a class="link" href="/wiki/linux/%E6%9D%82%E9%A1%B9/"><span class="toc-text">杂项</span></a></div><div class="widget-header dis-select"><span class="name">乐在其中</span></div><div class="widget-body fs14"><a class="link" href="/wiki/linux/%E4%B8%8A%E6%89%8B%E6%96%B0ubuntu%E6%9C%BA%E5%99%A8%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E5%B7%A5%E4%BD%9C/"><span class="toc-text">上手新ubuntu机器的初始化工作</span></a><a class="link" href="/wiki/linux/%E5%85%B3%E4%BA%8E%20vim%20-%20YouCompleteMe%20%E7%9A%84%E5%AE%89%E8%A3%85/"><span class="toc-text">关于 vim - YouCompleteMe 的安装</span></a></div></widget>
+
+<widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：网课</span></div><div class="widget-body"><a class="item wiki" href="/wiki/python/%E7%88%AC%E8%99%AB%E5%85%A5%E9%97%A81/"><span class="title">python学习笔记</span><span class="excerpt">一些爬虫基础和实战案例</span></a><a class="item wiki" href="/wiki/mysql/%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/"><span class="title">MySQL学习笔记</span><span class="excerpt">尚硅谷MySQL学习笔记</span></a><a class="item wiki" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)/"><span class="title">计网学习笔记</span><span class="excerpt">湖科大计算机网络课程和尹圣雨老师的TCPIP网络编程。</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/linux/linux%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/">mysql</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2026-01-27T01:51:06.721Z">2026-01-27</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>环境变量</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h1 id="三种变量"><a href="#三种变量" class="headerlink" title="三种变量"></a>三种变量</h1><p>在 Linux 中，变量依照作用域分为三种，分别是<strong>环境变量</strong>、<strong>普通变量</strong>、<strong>导出变量</strong>。</p>
+<ul>
+<li><strong>环境变量</strong>可以理解为 Windows 中的环境变量，在任一终端总可以直接访问到。</li>
+</ul>
+<p>公共变量被存放在<code>/etc/profile</code>文件中，用户变量被存放在<code>~/.profile</code>中。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/profile</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>普通变量</strong>仅在当前进程可用，在子进程中无法访问。</li>
+</ul>
+<p>可以通过<code>declare {var}</code>声明变量或使用<code>{var}={value}</code>直接定义。通过<code>echo ${var}</code>查看变量。通过<code>unset {var}</code>释放变量。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">declare temp</span><br><span class="line">temp=333</span><br><span class="line">echo $temp</span><br><span class="line">unset temp</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>导出变量</strong>是临时环境变量，即临时导出到环境变量的普通变量。可以通过<code>export {var}</code>对普通变量进行导出，<strong>此时其子进程也可以访问该变量。</strong></li>
+</ul>
+<p>当前进程结束时，该导出变量一并销毁。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export temp</span><br></pre></td></tr></table></figure>
+
+<p>有三个命令可以查看变量：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">set    # 显示所有变量</span><br><span class="line">env    # 显示用户相关的环境变量</span><br><span class="line">export # 显示导出变量</span><br><span class="line"></span><br><span class="line">export 变量名=变量值 #申明变量</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">env# </span><span class="language-bash">查询变量</span></span><br><span class="line"></span><br><span class="line">echo $变量名# 变量调用</span><br><span class="line"></span><br><span class="line">unset 变量名 #删除变量</span><br><span class="line"></span><br><span class="line">pstree 树形显示进程数</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">没有这条命令可以执行以下命令下载：</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">yum -y install psmisc</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">yum provides /命令 查看没有的命令的安装包 配合yum -y install使用</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h1><p>定义阐述：环境变量配置文件中，主要是<strong>定义对系统的操作环境生效的系统默认环境变量</strong>，比如 PATH、HISTSIZE、PS1、HOSTNAME等 默认环境变量。 </p>
+<p><strong>以下几个环境变量的配置文件是最主要的：</strong></p>
+<ul>
+<li>&#x2F;etc&#x2F;profile</li>
+<li>&#x2F;etc&#x2F;profile.d&#x2F;*.sh  (指&#x2F;etc&#x2F;profile.d&#x2F;下所有的.sh结尾的文件)</li>
+<li>~&#x2F;.bash_profile</li>
+<li>~&#x2F;.bashrc</li>
+<li>&#x2F;etc&#x2F;bashrc</li>
+</ul>
+<p><strong>环境变量配置文件调用图：</strong></p>
+<p> <img src="https://img-blog.csdnimg.cn/20200525190315737.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5MTUwMTIy,size_16,color_FFFFFF,t_70#pic_center" alt="img"> </p>
+<blockquote>
+<p>这些是在登陆的时候挨个调用，所以在这里面设置环境变量，登陆之后就会自动设置好</p>
+<ul>
+<li><p>登陆输入密码之后，第一步是读取&#x2F;etc&#x2F;profile文件<br><strong>&#x2F;etc&#x2F;profile的作用：</strong><br>USER变量<br>LOGNAME变量<br>MAIL变量<br>PATH变量<br>HOSTNAME变量<br>HISTSIZE变量<br>umask<br><strong>里面有以上环境变量的配置</strong></p>
+</li>
+<li><p><em><em>接下来便调用&#x2F;etc&#x2F;profile.d&#x2F;</em> .sh文件</em>*<br>然后就是下面的文件，语言包文件，识别系统自带的语言</p>
+</li>
+<li><p>*<strong>~&#x2F;.bash_profile的作用</strong><br>调用了<del>&#x2F;.bashrc文件。<br>在PATH变量后面加入了“:$HOME&#x2F;bin” 这个目录</del>&#x2F;.bashrc的作用<br>定义默认别名调用&#x2F;etc&#x2F;bashrc</p>
+</li>
+<li><p><strong>&#x2F;etc&#x2F;bashrc的作用</strong><br>PS1变量<br>umask<br>PATH变量</p>
+</li>
+<li><p><strong>调用&#x2F;etc&#x2F;profile.d&#x2F;*.sh文件</strong><br>这一块就是进入界面以内，切换shell登陆方式，这种不需要密码，所以和前面的&#x2F;etc&#x2F;profile的作用不冲突</p>
+</li>
+</ul>
+</blockquote>
+<h1 id="变量操作"><a href="#变量操作" class="headerlink" title="变量操作"></a>变量操作</h1><p><strong>变量添加：</strong></p>
+<p>以<code>PATH</code>为例，将某路径添加到<code>PATH</code>环境变量中。</p>
+<p>由于<code>PATH</code>变量以<code>:</code>作为分隔符，所以我们应该将<code>:{dir}</code>追加到<code>PATH</code>的末尾。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PATH=$PATH:/home/user/dir</span><br></pre></td></tr></table></figure>
+
+<p>字符串拼接不需要使用<code>+</code>，直接顺着写即可。</p>
+<p>注意！！这种方式添加的环境变量是临时的，当关闭终端时失效。</p>
+<p>想要让环境变量一直生效，可以让上述命令在终端初始化时执行，<strong>终端在初始化时会调用一个脚本</strong>，这里使用的是<code>zsh</code>，所以这个脚本位于用户主目录下<code>~/.zshrc</code>。</p>
+<p>我们可以编辑他，将这条命令添加进去。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;PATH=$PATH:/home/user/dir&quot; &gt;&gt; .zshrc</span><br></pre></td></tr></table></figure>
+
+<p>不过对于不同终端，这个初始化脚本也不同，例如<code>bash</code>的初始化脚本是<code>.bashrc</code>。</p>
+<p>可以通过<code>cat /etc/shells</code>查看已安装的<code>Shell</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/shells</span><br></pre></td></tr></table></figure>
+
+<p><strong>介绍一个命令<code>echo</code>：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &#123;string&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>echo</code>可以将字符串输出到终端，如果要输出变量，那么变量名前应添加一个<code>$</code>。</p>
+<p><code>echo</code>还可以将输出定向至文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &#123;string&#125; &gt; &#123;filename&#125;</span><br><span class="line">echo &#123;string&#125; &gt;&gt; &#123;filename&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>&gt;</code>是直接覆盖文件，<code>&gt;&gt;</code>是追加到文件。</p>
+<p><strong>变量修改</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">变量修改方式</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>${变量名#匹配字串}</code></td>
+<td align="left">从头向后开始匹配，删除符合匹配字串的最短数据</td>
+</tr>
+<tr>
+<td align="left"><code>${变量名##匹配字串}</code></td>
+<td align="left">从头向后开始匹配，删除符合匹配字串的最长数据</td>
+</tr>
+<tr>
+<td align="left"><code>${变量名%匹配字串}</code></td>
+<td align="left">从尾向前开始匹配，删除符合匹配字串的最短数据</td>
+</tr>
+<tr>
+<td align="left"><code>${变量名%%匹配字串}</code></td>
+<td align="left">从尾向前开始匹配，删除符合匹配字串的最长数据</td>
+</tr>
+<tr>
+<td align="left"><code>${变量名/旧的字串/新的字串}</code></td>
+<td align="left">将符合旧字串的第一个字串替换为新的字串</td>
+</tr>
+<tr>
+<td align="left"><code>${变量名//旧的字串/新的字串}</code></td>
+<td align="left">将符合旧字串的全部字串替换为新的字串</td>
+</tr>
+</tbody></table>
+<p>例如，我想将<code>PATH</code>变量中的<code>:/home/user/dir</code>删除：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PATH=&#123;PATH%%:/home/user/dir&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行初始化脚本</strong></p>
+<p>更改配置文件后，如果想要立即生效，就要重新执行一遍该脚本。</p>
+<p>我们可以使用<code>source</code>命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ./.zshrc</span><br></pre></td></tr></table></figure>
+
+<p>或者直接简写为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">. ./zshrc</span><br></pre></td></tr></table></figure>
+
+<h1 id="变量设置规则"><a href="#变量设置规则" class="headerlink" title="变量设置规则"></a>变量设置规则</h1><p><strong>变量设置规则：</strong></p>
+<ul>
+<li>变量名称可以由字母、数字和下划线组成 ，但是不能以数字开头。如果变量名是 “2name”则是错误的。</li>
+<li>在Bash中，变量的默认类型都是字符串型 ，如果要进行数值运算，则必需指定变量类型为数值型。</li>
+<li>默认变量类型全都是字符串型，和其他语言不太一样。</li>
+<li>变量用等号连接值，等号左右两侧不能有空格。</li>
+<li>变量的值如果有空格，需要使用单引号或双引号包括。</li>
+<li>在变量的值中，可以使用“\”转义符。</li>
+<li>如果需要增加变量的值，那么可以进行变量值的叠加。不过变量需要用双引号包含 “$变量名”或用${变量名}包含。</li>
+<li>如果是把命令的结果作为变量值赋予变量 ，则需要使用反引号或$()包含命令。</li>
+<li>环境变量名建议大写，便于区分。</li>
+</ul>
+<p><strong>变量的分类：</strong></p>
+<ul>
+<li>用户自定义变量</li>
+<li>环境变量:这种变量中主要保存的是和系统操作环境相关的数据。</li>
+<li>位置参数变量:这种变量主要是用来向脚本当 中传递参数或数据的，变量名不能自定义，变量作用是固定的。</li>
+<li>预定义变量:是Bash中已经定义好的变量，变量名不能自定义，变量作用也是固定的。</li>
+</ul>
+<h1 id="变量划分"><a href="#变量划分" class="headerlink" title="变量划分"></a>变量划分</h1><h2 id="系统常见环境变量"><a href="#系统常见环境变量" class="headerlink" title="系统常见环境变量"></a>系统常见环境变量</h2><p>系统常见环境变量</p>
+<ul>
+<li><p>PATH:系统查找命令的路径<br>这便是输入命令之前不用输入绝对路径的根本原因，系统会提前在PATH环境变量里的所有路径中查询一遍有没有你输入的命令，找到之后直接执行。</p>
+<p>如果你想直接执行shell脚本，不加绝对路径，直接写入PATH环境变量，使用叠加。</p>
+<blockquote>
+<p>例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo $PATH</span><br><span class="line">PATH=&quot;$PATH&quot;:/root/sh #PATH变量叠加</span><br></pre></td></tr></table></figure>
+
+<p>此后，&#x2F;root&#x2F;sh路径里面的执行文件都可以在任意目录下直接执行，不过是临时生效</p>
+</blockquote>
+</li>
+<li><p>PS1：定义系统提示符的变量 用来改[root@localhost ~]# 这个显示</p>
+<p><strong>下面是系统提示符的变量：</strong></p>
+<ul>
+<li>\d:显示日期，格式为“星期 月 日”</li>
+<li>\h:显示简写主机名。如默认主机名“localhost”</li>
+<li>\t:显示24小时制时间，格式为“HH:MM:SS”</li>
+<li>\T:显示12小时制时间，格式为“HH:MM:SS”</li>
+<li>\A:显示24小时制时间，格式为“HH:MM”</li>
+<li>\u:显示当前用户名</li>
+<li>\w:显示当前所在目录的完整名称</li>
+<li>\W:显示当前所在目录的最后一个目录</li>
+<li>#:执行的第几个命令</li>
+<li>$:提示符。如果是root用户会显示提示符为“#”，如果是普通用户 会显示提示符为“$”</li>
+</ul>
+</li>
+</ul>
+<h2 id="位置参数变量"><a href="#位置参数变量" class="headerlink" title="位置参数变量"></a>位置参数变量</h2><p>在脚本中主要针对参数的一些变量操作。</p>
+<table>
+<thead>
+<tr>
+<th>位置参数 变量</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$n</td>
+<td>n为数字，$0代表命令本身，$1-9 代 表 第 一 到 第 九 个 参 数 ， 十 以 上 的 参 数 需 要 用 大 括 号 包 含 ， 如 9代表第一 到第九个参数，十以上的参数需要用大括号 包含，如9代表第一到第九个参数，十以上的参数需要用大括号包含，如{10}.</td>
+</tr>
+<tr>
+<td>$*</td>
+<td>这个变量代表命令行中所有的参数，$*把所 有的参数看成一个整体</td>
+</tr>
+<tr>
+<td>$@</td>
+<td>这个变量也代表命令行中所有的参数，不过 $@把每个参数区分对待</td>
+</tr>
+<tr>
+<td>$#</td>
+<td>这个变量代表命令行中所有参数的个数</td>
+</tr>
+</tbody></table>
+<p>举例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#$n的例子:一个加法器</span></span><br><span class="line">num1=<span class="variable">$1</span></span><br><span class="line">num2=<span class="variable">$2</span></span><br><span class="line"><span class="built_in">sum</span>=$(( <span class="variable">$num1</span> + <span class="variable">$num2</span>)) <span class="comment">#变量sum的和是num1加num2 echo $sum #打印变量sum的值</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$sum</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="预定义变量"><a href="#预定义变量" class="headerlink" title="预定义变量"></a>预定义变量</h2><table>
+<thead>
+<tr>
+<th>预定义变量</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$?</td>
+<td>最后一次执行的命令的返回状态。如果这个变 量的值为0，证明上一个命令正确执行;如果 这个变量的值为非0(具体是哪个数，由命令 自己来决定)，则证明上一个命令执行不正确 了。</td>
+</tr>
+<tr>
+<td>$$</td>
+<td>当前进程的进程号(PID)</td>
+</tr>
+<tr>
+<td>$!</td>
+<td>后台运行的最后一个进程的进程号(PID)</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">echo “The current process is $$”</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">输出当前进程的PID。</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">这个PID就是variable.sh这个脚本执行时，生成的进程的PID</span></span><br><span class="line">find /root -name hello.sh &amp;</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">使用find命令在root目录下查找hello.sh文件 <span class="comment">#符号&amp;的意思是把命令放入后台执行，工作管理在系统管理章节会详细介绍</span></span></span><br><span class="line">echo &quot;The last one Daemon process is $!&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>接受键盘输入</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">read [选项] [变量名]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-p “提示信息”:在等待read输入时，输出提示信息</li>
+<li>-t 秒数: read命令会一直等待用户输入，使用 此选项可以指定等待时间</li>
+<li>-n 字符数:read命令只接受指定的字符数，就会执行</li>
+<li>-s: 隐藏输入的数据，适用于机密信息的输入</li>
+</ul>
+<h2 id="其他配置文件和登录信息"><a href="#其他配置文件和登录信息" class="headerlink" title="其他配置文件和登录信息"></a>其他配置文件和登录信息</h2><p><strong>注销时生效的环境变量配置文件</strong></p>
+<ul>
+<li>~&#x2F;.bash_logout<br>注销登陆时写入</li>
+</ul>
+<p><strong>其他配置文件</strong></p>
+<ul>
+<li>~&#x2F;bash_history 历史命令文件</li>
+</ul>
+<p><strong>Shell登录信息</strong></p>
+<ul>
+<li><p>本地终端欢迎信息: &#x2F;etc&#x2F;issue</p>
+<table>
+<thead>
+<tr>
+<th>转义符</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>\d</td>
+<td>显示当前系统日期</td>
+</tr>
+<tr>
+<td>\s</td>
+<td>显示操作系统名称</td>
+</tr>
+<tr>
+<td>\l</td>
+<td>显示登录的终端号，这个比较常用。</td>
+</tr>
+<tr>
+<td>\m</td>
+<td>显示硬件体系结构，如i386、i686等</td>
+</tr>
+<tr>
+<td>\n</td>
+<td>显示主机名</td>
+</tr>
+<tr>
+<td>\o</td>
+<td>显示域名</td>
+</tr>
+<tr>
+<td>\r</td>
+<td>显示内核版本</td>
+</tr>
+<tr>
+<td>\t</td>
+<td>显示当前系统时间</td>
+</tr>
+<tr>
+<td>\u</td>
+<td>显示当前登录用户的序列号</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>远程终端欢迎信息:<code>/etc/issue.net</code></strong></p>
+<ul>
+<li>转义符在&#x2F;etc&#x2F;issue.net文件中不能使用。</li>
+<li>是否显示此欢迎信息，由ssh的配置文件<code> /etc/ssh/sshd_config</code>决定，加入“Banner &#x2F;etc&#x2F;issue.net”行才能显示(记得重启SSH服务)。</li>
+</ul>
+</li>
+<li><p>登陆后欢迎信息:<code>/etc/motd</code><br>不管是本地登录，还是远程登录，都可以显示此欢迎信息。</p>
+</li>
+</ul>
+<h1 id="变量运算"><a href="#变量运算" class="headerlink" title="变量运算"></a>变量运算</h1><p><strong>declare 声明变量类型</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">declare [+/-][选项] 变量名</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-: 给变量设定类型属性</li>
+<li>+: 取消变量的类型属性</li>
+<li>-i: 将变量声明为整数型(integer) set-x: 将变量声明为环境变量</li>
+<li>-p: 显示指定变量的被声明的类型</li>
+</ul>
+<p><strong>数值运算</strong></p>
+<ol>
+<li>数值运算</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">aa=11</span><br><span class="line">bb=22 #给变量aa和bb赋值</span><br><span class="line">declare -i cc=$aa+$bb</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>expr或let数值运算工具</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">aa=11</span><br><span class="line">bb=22 #给变量aa和bb赋值</span><br><span class="line">dd=$(expr $aa + $bb)# dd的值是aa和bb的和。注意“+”号左右两 侧必须有空格</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>let与expr一样。</p>
+</blockquote>
+<ol start="3">
+<li>“$((运算式))”或“$[运算式]”</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">aa=11</span><br><span class="line">bb=22 给变量aa和bb赋值</span><br><span class="line">ff=$(( $aa+$bb ))</span><br><span class="line">gg=$[ $aa+$bb ]</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>优先级表：</p>
+<blockquote>
+<p>优先级	运算符	说明<br>13	-, +	单目负、单目正<br>12	!, ~	逻辑非、按位取反或补码<br>11	<em>,&#x2F;, %	乘、除、取模<br>10	+, -	加、减<br>9	&lt;&lt; , &gt;&gt;	按位左移、按位右移<br>8	&lt; &#x3D;, &gt; &#x3D;, &lt; , &gt;	小于或等于、大于或等于、小于、大于<br>7	&#x3D;&#x3D; , !&#x3D;	等于、不等于<br>6	&amp;	按位与<br>5	^	按位异或<br>4	|	按位或<br>3	&amp;&amp;	逻辑与<br>2	||	逻辑或<br>1	&#x3D;,+&#x3D;,-&#x3D;,</em>&#x3D;,&#x2F;&#x3D;,%&#x3D;,&amp;&#x3D;, ^&#x3D;,赋值、运算且赋值 |&#x3D;, &lt;&lt;&#x3D;, &gt;&gt;&#x3D;	</p>
+</blockquote>
+<h2 id="变量测试与替换"><a href="#变量测试与替换" class="headerlink" title="变量测试与替换"></a>变量测试与替换</h2><p>用来测试一个变量到底有没有设置，测试表：</p>
+<p>变变量置换方式	变量y没有设置	变量y为空值	变量y设置值<br>x&#x3D;${y-新值}	x&#x3D;新值	x为空	x&#x3D;$y<br>x&#x3D;${y:-新值}	x&#x3D;新值	x&#x3D;新值 x&#x3D;$y	<br>x&#x3D;${y+新值}	x为空	x&#x3D;新值	x&#x3D;新值<br>x&#x3D;${y:+新值}	x为空	x为空	x&#x3D;新值<br>x&#x3D;${y&#x3D;新值}	x&#x3D;新值 y&#x3D;新值	x为空 y值不变	x&#x3D;$y y值不变<br>x&#x3D;${y:&#x3D;新值}	x&#x3D;新值 y&#x3D;新值	x&#x3D;新值 y&#x3D;新值	x&#x3D;$y y值不变<br>x&#x3D;${y?新值}	新值输出到标准错误输出(就是屏幕)	x为空	x&#x3D;$y<br>x&#x3D;${y:?新值}	新值输出到标准错误输出	新值输出到标准错误输	x&#x3D;$y</p>
+<p><strong>例子：</strong><br>测试x&#x3D;${y-新值} 测试y变量存不存在</p>
+<ul>
+<li><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">unset y 删除变量y</span><br><span class="line">x=$&#123;y-new&#125; 进行测试</span><br><span class="line">echo $x</span><br></pre></td></tr></table></figure>
+<p>显示new，y变量不存在<br>因为变量y不存在，所以x&#x3D;new</p>
+</li>
+<li><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">y=&quot;&quot; 给变量y赋值为空</span><br><span class="line">x=$&#123;y-new&#125; 进行测试</span><br><span class="line">echo $x</span><br></pre></td></tr></table></figure>
+<p>显示空，y为空值</p>
+</li>
+<li><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">y=old 给变量y赋值</span><br><span class="line">x=$&#123;y-new&#125; 进行测试</span><br><span class="line">echo $x</span><br></pre></td></tr></table></figure>
+<p>显示old ，y变量存在且有值</p>
+<p><strong>在用到的时候查询就好，不需要死记硬背。这个表是在写脚本的时候给电脑程序看的，人不参与其中</strong></p>
+</li>
+</ul>
+</article>
+<div class="article-footer">
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/linux/Vim%E6%8F%92%E4%BB%B6/">Vim插件</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/linux/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/">基本命令</a></div></section></div>
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Fancy</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+<widget class="widget-wrapper ghrepo"><div class="widget-body"><div class="items data-service ds-ghinfo" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note"><a class="repo" href="https://github.com/Back2Zer0/md-CS_Note" target="_blank" rel="external nofollow noopener noreferrer"><div class="repo-name flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>Back2Zer0/md-CS_Note</div><div class="repo-desc"><span type="text" id="description">&nbsp;</span></div><div class="grid"><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z"></path></svg><span type="text" id="stargazers_count"></span></div><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg><span type="text" id="forks_count"></span></div><div class="flex-row data-service ds-ghinfo" index="0" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note/tags"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z"></path></svg><span type="text" id="latest-tag-name">0</span></div></div></a></div></div></widget>
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E5%8F%98%E9%87%8F"><span class="toc-text">三种变量</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-text">环境变量</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E6%93%8D%E4%BD%9C"><span class="toc-text">变量操作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E8%AE%BE%E7%BD%AE%E8%A7%84%E5%88%99"><span class="toc-text">变量设置规则</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%88%92%E5%88%86"><span class="toc-text">变量划分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%B8%B8%E8%A7%81%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-text">系统常见环境变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%8F%98%E9%87%8F"><span class="toc-text">位置参数变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%84%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F"><span class="toc-text">预定义变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%92%8C%E7%99%BB%E5%BD%95%E4%BF%A1%E6%81%AF"><span class="toc-text">其他配置文件和登录信息</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E8%BF%90%E7%AE%97"><span class="toc-text">变量运算</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E6%B5%8B%E8%AF%95%E4%B8%8E%E6%9B%BF%E6%8D%A2"><span class="toc-text">变量测试与替换</span></a></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>

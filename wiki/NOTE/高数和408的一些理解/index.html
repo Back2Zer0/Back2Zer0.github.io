@@ -1,0 +1,1339 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>NOTE：高数和408的一些理解 - Fancy 的小宇宙</title>
+
+  
+    <meta name="description" content="树 性质 所有结点度数之和+1(根节点) &#x3D; n(总结点数)  初始归并段要增加几个0 ①n&#x3D;nk+n0 ②n&#x3D;knk+1  二叉树：n0&#x3D;n2+1 叶节点数 &#x3D; 度为2的结点数+1  ①n&#x3D;n0+n1+n2 ②n&#x3D;n1+2n2+1 ①所有种类结点的和&#x3D;n总结点数 ②结点数 x 度数 的和 +1(根节点)&amp;#x3">
+<meta property="og:type" content="website">
+<meta property="og:title" content="高数和408的一些理解">
+<meta property="og:url" content="https://back2zer0.github.io/wiki/NOTE/%E9%AB%98%E6%95%B0%E5%92%8C408%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3/">
+<meta property="og:site_name" content="Fancy 的小宇宙">
+<meta property="og:description" content="树 性质 所有结点度数之和+1(根节点) &#x3D; n(总结点数)  初始归并段要增加几个0 ①n&#x3D;nk+n0 ②n&#x3D;knk+1  二叉树：n0&#x3D;n2+1 叶节点数 &#x3D; 度为2的结点数+1  ①n&#x3D;n0+n1+n2 ②n&#x3D;n1+2n2+1 ①所有种类结点的和&#x3D;n总结点数 ②结点数 x 度数 的和 +1(根节点)&amp;#x3">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+<meta property="article:published_time" content="2026-01-28T02:30:18.683Z">
+<meta property="article:modified_time" content="2026-01-28T02:30:18.683Z">
+<meta property="article:author" content="Fancy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+    <link rel="shortcut icon" href="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Website","@id":"https://back2zer0.github.io/wiki/NOTE/%E9%AB%98%E6%95%B0%E5%92%8C408%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3/","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"name":"高数和408的一些理解","description":"\n\n\n树\n性质\n所有结点度数之和+1(根节点) &#x3D; n(总结点数)\n\n初始归并段要增加几个0\n①n&#x3D;nk+n0\n②n&#x3D;knk+1\n\n二叉树：n0&#x3D;n2+1\n叶节点数 &#x3D; 度为2的结点数+1\n\n①n&#x3D;n0+n1+n2\n②n&#x3D;n1+2n2+1\n①所有种类结点的和&#x3D;n总结点数\n②结点数 x 度数 的和 +1(根节点)&...","url":"https://back2zer0.github.io/wiki/NOTE/%E9%AB%98%E6%95%B0%E5%92%8C408%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3/"}</script>
+  
+</head>
+<body>
+
+
+
+<div class="l_body content" id="start" layout="page" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="https://picgo-1398775008.cos.ap-guangzhou.myqcloud.com/beaker-svgrepo-com.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/wiki/NOTE/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B03b1b"><div class="main">NOTE</div><div class="sub normal cap">为学日益，为道日损</div><div class="sub hover cap" style="opacity:0"> fancy</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item" title="认知" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item active" title="技术" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="生活" href="/life/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="其他平台" href="/social/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/" placeholder="在技术专栏中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<widget class="widget-wrapper doc-tree post-list"><div class="widget-body fs14"><a class="link" href="/wiki/NOTE/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B03b1b/#start"><span class="toc-text">线性代数3b1b</span></a><a class="link" href="/wiki/NOTE/Crash%20Course%20CS/"><span class="toc-text">Crash Course CS</span></a><a class="link" href="/wiki/NOTE/%E7%A8%8B%E5%BA%8F%E6%98%AF%E6%80%8E%E4%B9%88%E8%B7%91%E8%B5%B7%E6%9D%A5%E7%9A%84/"><span class="toc-text">程序是怎么跑起来的</span></a><a class="link active" href="/wiki/NOTE/%E9%AB%98%E6%95%B0%E5%92%8C408%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3/"><span class="toc-text">高数和408的一些理解</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a><a class="link" href="/wiki/NOTE/%E8%8B%B1%E8%AF%AD%E9%9A%8F%E7%AC%94/"><span class="toc-text">英语随笔</span></a><a class="link" href="/wiki/NOTE/script/"><span class="toc-text">script</span></a><a class="link" href="/wiki/NOTE/Vim%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><span class="toc-text">Vim 学习笔记</span></a></div></widget>
+
+<widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：看闲书</span></div><div class="widget-body"><a class="item wiki" href="/wiki/algorithm/%E8%83%8C%E5%8C%85DP/"><span class="title">那段学算法的日子</span><span class="excerpt">AcWing和Leetcode，还有一些比赛题目。</span></a><a class="item wiki" href="/wiki/cpp/effective%20cpp/"><span class="title">C++</span><span class="excerpt">主要来源是AcWing和Leetcode，还有一些比赛题目。</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/NOTE/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B03b1b/">NOTE</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2026-01-28T02:30:18.683Z">2026-01-28</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>高数和408的一些理解</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content">
+
+
+<h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><ul>
+<li><p><strong>性质</strong></p>
+<p>所有结点度数之和+1(根节点) &#x3D; n(总结点数)</p>
+<blockquote>
+<p>初始归并段要增加几个0</p>
+<p>①n&#x3D;n<del>k</del>+n<del>0</del></p>
+<p>②n&#x3D;kn<del>k</del>+1</p>
+</blockquote>
+<p>二叉树：n<del>0</del>&#x3D;n<del>2</del>+1</p>
+<p>叶节点数 &#x3D; 度为2的结点数+1</p>
+<blockquote>
+<p>①n&#x3D;n<del>0</del>+n<del>1</del>+n<del>2</del></p>
+<p>②n&#x3D;n<del>1</del>+2n<del>2</del>+1</p>
+<p>①所有种类结点的和&#x3D;n总结点数</p>
+<p>②结点数 x 度数 的和 +1(根节点)&#x3D; n总结点数</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>(小括号)：默认向上取整</p>
+</blockquote>
+<ul>
+<li><p>&#x3D;&#x3D;二叉排序树(查找树) BST&#x3D;&#x3D;</p>
+<p>**查找：**Olog<del>2</del>(n)  次数不超过深度。</p>
+<blockquote>
+<p>左&lt;根&lt;右</p>
+<p>目的不是排序，而是提高插入、删除、查找的速度。</p>
+</blockquote>
+<p><strong>插入</strong>：</p>
+<p>插入后从上往下，最后的位置一定是叶节点。从根开始比较，小就往左，大就往右，最后一定是叶子结点。</p>
+<p><strong>删除：</strong></p>
+<ol>
+<li>叶节点不动；</li>
+<li>有一个左&#x2F;右子树，则子树替换被删结点。</li>
+<li>有两个子树，用直接中序后继(前驱)替换。</li>
+</ol>
+</li>
+<li><p>&#x3D;&#x3D;平衡二叉树 AVL&#x3D;&#x3D;</p>
+<p><strong>定义</strong>：平衡因子&lt;&#x3D;1。</p>
+<p>**查找：**Olog<del>2</del>(n)  次数不超过深度。</p>
+<blockquote>
+<p>旋转：删除看个头，插入向上找</p>
+</blockquote>
+<p><strong>插入：</strong></p>
+<p>①和BST一样。</p>
+<p>②若插入后破坏平衡，则向上找到最近的最小不平衡树(祖先)。</p>
+<p>根据不平衡祖先和插入节点的相对位置进行（LL、RR、LR、RL）旋转。</p>
+<p><strong>删除：</strong></p>
+<p>①和BST一样。</p>
+<p>②若删除后破坏平衡，则向上找到最近的最小不平衡树(祖先)Z。</p>
+<p>根据Z的个头最高的孩子X，与X个头最高的孩子Y，X和Y的相对位置进行（LL、RR、LR、RL）旋转。</p>
+<blockquote>
+<p>最多次数：满二叉树</p>
+<p>最少次数：N1&#x3D;1  , N2&#x3D;2,     N<del>n</del>&#x3D;N<del>n-2</del>+N<del>n-1</del>+1 </p>
+</blockquote>
+</li>
+<li><p>&#x3D;&#x3D;B树 B-tree&#x3D;&#x3D;</p>
+<p>**定义：**平衡因子为0，外部节点为null，叶子节点指内部节点最后一层。(终端结点同叶子结点)</p>
+<p>BST、AVL都是内存里小数据量检索。B树更适合大量数据（涉及硬盘）的检索。结点是硬盘，节点内部从硬盘读入内存后看到。</p>
+<blockquote>
+<p>m阶</p>
+<p>根的关键字：[1,m-1]      </p>
+<p>非根关键字：[(m&#x2F;2)-1,m-1]            &lt;从阶数一半开始&gt;</p>
+<p>子树是关键字个数+1。</p>
+</blockquote>
+<p><strong>查找：<strong>循环查找：①（磁盘里操作）比较后找到左&#x2F;右子树的</strong>结点</strong>，从磁盘读入内存。②（内存里操作）结点内部找<strong>目标关键字</strong>（折半或顺序）</p>
+<p><strong>插入</strong>：</p>
+<p>①定位：根据BST查找算法，找到外部节点的NULL的位置。</p>
+<blockquote>
+<p>（书里的原话是，查找到叶子节点NULL后，再定位到父结点）</p>
+</blockquote>
+<p>②插入：插入后检查结点是否在[(m&#x2F;2)-1,m-1]。若个数大于m-1，进行分裂。</p>
+<p>③<strong>分裂</strong>：根据(m&#x2F;2)的位置分成左中右三部分。</p>
+<ul>
+<li>中间位置的关键字插入父节点（左右子树分别为左部分右部分结点）。</li>
+<li>左部分结点保留原结点。</li>
+<li>右部分节点作为父结点的新右子树。</li>
+</ul>
+<blockquote>
+<p>(m&#x2F;2)是上取整。</p>
+<p><strong>构建B树时，要增加子树只能通过分裂。</strong></p>
+<p>分裂后父节点必增加一个关键字。</p>
+<p>增加后超越上限（m&#x2F;2），则继续分裂。</p>
+</blockquote>
+<p><strong>删除：</strong></p>
+<p>根据被删元素是——</p>
+<ol>
+<li><p>非终端结点：用前驱或后继替代。</p>
+<blockquote>
+<p>删除非叶结点元素最终都转换成删除叶结点元素。（用叶节点给被删父节点填坑）</p>
+</blockquote>
+</li>
+<li><p>终端结点：根据被删关键字结点的个数——</p>
+<ul>
+<li><p>&#x2F;&gt;(m&#x2F;2)-1：删完不低于下限，直接删。</p>
+</li>
+<li><p>&#x3D;(m&#x2F;2)-1:删完低于下限。</p>
+<p><strong>从不满足关键字个数的结点</strong>视角看：</p>
+<blockquote>
+<p>那个孤零零的结点的视角：</p>
+</blockquote>
+<p>①有兄弟够借：<strong>父下来，兄上去</strong>。</p>
+<p>被删结点相邻的兄弟关键字个数&gt;(m&#x2F;2)-1，以右兄弟为例，让被删结点后继即父结点关键字加入自己的节点，而后继的后继填补父结点关键字原位置。</p>
+<blockquote>
+<p>左右兄弟都可以借。</p>
+<p>后继 即双亲节点的关键字，后继的后继 即右兄弟最左边的关键字。</p>
+<p>左兄弟则是前驱和前驱的前驱。</p>
+<p>(原因是要保证有序的性质)</p>
+</blockquote>
+<p>②左右兄弟都不够借：<strong>父下来，同合并</strong></p>
+<p>此时左右兄弟的关键字都&#x3D;(m&#x2F;2)-1或无，    ，合并为一个子结点。</p>
+<blockquote>
+<p>左右兄弟都可以合并。（左前驱右后继）合并时要带上子树。带子树的位置你观察关键字顺序就能知道在哪。</p>
+<p>合并后的双亲节点一定少了一个关键字，成为两个合并结点的中间关键字了。</p>
+<p>若双亲节点合并后，减少一个关键字导致&lt;(m&#x2F;2)-1，则继续循环这一步（判断兄弟够借或不够借）</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ol>
+<p>**高度：**log<del>m</del>(n+1)   &lt;&#x3D;h&lt;&#x3D;log<del>(m&#x2F;2)</del>((n+1)&#x2F;2)+1</p>
+</li>
+<li><p>&#x3D;&#x3D;B+树&#x3D;&#x3D;</p>
+<p>适用于数据库检索。</p>
+<p><strong>两层</strong>：分为目录层（分支）和数据层（叶子）</p>
+<p><strong>关键字重复</strong>：非叶节点只负责索引（即指针），没有数据地址。所以查找就像坐电梯直达目标叶子节点。</p>
+<p><strong>两个头指针</strong>：根节点一个指针，叶子节点一个指针。</p>
+<p><strong>关键字和子树个数相等</strong>：一个关键字对应一个子树的最大元素。故关键字个数是m&#x2F;2, 比B树+1。</p>
+<p>B+随机+顺序都支持。B仅支持随机</p>
+</li>
+<li><p>&#x3D;&#x3D;小根堆&#x3D;&#x3D;</p>
+<p>**定义：**完全二叉树（叶子必须从左到右连续排列）。<strong>任一节点&gt;&#x3D;其左右孩子。</strong></p>
+<ul>
+<li><p>节点i的左孩子：2i </p>
+</li>
+<li><p>右孩子：2i+1 </p>
+</li>
+<li><p>父节点:(i&#x2F;2) 下取整</p>
+</li>
+</ul>
+<blockquote>
+<p>非叶子结点：1~(n&#x2F;2)</p>
+</blockquote>
+<p>**输出：**输出堆顶元素后，将堆底元素送入堆顶，再慢慢下坠。</p>
+<p>**删除：**同输出。</p>
+<p>**插入：**先放堆底，再逐步上升。</p>
+<p><strong>调整</strong>：普通数组变成根堆：从下往上看。</p>
+<p>将n除以二 向下取余，找到最后一个非叶节点。开始从后往前遍历所有非叶结点，不符合大小关系的就和孩子交换。</p>
+</li>
+</ul>
+<hr>
+<h2 id="空间几何"><a href="#空间几何" class="headerlink" title="空间几何"></a>空间几何</h2><p>旋转面：[平面曲线]绕[平面直线]，绕x轴则x不动，另外一个变平方和。<br>柱面：定直线为母线，定曲线为准线</p>
+<p>平面：<br>点+截距&#x3D;截距式<br>点+法向量&#x3D;点法式</p>
+<p>直线：<br>点+方向向量&#x3D;对称式 &#x2F; 参数方程</p>
+<hr>
+<h2 id="曲面积分"><a href="#曲面积分" class="headerlink" title="曲面积分"></a>曲面积分</h2><p>已知曲面的法向量用方向余弦表示是n &#x3D; (cosα,cosβ,cosγ)。其中α是n与x轴(yoz面)的角度，β是与y轴(xoz面)，γ是与z轴(xoy面)。 而法向量用代数表示是n&#x3D;(-Zx,-Zy,1) (当曲面为z&#x3D;z(x,y)时)</p>
+<p>第一类曲面积分，<br>求的是曲面表面的面积，也可以看作是高度为1的曲面薄片的质量。<br>方法是将三个方向的曲面面积投影到一个面上。</p>
+<p>(利用梯度得到法向量，法向量与z轴的角度γ即xoz 和 yoz平面与投影面xoy的角度γ) </p>
+<p>一个平面dS和另一个投影平面(如xoy)的夹角，即该平面切平面与对应坐标面的夹角，即切平面法向量与对应坐标轴的夹角。</p>
+<blockquote>
+<p> 侧边&#x2F;斜边 &#x3D; cosγ &#x3D; 法向量n&#x2F;z轴，即dS&#x2F;dxdy &#x3D; cosγ。  而cosγ &#x3D; cos&lt;n , z&gt; &#x3D; (n·z)&#x2F;|n|·|z|</p>
+</blockquote>
+<p>$$<br>d\sigma &#x3D; dS \cdot \cos\langle \vec{n}, z轴 \rangle &#x3D; dS\cdot\frac{\vec{n}\cdot z}{|\vec{n}|\cdot|{z轴}|} &#x3D;  dS\cdot\frac{(-Z_y,-Z_y,1)\cdot(0,0,1)}{\sqrt{(-Z_x)^2+(-Z_y)^2+(1)^2}\cdot\sqrt{0+0+1^2}}<br>$$</p>
+<p>故dS &#x3D; 1&#x2F;cosγ dxdy 。<br>$$<br>dxdy &#x3D; dS\cdot\cos\gamma  &#x3D;&gt; \frac{1}{\cos\gamma}dxdy &#x3D; dS &#x3D;&gt; S&#x3D;\iint\limits_{D} \sqrt{Z_x^2+Z_y^2+1} , dxdy<br>$$</p>
+<p>第二类曲面积分，<br>求的是单位时间截面通过的流体质量。 设流体密度为1，v是速度 s是面积，则 m&#x3D;ρvts ，(vt是高，s是截面面积，故vts &#x3D; V即体积 ,m&#x3D;ρV)<br>方法同样是投影转换坐标，和第一类曲面积分类似，dydz &#x3D; dScosα (此时dS&#x3D;dxdy 1&#x2F;cosγ) &#x3D; dxdy(cosα&#x2F;cosγ) ，此时由曲面法向量的代数表示得cosα&#x2F;cosγ &#x3D; -Zx。<br>故dydz &#x3D; -Zx dxdy。同理dzdx &#x3D; -Zy dxdy。</p>
+<p>备注：解决第二类曲面还可以利用高斯公式和斯托克斯公式。<br>高斯要求曲面光滑+空间封闭(P对x偏导，Q对y偏导，R对z偏导,  积分微元统一为dV)，<br>斯托克斯则是将闭合曲线积分问题转换为以该曲线为边界的第二类曲面积分问题(公式+转换投影+二重积分)。</p>
+<hr>
+<h2 id="多播"><a href="#多播" class="headerlink" title="多播"></a>多播</h2><p>ip 多播数据报，目的地址是 Ipv4 D 类地址，1110 开头，即 224 到 239。</p>
+<p>分两种：本局域网的硬件多播  +  互联网的多播。</p>
+<p>局域网硬件多播中，<br>mac 地址 只有 23 位能用作多播地址，</p>
+<p>所以 ip 地址映射到 mac 时，只有后 23 位能保留。</p>
+<p>这意味着映射不是一对一的。</p>
+<h2 id="PPP"><a href="#PPP" class="headerlink" title="PPP"></a>PPP</h2><p>咱们目前用的手机流量，就是数据链路层的点对点 ppp 协议。提到 ppp，就想起两个模块：link control protocols 和 net control protocol 。一个网络层协议对应一个 NCP。</p>
+<p>ppp 首尾定界符：0X7E<br>ppp 面向字节，不需要序号确认，点对点不需要 csma 协议，所以没有最短帧长限制（2 匸 v），即 0-1500B</p>
+<p>链接过程：<br>链路静止➡️链路建立➡️Lcp 协商成功进入鉴别状态➡️鉴别成功进入网络层协议状态，配置 Ncp➡️链路打开状态（此时可以通信了）</p>
+<h2 id="CSMA（介质访问）"><a href="#CSMA（介质访问）" class="headerlink" title="CSMA（介质访问）"></a>CSMA（介质访问）</h2><p>csma&#x2F;ca: 信道预约（监听）<br>隐蔽站：DIFS+RTS+［SIFS+CTS+（SIFS+数据帧+SIFS+ACK）］</p>
+<p>csma&#x2F;cd:边发边听。<br>二进制退避算法：0 到 2 τr。 </p>
+<p>（ r 是 2 的 k 次方-1k 为重传次数。）</p>
+<p>k 最高为 10，到第 16 次不成功则放弃发送。</p>
+<p>最短帧长：2 τ v（10Base 是 64B，51.2 微秒）</p>
+<blockquote>
+<p>2 τv&#x3D; RTT x V  （往返时延 x 数据传播速率）</p>
+<p>往返时延而非单程时延的原因：冲突信号需要从冲突点返回发送方 A 才能被检测到(边打边听)。</p>
+<p>16 是个神奇数字。rip16 也是不可达</p>
+</blockquote>
+<hr>
+<p>争用期：发送 64B(512b)的时间。</p>
+<p>（端到端往返时间2τ，又称为碰撞窗口）</p>
+<p>10Mbit&#x2F;s 以太网是 51.2 微秒 的发送时间。</p>
+<blockquote>
+<p>注意是bit位，不是按字节B。</p>
+</blockquote>
+<p>100Mbit 是 5.12 微秒。同时会减少网段长度。</p>
+<hr>
+<p>神奇的 fancy 公式：<br>2 的 n 次方 -1。</p>
+<p>它是：<br>1.csma&#x2F;cd 协议回避算法的最大退避时间。（第 n 次退避）<br>2.连续 ARQ 协议 gbn 的发送窗口上限。（n 比特对帧编号）<br>3.满二叉树的结点数（高度为 n）</p>
+<h2 id="TCP-UDP-IP-MAC-首部长度"><a href="#TCP-UDP-IP-MAC-首部长度" class="headerlink" title="TCP UDP IP MAC 首部长度"></a>TCP UDP IP MAC 首部长度</h2><p>TCP  首部长度 20～60B。<br>(4位数据偏移字段 即首部长度，单位 4B，最大 15x4)</p>
+<p>UDP 首部长度 8B</p>
+<p>(2 2 2 2)</p>
+<p>—————<br>以太网 MAC 帧：<br>首部长度：18B（不算前导码）</p>
+<p>8 B 前导码（7 B 前同步码+1 帧开始定界符）</p>
+<p>6 目的地址<br>6 源地址<br>2 交付协议类型<br>4FCS 检验码</p>
+<p>数据：46-1500，<br>（46 时为帧最小长度 46+18&#x3D;64B）</p>
+<p>————<br>ip 数据报<br>首部长度 20B(可变长)</p>
+<p>三单位 4B 1B 8B<br>总长度 16 位</p>
+<h2 id="10BASE和传输介质"><a href="#10BASE和传输介质" class="headerlink" title="10BASE和传输介质"></a>10BASE和传输介质</h2><p>T 是双绞线(Twisted)，F 是光纤(fiber)，数字是同轴电缆(cable)</p>
+<ul>
+<li><strong>双绞线：</strong></li>
+</ul>
+<p><strong>局域网</strong>+传统电话网，绞合减少相邻导线干扰，加上屏蔽层</p>
+<p>适用于模拟传输（放大器）+数字传输(中继器)</p>
+<ul>
+<li><strong>光纤：</strong></li>
+</ul>
+<p>光脉冲。</p>
+<p>全反射特性。</p>
+<p>长距离：单模光纤。直径小到一个波长，光会始终向前不反射。（用于半导体激光）</p>
+<p>短距离：多模光纤。光源为发光二极管。</p>
+<ul>
+<li><strong>同轴电缆：</strong></li>
+</ul>
+<p>强屏蔽性：内导体（铜芯）+屏蔽层+塑料外层</p>
+<p>信道平均(实际)数据传输速率</p>
+<p>&#x3D;信道利用率×信道带宽(最大数据传输速率)”,</p>
+<p>&#x3D; 发送周期内发送的数据量&#x2F;发送周期</p>
+<h2 id="BGP-OSPF-IGMP"><a href="#BGP-OSPF-IGMP" class="headerlink" title="BGP OSPF IGMP"></a>BGP OSPF IGMP</h2><p>BGP：<br>分为内部BGP协议(内部)和外部BGP协议(自治系统之间)，<br>iBGP内部会话，eBGP外部会话<br>打开、更新、保活、通知<br>(open,update,keepalive,notification)</p>
+<p>OSPF：<br>1.问候分组(hello)<br>2.(数据库)描述分组<br>3.(链路)状态分组：请求、更新、确认</p>
+<p>IGMP：传递多播信息<br>协议字段值为2，D类IP地址（前缀为1110，即224~239），局域网硬件多播时取后23位，还能互联网多播</p>
+<h2 id="边界对齐"><a href="#边界对齐" class="headerlink" title="边界对齐"></a>边界对齐</h2><p>边界对齐有两个要求：1.整体struct是最大变量对齐值整数倍；2.每个成员要按类型大小对齐(char1 short2 int 4)，或者说其地址对类型大小取余&#x3D;&#x3D;0</p>
+<h2 id="拥塞窗口"><a href="#拥塞窗口" class="headerlink" title="拥塞窗口"></a>拥塞窗口</h2><p>我的意思是，拥塞控制窗口收到一个确认，才增加一个MSS。<br>比如慢开始为1，不超过拥塞控制初始阈值时，<br>第一轮RTT发送1个MSS，发送方收到一个确认则拥塞窗口cwnd增长为2。<br>第二轮RTT发送2个MSS，期间收到两个确认序号，2+2 &#x3D; 4。<br>第三轮RTT发送4个MSS，期间收到四个确认序号，4+4&#x3D;8。  </p>
+<p>这个期间，拥塞窗口cwnd是一个一个增长的，例如第三轮是4+1+1+1+1 &#x3D; 8，收到一个接收方确认ack+1，而不是直接从cwnd&#x3D;4收到一个累计确认直接到8。</p>
+<p>例子：<br>cwnd &#x3D; 1，ssthresh &#x3D; 16。<br>发送方发送序号为 1-1000 的数据段（1 个 MSS）。<br>接收方收到后，回复 ACK 1001。这个ACK 1001就是一个累计确认，它确认了1-1000这段数据。<br>发送方收到ACK 1001后，知道1-1000已被确认。此时，“已发送但未确认” 的窗口为空。<br>根据慢开始算法，因为有一个 MSS 的数据被确认，所以cwnd增加 1，变为 2。<br>发送方现在可以发送 2 个 MSS 的数据，即 1001-2000 和 2001-3000。<br>接收方收到这两个数据段后，回复 ACK 3001。这个ACK 3001也是一个累计确认，它确认了1-3000这段数据（包括了之前的1-1000）。<br>发送方收到ACK 3001后，知道又有两个MSS 的数据（1001-2000 和 2001-3000）被确认了。<br>因此，cwnd会连续增加两次，从2变为4。</p>
+<h2 id="逻辑地址映射到物理地址"><a href="#逻辑地址映射到物理地址" class="headerlink" title="逻辑地址映射到物理地址"></a>逻辑地址映射到物理地址</h2><p>计算机为提升效率或保障安全，将“地址转换”作为“前置准备步骤”，与“最终是否真的读写数据”解耦。（故地址转换过程与cache无关。）</p>
+<p>地址转换过程:<br>转换一个主存逻辑地址，根据硬件分成虚拟页号和页内偏移量offset，根据虚拟页号找到页表对应的页表项，先看有效位是否为1。</p>
+<ul>
+<li>如果为1直接把页表项里的物理页号和逻辑地址中的offset组合成为物理地址。</li>
+<li>如果为0，不看物理页号（没有意义），启动缺页中断程序，查页表项的外存物理地址，通过置换算法分配物理页框，把外存物理页调入内存并修改页表项的有效位、访问位等。<br>处理程序完成之后，重新执行发生缺页的指令，得到访问页的物理地址。</li>
+</ul>
+<p>——————</p>
+<p>需要转换地址但不需要访问的情况<br>（不需要修改cache）</p>
+<ol>
+<li>CPU指令预取（最常见）：提前转地址，但指令可能被“丢弃”</li>
+<li>内存保护与权限检查：转地址是为了“验证合法性”，而非“读写数据”</li>
+</ol>
+<p>如果转换之后需要读写，则更新cache内容。</p>
+<p>——————<br>注:<br>由于容量相差较大——<br>主存与外存的信息传输单位是 “页”page 或 “段”<br>主存与cache的信息传输单位是 “块” block。</p>
+<p>实际上:<br>cache 块 &#x3D; cache 行。<br>硬盘 块 &#x3D; cluster 簇。</p>
+<h2 id="向量组"><a href="#向量组" class="headerlink" title="向量组"></a>向量组</h2><p>向量组是解决线性方程组的工具。<br>向量组的线性关系与线性方程组的对应如下:</p>
+<p>设有两个向量组A和B。<br>A是m<em>n矩阵，B是m</em>t矩阵。<br>X即线性表示的系数，是n*t矩阵。<br>（即系数矩阵，即[k1k2……kn]。每个k对应B中一个列向量由A线性表示的系数）</p>
+<p>1.向量组间的线性关系，对应非齐次线性方程AX&#x3D;B。</p>
+<p>1️⃣AX&#x3D;B有解，A可通过系数矩阵X线性表示B<br>2️⃣如果无解，即B中至少有一个向量无法由A的向量线性组合得到</p>
+<p>判断依据:有没有解通过看A矩阵与AB增广矩阵的秩是否相等。</p>
+<p>注:<br>1.如果两个向量组等价，即相互线性表示，这意味着三秩相等。<br>2.B可退化成单个向量b，即向量组A是否可以线性表示b的问题。</p>
+<p>2.向量组A自身内部的线性关系，对应齐次线性方程组。即AX&#x3D;0。<br>1️⃣如果有唯一零解，就是向量组a线性无关，只能让k1&#x3D;k2&#x3D;……kn&#x3D;0。<br>2️⃣如果无穷多解就是线性相关。</p>
+<p>上述对应关系的核心是“秩”，而初等行变换是求矩阵秩的关键工具。<br>因此两者是分析线性关系与方程组解的分析工具。</p>
+<h2 id="关键路径、最短路径-dijkstra-floyd"><a href="#关键路径、最短路径-dijkstra-floyd" class="headerlink" title="关键路径、最短路径(dijkstra,floyd)"></a>关键路径、最短路径(dijkstra,floyd)</h2><p><strong>关键路径：</strong></p>
+<p>拓扑排序+逆拓扑</p>
+<p>ete→lte<br>etv→ltv</p>
+<p><strong>dijkstra:</strong></p>
+<p>1.每次从未标记的节点中,选择距离出发点最近的节点，收录到最优路径集合S中<br>2.计算刚加入路径集合的节点A的所有邻近节点B的距离 (不包含标记的节点)<br>若(节点A的距离+节点A到节点B的边长)&lt; 节点B的距离，就更新节点B的距离和前面点。</p>
+<blockquote>
+<p>开始默认无穷，罗列顶点，分为第一轮第二轮第三轮，每一轮集合S增加一个顶点，该顶点不再延伸(后面几轮空白)。</p>
+</blockquote>
+<p><strong>floyd</strong></p>
+<p>n行邻接矩阵表示带权有向图。沿对角线n轮十字架，每轮对角线a[i] [i]不变(否则自己指向自己了)，对角线之外的元素值与十字架行列之和比较，小则替换。</p>
+<blockquote>
+<p>Floyd可以求带负权边但不带负环图的多源最短路径</p>
+</blockquote>
+<h2 id="曼彻斯特编码"><a href="#曼彻斯特编码" class="headerlink" title="曼彻斯特编码"></a>曼彻斯特编码</h2><p>归零内部不跳变。</p>
+<p>归零外部不跳变，两个固定样子；<br>非归外部零跳变，用跳变表示 01</p>
+<p>曼彻斯特内部跳变，作为时钟信号。</p>
+<p>曼彻斯特外部不跳变，两个固定样子；<br>差分曼彻斯特外部用跳变表示 01。</p>
+<h2 id="DHCP、ICMP、ARP"><a href="#DHCP、ICMP、ARP" class="headerlink" title="DHCP、ICMP、ARP"></a>DHCP、ICMP、ARP</h2><p><strong>DHCP发现 提供 请求 确认报文</strong></p>
+<p>发现：源0 目255</p>
+<p>提供：源服务器地址，目255</p>
+<p>请求：源0 目255</p>
+<p>确认：源服务器地址，目255</p>
+<hr>
+<p><strong>ICMP:(网际报文控制协议) 用于报告差错和异常情况。</strong></p>
+<p>分为差错报告报文和询问报文。<br>差错报告报文：<br>5个类型：终点不可达、源点抑制、时间超过、参数问题、改变路由（重定向）<br>4个不发送:ICMP报文自己、后续分片、多播地址、特殊地址的不发。</p>
+<p>询问报文：<br>回送请求(和回答)<br>时间戳请求(和回答)<br>地址掩码请求(和回答)<br>路由器询问(和报告)</p>
+<hr>
+<p><strong>ARP（地址解析协议）</strong></p>
+<p>ARP请求分组 （广播）</p>
+<p>ARP响应分组（单播）</p>
+<blockquote>
+<p>ARP看到了IP地址，所以说网络层</p>
+<p>NAT看到了端口，所以是传输层</p>
+</blockquote>
+<p>MAC无法跨网络：主机想把IP分组发送到另一个网络，要用ARP找到网关（相邻路由器）的硬件MAC地址。而且路由器不会转发广播帧（ARP查询帧）。网关会把自己的MAC回复给主机。后续的传播任务交给路由器就好了。</p>
+<blockquote>
+<p>中途源地址和目的地址会改变。</p>
+</blockquote>
+<h2 id="磁道"><a href="#磁道" class="headerlink" title="磁道"></a>磁道</h2><p>（柱面(磁道),磁头(盘面),扇区 ）</p>
+<p>一个扇区的平均访问时间：寻道时间+旋转延迟时间+传输时间</p>
+<blockquote>
+<p>Ts&#x3D;mxn+s </p>
+<p>m每跨越一个磁道耗时 s启动磁臂时间</p>
+<p>Tr &#x3D; r x1&#x2F;2</p>
+<p>r一秒几转</p>
+<p>Tt&#x3D;b&#x2F;rN</p>
+<p>b读写字节数，N一个磁道的字节</p>
+</blockquote>
+<h2 id="IEEE浮点数-阶码全0-尾数非0"><a href="#IEEE浮点数-阶码全0-尾数非0" class="headerlink" title="IEEE浮点数 阶码全0 尾数非0"></a>IEEE浮点数 阶码全0 尾数非0</h2><p>尾数非零、阶码全0时属于「非规格化数」，</p>
+<p>隐藏位为 0 且<br>指数为-126而非 0-127。</p>
+<p>可以理解成“隐藏位的1 乘到阶码上了”。 隐藏位右移(除二)走，阶码+1位（乘二）</p>
+<p>目的是让最大的非规格化数  0.f×2^-126 （尾数23位全1），恰好能和最小规格化数  1.0×2^-126  无缝衔接，不会出现数值断层。</p>
+<blockquote>
+<p>0&lt;f&lt;1</p>
+</blockquote>
+<p>阶码全1，尾数为0 正无穷大</p>
+<p>阶码全1，尾数非0 无定义NaN</p>
+<p>阶码全0，尾数全0 就是0（正负零）</p>
+<p>阶码全0，尾数非0 非规格化数</p>
+<h2 id="规格化"><a href="#规格化" class="headerlink" title="规格化"></a>规格化</h2><p>浮点数运算时，需要规格化：确保尾数的最高位刚好在小数点之前。</p>
+<p>左规：运算结果尾数的最高数位不是有效位，即0.000……的形式，进行左规。</p>
+<blockquote>
+<p>尾数左移一位，阶码-1 （可能多次）</p>
+</blockquote>
+<p>右规：运算结果尾数的有效位进到小数点前面时，右规。即1.xxx的形式，相加时最高进一位，故右规只需一次。</p>
+<blockquote>
+<p>尾数右移一位，阶码+1（可能溢出）</p>
+</blockquote>
+<p><strong>运算</strong>：</p>
+<ol>
+<li><p>对阶</p>
+<p>①小阶向大阶看齐</p>
+<p>②移位：左减右加（注意负数是算术移位，右移同符号位）</p>
+</li>
+<li><p>尾数加减</p>
+<p>隐藏位要还原到尾数</p>
+</li>
+<li><p>尾数规格化</p>
+</li>
+<li><p>舍入</p>
+<p>①0舍1入:</p>
+<ul>
+<li><p>若舍弃部分的<strong>最高位是 0</strong> → 直接舍去这部分，保留的最低位不变（“0 舍”）；</p>
+</li>
+<li><p>若舍弃部分的<strong>最高位是 1</strong> → 舍去这部分的同时，给保留的最低位加 1（“1 入”）；</p>
+</li>
+</ul>
+<p>②恒置1</p>
+</li>
+<li><p>溢出判断</p>
+<ul>
+<li>10,xxx 下溢出（按机器零处理）</li>
+<li>01,xxx 上溢出</li>
+</ul>
+</li>
+</ol>
+<h2 id="kmp"><a href="#kmp" class="headerlink" title="kmp"></a>kmp</h2><p>next数组：当前位置不匹配时的最长公共前缀。</p>
+<blockquote>
+<p>如果数组从1开始则需要整体+1,如果从0开始不需要。</p>
+</blockquote>
+<blockquote>
+<p>模式串与主串匹配的公共前缀，显然不包括不匹配位置。所以是从当前位置往前看。</p>
+</blockquote>
+<p>不匹配时，让数组和自己位置的next数组元素的模式串位置比较。	</p>
+<blockquote>
+<p>下面这个例子就是下标从1开始</p>
+</blockquote>
+<p>要求那个next数组（有些叫next-val数组）： </p>
+<p>1.必须先求模式串S 每一个字符前面的那个字符串的最大公共前后缀长度，将这一系列长度存成一个数组，求出来的每个长度其实就是和模式串每一个对应位置上做比较的下标 。</p>
+<p>例如：模式串是   <strong>ABACABC</strong>    的最长公共前后缀长度数组为：</p>
+<p>我们将最长公共前后缀长度记作LCPSF，现在从模式串第一个字符A开始，A的前面字符串为null，所以A之前的子串的LCPSF是0；来到B，B的前面字符串是A，A是单独的字符不存在公共前后缀，所以长度也是0；来到A，A前面的子串是AB，LCPSF为0；来到C，C前面的子串是ABA，LCPSF为1；来到A，A前面的子串是ABAC，LCPSF为0；来到B，B之前子串为ABACA，LCPSF为1；来到C，C前面子串为ABACAB，LCPSF为2；到此这个最长公共前后缀数组就出来了&#x3D;【0,0,0,1,0,1,2】将这个数组从第二个值开始每个值加1&#x3D;【0,1,1,2,1,2,3】就是将要和子串对应位置比较的下标</p>
+<p>2.求得模式串最长公共前后缀的数组T【n】后，把模式串每个位置上的字符与这个数组存的下标对应字符作比较： </p>
+<p>上面求出了下标数组【0,1,1,2,1,2,3】现在来和模式串ABACABC每个位置作比较求最终next-val数组： </p>
+<p>next-val数组第一个数直接为0。 next-val第二数：模式串第二个字符为B，对应的下标数组第二个数是1，那就是将模式串的第1个字符和B相比较，A!&#x3D;B,所以直接将下标数组第二个数1作为next-val数组第二个数的值 第三个数：模式串第三个字符为A，对应下标数组第三个数为1，取其作为下标，找到模式串第1个字符为A，A&#x3D;A，那取next-val的第一个数做为next-val第三个数的值，也就是0 。。。。。以此类推，模式串每一个位置的字符和对应下标位置的数相等就取next-val中对应的数填到next-val中当前位置，不等就直接取当前下标数组的值填到next-val当前位置中</p>
+<p> 注意，这里所有序号，包括模式串和下标数组的数，第一个位置都是1，而不是常用的0开始 </p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>模式串</td>
+<td>A</td>
+<td>B</td>
+<td>A</td>
+<td>C</td>
+<td>A</td>
+<td>B</td>
+<td>C</td>
+</tr>
+<tr>
+<td>下标数组</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>next-val</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>3</td>
+</tr>
+</tbody></table>
+<p>序号： 1 2 3 4 5 6 7 </p>
+<p>模式串 A B A C A B C </p>
+<p>下标数组 0 1 1 2 1 2 3 </p>
+<p>next-val 0 1 0 2 0 1 3</p>
+<h2 id="中缀转前后缀"><a href="#中缀转前后缀" class="headerlink" title="中缀转前后缀"></a>中缀转前后缀</h2><p>转前缀：符号移动到自己范围左括号的左边</p>
+<p>转后缀：符号移动到自己范围右括号的右边</p>
+<h2 id="并查集-红黑树"><a href="#并查集-红黑树" class="headerlink" title="并查集&#x2F;红黑树"></a>并查集&#x2F;红黑树</h2><p><strong>并查集</strong></p>
+<p>每个子集合是一棵树，有一个根节点和一堆元素（叶子）。</p>
+<p>元素下标为元素名。</p>
+<p>元素值：</p>
+<ul>
+<li>正值表示自己所属集合根结点的下标。</li>
+<li>负值表示节点总数，自己是一个子集合的根</li>
+</ul>
+<p>find(S,x):返回集合S中单元素x所在集合的根节点下标值。  </p>
+<blockquote>
+<p>O(n) 优化后→O(log2n) →压缩路径→O(a(n))</p>
+</blockquote>
+<p>Initial(S)：把S的每个元素初始化为只有一个单元素的集合</p>
+<blockquote>
+<p>O(n^2^) 优化后→O(nlog2n) →压缩路径→O(a(n))</p>
+</blockquote>
+<p>Union(S,root1,root2):S的两个子集合root2加入root1</p>
+<blockquote>
+<p>S的子集合root2的元素值改为root1的下标。</p>
+<p>原本root2元素值是负值，即作为子集合根，所在集合的元素个数。</p>
+</blockquote>
+<p><strong>红黑树</strong></p>
+<p>性质：</p>
+<p>1.根叶黑</p>
+<p>2.黑路同</p>
+<p>3.不红红（不相邻）</p>
+<p>结论：</p>
+<p>1.黑高为h的红黑树至少有2^h^-1个内部结点。</p>
+<blockquote>
+<p>有n个内部结点的红黑树高度 h&lt;&#x3D; 2log<del>2</del>(n+1)</p>
+</blockquote>
+<p>2.根到叶节点最长路径不大于最短路径2倍</p>
+<p>3.新节点：根染黑 非根染红</p>
+<h2 id="各种性能指标"><a href="#各种性能指标" class="headerlink" title="各种性能指标"></a>各种性能指标</h2><ul>
+<li><strong>进程调度单位：</strong></li>
+</ul>
+<p>cpu利用率，系统吞吐量，周转时间，等待时间，响应时间</p>
+<blockquote>
+<p>笔记本</p>
+</blockquote>
+<ul>
+<li><strong>计算机网络：</strong></li>
+</ul>
+<p>速率、带宽、吞吐量、时延（发送传播处理排队）、时延带宽积、往返时延、信道利用率</p>
+<ul>
+<li><p><strong>流水线吞吐率、流水线加速比</strong></p>
+</li>
+<li><p><strong>磁盘：</strong></p>
+<p>一个扇区的平均访问：寻道时间+旋转延迟时间+数据传输时间</p>
+<p>(柱面(磁道)、盘面（磁头）、扇面)</p>
+</li>
+<li><p><strong>计组性能指标：</strong></p>
+</li>
+</ul>
+<p>CPI：执行一条指令的时钟周期数</p>
+<p>CPU执行时间、吞吐量、响应时间、MIPS、FLOPS</p>
+<blockquote>
+<p>计组第一章，笔记本上也有。</p>
+</blockquote>
+<p><strong>数据结构：</strong></p>
+<p>时间复杂度、</p>
+<p>ASL(访问成功&#x2F;失败)  ,散列表</p>
+<p>排序算法稳定性</p>
+<h2 id="CRC校验码、海明码、二进制除法"><a href="#CRC校验码、海明码、二进制除法" class="headerlink" title="CRC校验码、海明码、二进制除法"></a>CRC校验码、海明码、二进制除法</h2><p>ip 数据报首部检验和<br>udp 校验和</p>
+<h2 id="码分复用"><a href="#码分复用" class="headerlink" title="码分复用"></a>码分复用</h2></article>
+<div class="article-footer">
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/NOTE/%E7%A8%8B%E5%BA%8F%E6%98%AF%E6%80%8E%E4%B9%88%E8%B7%91%E8%B5%B7%E6%9D%A5%E7%9A%84/">程序是怎么跑起来的</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/NOTE/%E8%8B%B1%E8%AF%AD%E9%9A%8F%E7%AC%94/">英语随笔</a></div></section></div>
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Fancy</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+<widget class="widget-wrapper ghrepo"><div class="widget-body"><div class="items data-service ds-ghinfo" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note"><a class="repo" href="https://github.com/Back2Zer0/md-CS_Note" target="_blank" rel="external nofollow noopener noreferrer"><div class="repo-name flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>Back2Zer0/md-CS_Note</div><div class="repo-desc"><span type="text" id="description">&nbsp;</span></div><div class="grid"><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z"></path></svg><span type="text" id="stargazers_count"></span></div><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg><span type="text" id="forks_count"></span></div><div class="flex-row data-service ds-ghinfo" index="0" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note/tags"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z"></path></svg><span type="text" id="latest-tag-name">0</span></div></div></a></div></div></widget>
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%91"><span class="toc-text">树</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A9%BA%E9%97%B4%E5%87%A0%E4%BD%95"><span class="toc-text">空间几何</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B2%E9%9D%A2%E7%A7%AF%E5%88%86"><span class="toc-text">曲面积分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E6%92%AD"><span class="toc-text">多播</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PPP"><span class="toc-text">PPP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CSMA%EF%BC%88%E4%BB%8B%E8%B4%A8%E8%AE%BF%E9%97%AE%EF%BC%89"><span class="toc-text">CSMA（介质访问）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP-UDP-IP-MAC-%E9%A6%96%E9%83%A8%E9%95%BF%E5%BA%A6"><span class="toc-text">TCP UDP IP MAC 首部长度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10BASE%E5%92%8C%E4%BC%A0%E8%BE%93%E4%BB%8B%E8%B4%A8"><span class="toc-text">10BASE和传输介质</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BGP-OSPF-IGMP"><span class="toc-text">BGP OSPF IGMP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BE%B9%E7%95%8C%E5%AF%B9%E9%BD%90"><span class="toc-text">边界对齐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%A5%E5%A1%9E%E7%AA%97%E5%8F%A3"><span class="toc-text">拥塞窗口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E5%9C%B0%E5%9D%80%E6%98%A0%E5%B0%84%E5%88%B0%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80"><span class="toc-text">逻辑地址映射到物理地址</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E7%BB%84"><span class="toc-text">向量组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E8%B7%AF%E5%BE%84%E3%80%81%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84-dijkstra-floyd"><span class="toc-text">关键路径、最短路径(dijkstra,floyd)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%BC%E5%BD%BB%E6%96%AF%E7%89%B9%E7%BC%96%E7%A0%81"><span class="toc-text">曼彻斯特编码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DHCP%E3%80%81ICMP%E3%80%81ARP"><span class="toc-text">DHCP、ICMP、ARP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A3%81%E9%81%93"><span class="toc-text">磁道</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IEEE%E6%B5%AE%E7%82%B9%E6%95%B0-%E9%98%B6%E7%A0%81%E5%85%A80-%E5%B0%BE%E6%95%B0%E9%9D%9E0"><span class="toc-text">IEEE浮点数 阶码全0 尾数非0</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%84%E6%A0%BC%E5%8C%96"><span class="toc-text">规格化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#kmp"><span class="toc-text">kmp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%AD%E7%BC%80%E8%BD%AC%E5%89%8D%E5%90%8E%E7%BC%80"><span class="toc-text">中缀转前后缀</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B6%E6%9F%A5%E9%9B%86-%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="toc-text">并查集&#x2F;红黑树</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%84%E7%A7%8D%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87"><span class="toc-text">各种性能指标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CRC%E6%A0%A1%E9%AA%8C%E7%A0%81%E3%80%81%E6%B5%B7%E6%98%8E%E7%A0%81%E3%80%81%E4%BA%8C%E8%BF%9B%E5%88%B6%E9%99%A4%E6%B3%95"><span class="toc-text">CRC校验码、海明码、二进制除法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A0%81%E5%88%86%E5%A4%8D%E7%94%A8"><span class="toc-text">码分复用</span></a></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+
+<script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+  MathJax.Hub.Config({
+    tex2jax: {
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+  });
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>

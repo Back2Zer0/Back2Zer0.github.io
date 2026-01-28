@@ -1,0 +1,1352 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>network：湖科大(5)运输层 - Fancy 的小宇宙</title>
+
+  
+    <meta name="description" content="运输层概念：端口号、复用、分用 物理层、数据链路层以及网络层它们共同解决了将主机通过异构网络互联起来所面临的的问题，实现了主机到主机的通信 但实际上在计算机网络中进行通信的真正实体是位于通信两端主机中的&#x3D;&#x3D;进程&#x3D;&#x3D; 如何为运行在不同主机上的&#x3D;&#x3D;应用进程&#x3D;&#x3D;提供直接的通信服务是运输层的任务，运输层协议又称&#x3D;&amp;#">
+<meta property="og:type" content="website">
+<meta property="og:title" content="湖科大(5)运输层">
+<meta property="og:url" content="https://back2zer0.github.io/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(5)%E8%BF%90%E8%BE%93%E5%B1%82/">
+<meta property="og:site_name" content="Fancy 的小宇宙">
+<meta property="og:description" content="运输层概念：端口号、复用、分用 物理层、数据链路层以及网络层它们共同解决了将主机通过异构网络互联起来所面临的的问题，实现了主机到主机的通信 但实际上在计算机网络中进行通信的真正实体是位于通信两端主机中的&#x3D;&#x3D;进程&#x3D;&#x3D; 如何为运行在不同主机上的&#x3D;&#x3D;应用进程&#x3D;&#x3D;提供直接的通信服务是运输层的任务，运输层协议又称&#x3D;&amp;#">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+<meta property="article:published_time" content="2026-01-27T02:58:17.754Z">
+<meta property="article:modified_time" content="2026-01-27T02:58:17.754Z">
+<meta property="article:author" content="Fancy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+    <link rel="shortcut icon" href="https://www.emojiall.com/images/240/twitter/1f416.png">
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Website","@id":"https://back2zer0.github.io/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(5)%E8%BF%90%E8%BE%93%E5%B1%82/","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"name":"湖科大(5)运输层","description":"运输层概念：端口号、复用、分用\n物理层、数据链路层以及网络层它们共同解决了将主机通过异构网络互联起来所面临的的问题，实现了主机到主机的通信\n但实际上在计算机网络中进行通信的真正实体是位于通信两端主机中的&#x3D;&#x3D;进程&#x3D;&#x3D;\n如何为运行在不同主机上的&#x3D;&#x3D;应用进程&#x3D;&#x3D;提供直接的通信服务是运输层的任务，运输层协议又称&#x3D...","url":"https://back2zer0.github.io/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(5)%E8%BF%90%E8%BE%93%E5%B1%82/"}</script>
+  
+</head>
+<body>
+
+
+
+<div class="l_body content" id="start" layout="page" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="https://picgo-1398775008.cos.ap-guangzhou.myqcloud.com/network-2-1118-svgrepo-com.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)"><div class="main">network</div><div class="sub normal cap">为学日益，为道日损</div><div class="sub hover cap" style="opacity:0"> fancy</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item" title="认知" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item active" title="技术" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="生活" href="/life/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="其他平台" href="/social/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/" placeholder="在技术专栏中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<widget class="widget-wrapper doc-tree post-list"><div class="widget-header dis-select"><span class="name">基本操作</span></div><div class="widget-body fs14"><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)/#start"><span class="toc-text">湖科大(1)</span></a><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(2)/"><span class="toc-text">湖科大(2)</span></a><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(3)%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/"><span class="toc-text">湖科大(3)数据链路层</span></a><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(4)%E7%BD%91%E7%BB%9C%E5%B1%82/"><span class="toc-text">湖科大(4)网络层</span></a><a class="link active" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(5)%E8%BF%90%E8%BE%93%E5%B1%82/"><span class="toc-text">湖科大(5)运输层</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a><a class="link" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(6)%E5%BA%94%E7%94%A8%E5%B1%82/"><span class="toc-text">湖科大(6)应用层</span></a></div><div class="widget-header dis-select"><span class="name">TCPIP网络编程</span></div><div class="widget-body fs14"><a class="link" href="/wiki/network/TCPIP1/"><span class="toc-text">TCPIP1</span></a></div></widget>
+
+<widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：网课</span></div><div class="widget-body"><a class="item wiki" href="/wiki/linux/linux%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/"><span class="title">linux学习笔记</span><span class="excerpt">主要用过的是Ubuntu和ArchLinux</span></a><a class="item wiki" href="/wiki/python/%E7%88%AC%E8%99%AB%E5%85%A5%E9%97%A81/"><span class="title">python学习笔记</span><span class="excerpt">一些爬虫基础和实战案例</span></a><a class="item wiki" href="/wiki/mysql/%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/"><span class="title">MySQL学习笔记</span><span class="excerpt">尚硅谷MySQL学习笔记</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(1)/">network</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2026-01-27T02:58:17.754Z">2026-01-27</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>湖科大(5)运输层</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h1 id="运输层"><a href="#运输层" class="headerlink" title="运输层"></a>运输层</h1><h2 id="概念：端口号、复用、分用"><a href="#概念：端口号、复用、分用" class="headerlink" title="概念：端口号、复用、分用"></a>概念：端口号、复用、分用</h2><blockquote>
+<p><strong>物理层、数据链路层以及网络层</strong>它们共同解决了将主机通过异构网络互联起来所面临的的问题，<strong>实现了主机到主机的通信</strong></p>
+<p>但实际上在<strong>计算机网络中进行通信的真正实体是位于通信两端主机中的&#x3D;&#x3D;进程&#x3D;&#x3D;</strong></p>
+<p><strong>如何为运行在不同主机上的&#x3D;&#x3D;应用进程&#x3D;&#x3D;提供直接的通信服务</strong>是运输层的任务，运输层协议又称&#x3D;&#x3D;端到端协议&#x3D;&#x3D;</p>
+</blockquote>
+<ul>
+<li>网络层范围：主机到主机</li>
+<li>运输层范围：端到端</li>
+</ul>
+<p>这里的端口并不是物理上看得见、摸得着的物理端口，而是指用来区分不同应用进程的标识符。</p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240119211438741.png" alt="image-20240119211438741"></p>
+<blockquote>
+<ul>
+<li>运输层向高层用户<strong>屏蔽了下面网络核心的细节</strong>(如网络拓扑、所采用的路由选择协议，它使应用进程看见的就<strong>好像</strong>是在<strong>两个运输层实体之间有一条端到端的逻辑通信信道</strong>等)</li>
+<li>根据应用需求的不同，因特网的运输层为应用层提供了两种不同的运输协议，即<strong>面向连接的TCP和无连接的UDP</strong>，这两种协议就是本章要讨论的主要内容。</li>
+</ul>
+</blockquote>
+<h3 id="端口"><a href="#端口" class="headerlink" title="端口"></a>端口</h3><blockquote>
+<ul>
+<li><p>运行在计算机上的进程使用<strong>进程标识符PID</strong>来标志。</p>
+</li>
+<li><p>为了使运行不同操作系统的计算机的应用进程之间能进行网络通信，必须<strong>使用统一的方法对TCP&#x2F;IP体系的应用进程进行标识，即端口号</strong>。</p>
+</li>
+</ul>
+</blockquote>
+<p><strong>为什么不能使用进程标识符PID来区分各进程？</strong></p>
+<blockquote>
+<p>因为因特网上的计算机并不是使用统一的操作系统，<strong>不同的操作系统使用不同格式的进程标识符</strong></p>
+</blockquote>
+<p><strong>端口号只具有本地意义</strong>，即端口号只是为了标识本计算机应用层中的各进程，在因特网中，<strong>不同计算机中的相同的端口号是没有联系的</strong></p>
+<p>端口号使用<strong>16比特</strong>表示，取值范围<code>0~65535</code>。</p>
+<ul>
+<li><strong>熟知端口号：0~1023</strong>，<code>IANA</code>把这些端口号指派给了<code>TCP/IP</code>体系中最重要的一些应用协议</li>
+<li><strong>登记端口号：1024~49151</strong>，为没有熟知端口号的应用程序使用。使用这类端口号必须在<code>IANA</code>按照规定的手续登记，以防止重复。如<code>Microsoft RDP</code>微软远程桌面使用的端口是<code>3389</code></li>
+<li><strong>短暂端口号：49152~65535</strong>，留给客户进程选择暂时使用。当服务器进程收到客户进程的报文时，就知道了客户进程所使用的的动态端口号。<strong>通信结束后，这个端口号可供其他客户进程以后使用</strong></li>
+</ul>
+<h3 id="复用、分用"><a href="#复用、分用" class="headerlink" title="复用、分用"></a>复用、分用</h3><p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240119212133705.png" alt="image-20240119212133705"></p>
+<ul>
+<li><p>发送方的某些应用进程所发送的不同应用报文，<strong>在运输层使用UDP协议进行封装，这是UDP复用；若用TCP封装则称TCP复用</strong></p>
+</li>
+<li><p>运输层使用端口号区分不同进程，不管使用何种协议封装的报文，<strong>在网络层都需要使用IP协议封装成IP数据报，这是IP复用</strong></p>
+<blockquote>
+<p>数据报中协议字段的值用来表名封装的是何种协议数据单元。</p>
+<p>取值为6，表示封装的TCP用户数据报；</p>
+<p>取值为17，表示封装的UDP用户数据报。</p>
+</blockquote>
+</li>
+<li><p>根据协议字段的值，<strong>将IP数据报封装的协议数据单元上交运输层的过程叫IP分用</strong></p>
+</li>
+<li><p>同理，<strong>UDP根据端口号将数据交给应用进程叫做UDP分用；TCP根据端口号将数据交给应用进程叫做TCP分用</strong></p>
+</li>
+</ul>
+<p><strong>常用端口号</strong></p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240119212236660.png" alt="image-20240119212236660"></p>
+<blockquote>
+<p>UDP 还有 OSPF 。</p>
+</blockquote>
+<p>**举例：**在用户PC中使用网页浏览器来访问 Web 服务器的内容</p>
+<p>&#x3D;&#x3D;①用户通过DNS找到域名对应IP地址&#x3D;&#x3D;</p>
+<p>用户在网页浏览器的<strong>地址栏中输入</strong>Web服务器的<strong>域名</strong>，请求访问</p>
+<ol>
+<li><p>用户PC中的DNS客户端进程会<strong>发送</strong>一个<strong>DNS查询请求报文</strong></p>
+<blockquote>
+<p>其内容为“域名 <a target="_blank" rel="noopener" href="http://www.porttest.com/">www.porttest.com</a> 所对应的IP地址是什么?</p>
+</blockquote>
+<p>DNS查询请求报文需要使用运输层的UDP协议,<strong>封装成UDP用户数据报</strong>，</p>
+<blockquote>
+<p>填写UDP首部中的两个端口的数值。</p>
+<ul>
+<li><p>源端口字：在短暂端口号49151~65535中挑选一个未被占用的，用来表示DNS客户端进程，例如49152。</p>
+</li>
+<li><p>目的端口字段的值设置为53，这是DNS服务器端进程所使用的熟知端口号。</p>
+</li>
+</ul>
+</blockquote>
+<p>之后，将UDP用户数据报封装在IP数据报中，<strong>通过以太网发送给DNS服务器。</strong></p>
+</li>
+<li><p>DNS服务器收到该数据报，从中<strong>解封出UDP用户数据报</strong>，<strong>交付给</strong>本服务器中的DNS服务器端<strong>进程</strong>。</p>
+<blockquote>
+<p>UDP首部中的目的端口号为53，这表明应将该UDP用户数据报的数据载荷部分，也就是DNS查询请求报文。</p>
+</blockquote>
+<p>DNS服务器端<strong>进程解析</strong>DNS查询请求<strong>报文的内容</strong>，然后接其要求<strong>查找对应的IP地址</strong>。</p>
+</li>
+<li><p>找到对应IP地址后，<strong>使用UDP协议封装成UDP数据报</strong>，设置UDP首部的两个端口值。</p>
+<blockquote>
+<p>源端口值和目的端口值。这个值和用户源进程的端口值是相反的。</p>
+</blockquote>
+<p>将UDP数据报封装在IP数据报中，通过以太网<strong>给用户PC发送DNS响应报文</strong>， 内容为“域名<a target="_blank" rel="noopener" href="http://www.porttest.com所对应的ip地址是192.168.0.3”./">www.porttest.com所对应的IP地址是192.168.0.3”。</a></p>
+</li>
+<li><p>用户<strong>把DNS响应报文交付给DNS客户端进程</strong>，解析完响应报文，就可知道域名对应的IP地址了。</p>
+</li>
+</ol>
+<p>&#x3D;&#x3D;②用户通过HTTP获得网页内容。&#x3D;&#x3D;</p>
+<ol>
+<li><p>用户PC中的HTTP客户端进程向Web服务器<strong>发送HTTP请求报文</strong></p>
+<blockquote>
+<p>内容为“首页内容是什么？”</p>
+</blockquote>
+<p>HTTP请求报文需要使用运输层的TCP协议<strong>封装成TCP报文段。</strong></p>
+<blockquote>
+<p>填写TCP首部中的两个端口值：源端口和目的端口。</p>
+<p>HTTP进程的端口号一般是80，即目的端口。</p>
+</blockquote>
+</li>
+<li><p>Web服务器收到后<strong>根据目的端口号</strong>，把<strong>数据载荷部分</strong>（HTTP请求报文）<strong>交付</strong>给本服务器中的<strong>HTTP服务器端进程</strong>。</p>
+<p>HTTP服务器端<strong>进程解析</strong>HTTP请求<strong>报文的内容</strong>，按其要求查找首页内容，给用户PC发送HTTP响应报文。</p>
+<blockquote>
+<p>请求报文内容是获取对应的网页内容。</p>
+</blockquote>
+</li>
+<li><p>此处同①中UDP的<strong>端口号设置</strong>、<strong>报文段包装</strong>、<strong>客户端解析</strong>。</p>
+</li>
+</ol>
+<h2 id="UDP和TCP的对比"><a href="#UDP和TCP的对比" class="headerlink" title="UDP和TCP的对比"></a>UDP和TCP的对比</h2><p>这两个运输层协议的使用频率仅次于网络层的IP协议。</p>
+<ul>
+<li><strong>UDP</strong>：User Datagram Protocol</li>
+<li><strong>TCP</strong>：Transmission Control Protocol</li>
+</ul>
+<p>UDP和TCP都支持全双工通信。</p>
+<ul>
+<li><p>通信前，UDP<strong>不需要连接</strong>。TCP**面向连接(**三握手四挥手)</p>
+</li>
+<li><p>UDP 支持<strong>单播、多播、广播</strong>。TCP 只能通过三次握手单独建立连接，仅支持单播。</p>
+</li>
+<li><p>UDP 面向应用报文，TCP 面向字节流。</p>
+<blockquote>
+<p>UDP 对应用进程交下来的报文既不合并也不拆分，而是保留这些报文的边界。</p>
+<p>TCP 将字节流编号存储在<strong>发送缓存</strong>中，根据发送策略，将缓存分段发送。</p>
+<p>对于TCP：</p>
+<p>对于收到的数据，接收方一方面取出数据载荷部分存储在<strong>接收缓存</strong>中，一方面直接将接收缓存中的一些字节交付给应用进程。</p>
+<p><strong>接收方收到的数据块数可能与发送方发出的数据块数不一致，但是收发双方收发的字节流数目一致</strong></p>
+<blockquote>
+<p>比如发送方要发送10个字节，分五个字节一块，一共两块，但接收方接收字节是3.3.4，一共三块</p>
+</blockquote>
+<p>所以是TCP不保证一次性传完，这就要求应用进程有处理这种乱序、多次传输后还能拼接完整的能力.</p>
+<p><strong>面向字节流</strong>是TCP提供<strong>可靠传输、流量控制、拥塞控制</strong>的基础。</p>
+</blockquote>
+</li>
+<li><p>UDP向上层提供<strong>无连接不可靠传输服务</strong>(适用于IP电话、视频会议等实时应用)</p>
+<p>TCP向上层提供<strong>面向连接的可靠传输服务</strong>(适用于要求可靠传输的应用，例如文件传输)</p>
+<blockquote>
+<p>IP数据包向上层提供的是无连接不可靠传输服务。</p>
+</blockquote>
+</li>
+<li><p>UDP 用户数据报首部仅仅 8 字节，而TCP 由于要实现可靠传输等，报文段首部最小20字节，最大60字节。</p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120111006959.png" alt="image-20240120111006959"></p>
+</li>
+</ul>
+<h2 id="流量控制"><a href="#流量控制" class="headerlink" title="流量控制"></a>流量控制</h2><blockquote>
+<p>一般来说，我们希望数据传输能快一些，但如果发送方把数据发送得过快，接收方就可能来不及接收，这会造成数据的丢失</p>
+<p>流量控制就是<strong>让发送方的发送速率不要太快，要让接收方来得及接收</strong></p>
+</blockquote>
+<p><strong>利用滑动窗口实现流量控制</strong></p>
+<p>滑动窗口：<strong>发送窗口和接收窗口</strong>。</p>
+<ul>
+<li>发送方和接收方窗口保持一致，发送方窗口随着接收方窗口变化而变化(通过确认报文告知发送方)</li>
+<li>发送方发送完窗口内数据后需要等到确认报文才会滑动窗口并继续发送，若窗口内的某个值很久没有收到回答报文，则超时重传报文</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120115802507.png" alt="image-20240120115802507"></p>
+<blockquote>
+<ul>
+<li>ACK：&#x3D;&#x3D;标志位&#x3D;&#x3D;，取值1表示这是TCP确认保温段。</li>
+<li>ack：&#x3D;&#x3D;确认号字段&#x3D;&#x3D;，取值201表示序号201之前的数据已全部确接收。</li>
+<li>rwnd：&#x3D;&#x3D;窗口字段&#x3D;&#x3D;，取值300表示自己的接收窗口大小为300。</li>
+<li>seq：&#x3D;&#x3D;序号字段&#x3D;&#x3D;，取值1表示TCP报文段数据载荷的第一个字节的序号是1。</li>
+</ul>
+</blockquote>
+<hr>
+<p><strong>一些问题：</strong></p>
+<ul>
+<li>若接收方窗口调为0后，一段时间之后又调为200，此时向发送方传递确认报文，可此时报文丢失，则会造成发送方窗口始终为0，接收方以为发送方收到了确认报文而开始等待数据，造成死锁，如何解决？</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120115911661.png" alt="image-20240120115911661"></p>
+<blockquote>
+<p>TCP为每个连接设置一个持续计时器。只要TCP连接的一方收到对方的零窗口通知，就启动持续计时器。持续计时器超时，发送方就会发送一个<code>1</code>字节大小的零窗口探测报文（仅携带一字节数据）。</p>
+<p>对方确认这个探测报文段时，通过确认报文给出自己的接受窗口值。</p>
+<ul>
+<li><p>如果发送方窗口大小为<code>0</code>时，发送方重新启动持续计时器。超时后重新发送零窗口探测报文。</p>
+</li>
+<li><p>如果不是0，也就是接收方主机此时的接收缓存又有了一些存储空间，调整了窗口，那么死锁局面就可以被打破了。</p>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li><strong>如果主机B此时的接收窗口仍然为0，那么主机B根本就无法接受该报文段？</strong></li>
+</ul>
+<blockquote>
+<p><strong>TCP规定，即使接收方主机接受窗口为0，也必须接受零窗口探测报文段，确认报文段以及携带紧急数据的报文段。</strong></p>
+</blockquote>
+<ul>
+<li><strong>若发送的零窗口探测报文也丢失了，会造成新死锁吗？</strong></li>
+</ul>
+<blockquote>
+<p>不会。因为零窗口探测报文也有重传计数器，具备超时重传机制。</p>
+</blockquote>
+<h2 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h2><p>在某段时间，若<strong>对网络中某一资源的需求超过了该资源所能提供的可用部分</strong>，网络性能就要变坏，这种情况叫做<strong>拥塞</strong>(congestion)</p>
+<blockquote>
+<p>在计算机网络中的链路容量(即带宽)、交换结点中的缓存和处理机等，都是网络的资源。</p>
+</blockquote>
+<p>若出现拥塞而不进行控制，<strong>整个网络的吞吐量将随输入负荷的增大而下降</strong></p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120122732213.png" alt="image-20240120122732213"></p>
+<blockquote>
+<ul>
+<li><p><strong>理想拥塞控制的网络</strong>：在吞吐量达到饱和之前，网络吞吐量应等于所输入的负载。故吞吐量曲线是<strong>45度的斜线</strong>。但当输入负载超过某一限度时，由于网络资源受限，吞吐量就不再增长而<strong>保持水平线</strong>。也就是吞吐量达到饱和。这就表明输入的负载中有一部分损失到了。例如输入到网络中的某些分组被某个结点丢弃了。</p>
+<p>即便如此，网络的吞吐量仍然维持在其所能达到的最大值。</p>
+</li>
+<li><p>无拥塞控制的网络，输入到达一定程度会轻度拥塞，吞吐量增长变慢。严重拥塞，吞吐量甚至会不增反降，直到0。</p>
+</li>
+<li><p>实际的拥塞控制应该尽量接远理想的拥塞控制曲线。</p>
+</li>
+</ul>
+</blockquote>
+<p>下面介绍&#x3D;&#x3D;拥塞控制的四种算法&#x3D;&#x3D;：</p>
+<ol>
+<li>慢开始(slow-start)</li>
+<li>拥塞避免congestion avoidance</li>
+<li>快重传(fast retransmit</li>
+<li>快恢复(fast recovery)</li>
+</ol>
+<hr>
+<blockquote>
+<p>为方便分析，<strong>下面对四种算法的描述进行了条件假设</strong>：</p>
+<ol>
+<li>数据是单方向传送，而另一个方向只传送确认。</li>
+<li>接收方总是有足够大的缓存空间，因而发送方发送窗口的大小由网络的拥塞程度来决定</li>
+<li>以最大报文段MSS的个数为讨论问题的单位，而不是以字节为单位。</li>
+</ol>
+</blockquote>
+<ul>
+<li>发送方维护一个叫做&#x3D;&#x3D;拥塞窗口cwnd&#x3D;&#x3D;的状态变量，其值取决于网络的拥塞程度，并且动态变化。<ul>
+<li><code>拥塞窗口cwnd</code>的维护原则：<strong>只要网络没有出现拥塞，拥塞窗口就再增大一些(确认报文段窗口大小)，但只要网络出现拥塞，拥塞窗口就减少一些</strong></li>
+<li>判断出现网络拥塞的依据：<strong>没有按时收到应当到达的确认报文(发送超时重传)</strong></li>
+</ul>
+</li>
+<li>发送方将拥塞窗口作为&#x3D;&#x3D;发送窗口swnd&#x3D;&#x3D;，即<code>swnd=cwnd</code></li>
+<li>维护一个&#x3D;&#x3D;慢开始门限ssthresh&#x3D;&#x3D;状态变量<ul>
+<li>当<code>cwnd &lt; ssthresh</code>时，使用慢开始算法</li>
+<li>当<code>cwnd &gt; ssthresh</code>时，停止使用慢开始算法而改用拥塞避免算法</li>
+<li>当<code>cwnd = ssthresh</code>时，既可使用慢开始算法，也可以使用拥塞避免算法</li>
+</ul>
+</li>
+</ul>
+<p><strong>1. 慢开始和拥塞避免</strong></p>
+<h3 id="慢开始"><a href="#慢开始" class="headerlink" title="慢开始"></a>慢开始</h3><p><code>cwnd &lt; ssthresh</code>时，<strong>拥塞窗口从1开始，根据应答报文大小来扩大拥塞窗口</strong>，也就是cwnd &#x3D; cwnd * 2。</p>
+<blockquote>
+<p>如发送方窗口<code>2</code>，应答大小<code>2</code>，则下次发送大小为<code>4</code></p>
+</blockquote>
+<h3 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h3><p><code>cwnd = ssthresh </code> 时，<strong>拥塞窗口每次只扩大1</strong>，而不是向慢开始那样根据发送方的返回窗口进行增加。</p>
+<p><strong>超时重传</strong>：当窗口增加到一定大小，发送方发送的报文出现了超时重传，则判断网络可能出现了拥塞，此时：<strong>①将拥塞窗口初始化为1</strong>，<strong>②慢开始门限ssthresh设置为发生拥塞时窗口大小的一半</strong></p>
+<blockquote>
+<p><em>“拥塞避免”并非指完全能够避免拥塞，而是指在拥塞避免阶段将拥塞窗口控制为按线性规律增长，使网络比较不容易出现拥塞</em></p>
+</blockquote>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120124152289.png" alt="image-20240120124152289"></p>
+<p><strong>2. 快重传和快恢复</strong></p>
+<blockquote>
+<p>慢开始和拥塞避免算法是1988年提出的TCP拥塞控制算法(TCP Tahoe版本)</p>
+<p>1990年又增加了两个新的拥塞控制算法(改进TCP的性能)，这就是快重传和快恢复(TCP   Reno版本)</p>
+<ul>
+<li>有时，<strong>个别报文段会在网络中丢失，但实际上网络并未发生拥塞。</strong></li>
+<li>这将导致发送方超时重传，并误认为网络发生了拥塞。</li>
+<li>发送方把拥塞窗口cwnd又设置为最小值1，并<strong>错误地启动慢开始算法，因而降低了传输效率。</strong></li>
+</ul>
+</blockquote>
+<h3 id="快重传"><a href="#快重传" class="headerlink" title="快重传"></a>快重传</h3><p>快重传是<strong>使发送方尽快进行重传</strong>，而不是等待超时重传计时器超时再重传</p>
+<ul>
+<li>要求<strong>接收方</strong>不用等待自己发送数据时才进行捎带确认，而是要<strong>立即发送确认</strong></li>
+<li>即使<strong>收到了失序的报文段(说明有一段丢失了)也要立即发出对已收到的报文段的重复确认</strong></li>
+<li><strong>发送方一旦收到3个连续的重复确认，就将相应的报文段立即重传</strong>，而不是等该报文段的超时重传计时器超时再重传</li>
+<li>对于个别丢失的报文段，发送方不会出现超时重传，也就不会误认为出现了拥塞。使用快重传可以使整个网络的吞吐量提高约<code>20%</code></li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120124704550.png" alt="image-20240120124704550"></p>
+<h3 id="快恢复"><a href="#快恢复" class="headerlink" title="快恢复"></a>快恢复</h3><p>发送方一旦收到<code>3</code>个重复确认，就知道现在只是丢失了个别报文段。也是不启动慢开始算法，而执行<strong>快恢复算法</strong></p>
+<ul>
+<li><p>发送方<strong>将慢开始门限ssthresh值和拥塞窗口cwnd值调整为当前窗口的一半，开始执行拥塞避免算法</strong></p>
+<blockquote>
+<p>发送窗口不用一下子回到 1 了。</p>
+</blockquote>
+</li>
+<li><p>也有的快恢复实现是把快恢复开始时的拥塞窗口<code>cwnd</code>值再增大一些，即等于新的<code>ssthresh+3</code></p>
+<ul>
+<li>既然发送方收到<code>3</code>个重复的确认，就表明有<code>3</code>个数据报文段已经离开了网络</li>
+<li>这三个报文段不再消耗网络资源而是停留在接收方的接收缓存中</li>
+<li>可见现在网络中不是堆积了报文段而是减少了<code>3</code>个报文段。因此可以适当把拥塞窗口扩大些</li>
+</ul>
+</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120124829557.png" alt="image-20240120124829557"></p>
+<hr>
+<h2 id="超时重传、往返时间"><a href="#超时重传、往返时间" class="headerlink" title="超时重传、往返时间"></a>超时重传、往返时间</h2><h3 id="超时重传时间的选择"><a href="#超时重传时间的选择" class="headerlink" title="超时重传时间的选择"></a>超时重传时间的选择</h3><p>超时重传时间 RTO的值：</p>
+<ul>
+<li>短于往返，发送方会有不必要的重传，增大网络负荷。</li>
+<li>远长于往返，使重传推迟时间太长，使网络空闲时间增大，降低了传输效率。</li>
+</ul>
+<p>所以正常情况下，超时重传时间应该设为略大于往返时间。</p>
+<blockquote>
+<p>但是，TCP下层是复杂的互联网环境，由于各区域的速率可能不一致，每个IP数据报的转发路由也可能不同。</p>
+<p>因此将超时重传时间设置为一个固定值是行不通的</p>
+</blockquote>
+<p>所以只能利用每次测量得到的<code>RTT</code>样本，计算&#x3D;&#x3D;加权平均往返时间 RTT<del>s</del>&#x3D;&#x3D;(又称平滑的往返时间)</p>
+<p>显然，<strong>超时重传时间RTO应略大于加权平均往返时间</strong>RTT<del>s</del></p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120112732782.png" alt="image-20240120112732782"></p>
+<blockquote>
+<p>在上图式子中，0≤ α&lt; I ：</p>
+<ul>
+<li>若 α 很接近于0，则新RTT样本对RTT的影响不大;</li>
+<li>若 α 很接近于1，则新RTT样本对RTT的影响较大。</li>
+</ul>
+<p>已成为建议标准的RFC6298推荐的α 值为1&#x2F;8，即0.125 。 </p>
+<p>用这种方法得出的加权平均往返时间RTTS就比测量出的RTT值更加平滑。</p>
+</blockquote>
+<h3 id="往返时间测量问题"><a href="#往返时间测量问题" class="headerlink" title="往返时间测量问题"></a><strong>往返时间测量问题</strong></h3><p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120112717585.png" alt="image-20240120112717585"></p>
+<p><strong>针对出现超时重传时无法测准往返时间RTT的问题，有以下解决方法</strong></p>
+<p>在计算加权平均往返时间RTT<del>s</del>时，只要报文段重传了，就不采用其往返时间<code>RTT</code>样本。</p>
+<p>也就是<strong>出现重传时，不重新计算RTT<del>s</del>，进而超时重传时间RTO也不会重新计算</strong>。</p>
+<blockquote>
+<p>此方法的漏洞如下：如果报文段时延突然增大很多，并且之后很长一段时间都会保持这种时延。因此<strong>在原来得出的重传时间内，不会收到确认报文段</strong>，于是重传。根据上述算法，每次重传后，发送方都不会收到确认，但重传时间永远不会更新，发送方永远要重传，无外力作用，此过程永远不会结束，这就造成了死锁。</p>
+</blockquote>
+<p>修正方法：<strong>报文段每重传一次，就把超时重传时间RTO增大一些，典型的做法是将RTO的值取为旧RTO的2倍</strong></p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120130641782.png" alt="image-20240120130641782"></p>
+<hr>
+<h2 id="可靠传输"><a href="#可靠传输" class="headerlink" title="可靠传输"></a>可靠传输</h2><p><strong>传输时滑动窗口移动的不同情况：</strong></p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120131046819.png" alt="image-20240120131046819"></p>
+<blockquote>
+<p>向后收缩、前沿移动的情况，TCP强烈不建议出现。</p>
+<p>因为很可能发送方在收到这个通知之前，就已经发送了窗口中的许多数据，现在又要收缩窗口，不让发送这些数据，就会产生错误。</p>
+</blockquote>
+<p>如何描述发送窗口的状态？<br>使用三个指针P1，P2，P3分别指向相应的字节序号</p>
+<ul>
+<li><p>小于P1的是已发送并已收到确认的部分;</p>
+</li>
+<li><p>大于等于P3的是不允许发送的部分;</p>
+</li>
+<li><p>P3-P1&#x3D;发送窗口的尺寸;</p>
+</li>
+<li><p>P2-P1&#x3D;已发送但尚未收到确认的字节数;</p>
+</li>
+<li><p>P3-P2&#x3D;允许发送但当前尚未发送的字节数(又称为可用窗口或有效窗口)</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><p>虽然发送方的发送窗口是根据接收方的接收窗口设置的，但在同一时刻，<strong>发送方的发送窗口并不总是和接收方的接收窗口</strong>一样大。</p>
+<ul>
+<li>网络传送窗口值需要经历一定的时间滞后，并且这个时间还是不确定的。</li>
+<li>发送方还可能根据网络当时的拥塞情况适当减小自己的发送窗口尺寸。</li>
+</ul>
+</li>
+<li><p>对于**不按序到达的数据应如何处理，**TCP并无明确规定。</p>
+<ul>
+<li><p>如果接收方把不按序到达的数据一律丢弃，那么接收窗口的管理将会比较简单，但这样做不利于对网络资源的利用。因为发送方会重复传送较多的数据。</p>
+</li>
+<li><p>TCP<strong>通常对不按序到达的数据是先临时存放在接收窗口中</strong>，等到字节流中所缺少的字节收到后，再<strong>按序交付上层的应用进程</strong>。</p>
+<blockquote>
+<p>当缺少字节还未收到时，只能对已到达的数据进行确认，而不滑动窗口。这意味着接收方发送的确认序号仍然是缺少字节的最小序号。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>TCP要求接收方必须有<strong>累积确认和捎带确认机制</strong>，这样可以减小传输开销。接收方可以在合适的时候发送确认，也可以在自己有数据要发送时把确认信息顺便捎带上。</p>
+<ul>
+<li><p><strong>接收方不应过分推迟发送确认</strong>，否则会导致发送方不必要的超时重传，这反而浪费了网络的资源。</p>
+<blockquote>
+<p>TCP标准规定，确认推迟的时间不应超过0.5秒。若收到一连串具有最大长度的报文段，则必须每隔一个报文段就发送一个确认[RFC 1122]。</p>
+</blockquote>
+</li>
+<li><p>捎带确认实际上并不经常发生，因为大多数应用程序很少同时在两个方向向TCP服务器进程发送TCP连接请求报文段上发送数据。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>TCP的通信是全双工通信</strong>。通信中的每一方都在发送和接收报文段。因此，每一方都有自己的发送窗口和接收窗口。在谈到这些窗口时，一定要弄清楚是哪一方的窗口。</p>
+</li>
+</ul>
+<h2 id="运输连接管理"><a href="#运输连接管理" class="headerlink" title="运输连接管理"></a>运输连接管理</h2><h3 id="TCP连接建立：三握手"><a href="#TCP连接建立：三握手" class="headerlink" title="TCP连接建立：三握手"></a>TCP连接建立：三握手</h3><p><code>TCP</code>的运输连接管理就是使运输连接的建立和释放都能正常地进行。</p>
+<p><strong>TCP的连接建立要解决以下三个问题:</strong></p>
+<ul>
+<li>使TCP双方能够确知对方的存在;</li>
+<li>使TCP双方能够协商一些参数(如最大窗口值、是否使用窗口扩大选项和时间戳选项以及服务质量等);</li>
+<li>使TCP双方能够对运输实体资源(如缓存大小、连接表中的项目等)进行分配。</li>
+</ul>
+<p><strong>建立过程：</strong></p>
+<ul>
+<li><p>最初，两端的TCP进程都处于关团状态。</p>
+<p>一开始，TCP服务器进程首先创建<strong>传输控制块</strong>，用来存储TCP连接中的一些重要信息。</p>
+<blockquote>
+<p>例如，TCP连接表，指向发送和接收缓存的指针，指向重传队列的指针，当前的发送和接收序号。</p>
+</blockquote>
+</li>
+<li><p>此时，TCP服务器进程就进入监听状态，等待TCP客户进程的连接请求。</p>
+<blockquote>
+<ul>
+<li><p>对于TCP服务器，TCP服务器进程是被动等待来自TCP客户进程的连接请求，而不是主动发起。因此称为被动打开连接。</p>
+</li>
+<li><p>对于TCP客户，由于TCP连接建立是由TCP客户主动发起的，因此称为主动打开连接。</p>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p>TCP客户进程也是首先创建传输控制块。然后，在打算建立TCP连接时，并进入同步已发送状态。</p>
+</li>
+<li><p>进入“三报文握手”</p>
+</li>
+</ul>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120132954901.png" alt="image-20240120132954901"></p>
+<ul>
+<li><p><code>SYN</code>为<code>1</code>：<strong>同步位</strong>，表明这是一个TCP连接请求报文段。</p>
+<blockquote>
+<p>该报文段不能携带数据，但会消耗一个<strong>序列号seq</strong></p>
+</blockquote>
+</li>
+<li><p><code>ACK=1</code>：<strong>确认位</strong>，代表这是普通确认报文段，<strong>ack&#x3D;x+1表示这是对报文段序列号seq&#x3D;x的确认</strong></p>
+</li>
+<li><p><code>ack=x+1</code>：这是对TCP客户进程所选择的初始序号的确认。</p>
+<blockquote>
+<p>该报文段同样不能携带数据。同样会消耗一个<strong>序列号seq</strong></p>
+</blockquote>
+</li>
+<li><p><code>seq</code> ：<strong>序号字段</strong> ，被设置了一个初始值x，作为TCP客户&#x2F;服务器进程所选择的初始序号。</p>
+</li>
+</ul>
+<h3 id="TCP连接释放：四挥手"><a href="#TCP连接释放：四挥手" class="headerlink" title="TCP连接释放：四挥手"></a>TCP连接释放：四挥手</h3><p>通信结束后，TCP通信双方都可以释放连接。现在TCP客户进程和TCP服务器进程都处于连接已建立状态。</p>
+<p>假设使用TCP客户进程的应用进程通知其主动关团TCP连接，TCP客户进程会发送TCP连接释放报文段，并进入终止等待1状态。</p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120133520141.png" alt="image-20240120133520141"></p>
+<ul>
+<li><p><code>FIN</code>：终止位</p>
+</li>
+<li><p><code>ACK</code>：确认位</p>
+<blockquote>
+<p>上面两个位都为1，表明这是一个TCP连接释放报文段。</p>
+<p>TCP规定终止位<code> FIN</code>等于1的报文段<strong>即使不携带数据，也要消耗掉一个序号。</strong></p>
+</blockquote>
+</li>
+<li><p><code>seq</code>:序号字段。</p>
+</li>
+<li><p><code>ack</code>:它等于TCP客户选程之前已收到的、数据的最后一个字节的序号加1.</p>
+</li>
+</ul>
+<hr>
+<blockquote>
+<p>TCP服务器进程收到TCP连接释放报文段后，会发送一个普通的TCP确认报文段并进入关闭等待状态。</p>
+</blockquote>
+<p><strong>TCP客户进程在发送完最后一个确认报文段后，必须进入时间等待状态，2MSL后才进入关闭状态。<strong>因为要</strong>防止发给服务器的确认报文丢失。</strong></p>
+<blockquote>
+<ul>
+<li><p>客户端发起关闭请求，一去一回后进入半关闭状态【客户端不再发送数据，服务端可能还会发】</p>
+</li>
+<li><p>服务器将自己剩余的数据发送完后也发送一个关闭请求，接着客户端给予回应后服务器关闭，客户机则要等到一段时间后完全关闭。</p>
+</li>
+</ul>
+</blockquote>
+<hr>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120134832215.png" alt="image-20240120134832215"></p>
+<p><strong>问题：TCP客户进程在发送完最后一个确认报文段后，为什么不直接进入关闭状态，而是要进入时间等待状态，2MSL后才进入关闭状态？</strong></p>
+<blockquote>
+<p>回答：</p>
+<p>因为这必然会造成TCP服务器进程反复重传TCP连接释放报文段，并一直处于最后确认状态而无法进入关闭状态。 </p>
+<p>时间等待状态以及处于该状态<code>2MSL</code>时长，可确保TCP服务器进程可以收到最后一个TCP确认报文段而进入关闭状态。</p>
+<p>另外，TCP客户进程在发送完最后一个TCP确认报文段后，再经过<code>2MSL</code>时长，就可以使本次连接持续时间肉所产生的所有报文段都网络中消失。这样就可以使下一个新的TCP连接中，不会出现旧连接中的报文段。</p>
+</blockquote>
+<p><strong>TCP中保活计时器的作用：</strong></p>
+<p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120134220434.png" alt="image-20240120134220434"></p>
+<h2 id="TCP-首部格式"><a href="#TCP-首部格式" class="headerlink" title="TCP 首部格式"></a>TCP 首部格式</h2><p><img src="C:/Users/fancy/AppData/Roaming/Typora/typora-user-images/image-20240120134232730.png" alt="image-20240120134232730"></p>
+<ul>
+<li><p><strong>源端口</strong>：占<code>16</code>比特，写入源端口号，用来<strong>标识&#x3D;&#x3D;发送&#x3D;&#x3D;该TCP报文段的应用进程</strong></p>
+</li>
+<li><p><strong>目的端口</strong>：占<code>16</code>比特，写入目的端口号，用来<strong>标识&#x3D;&#x3D;接收&#x3D;&#x3D;该TCP报文段的应用进程</strong></p>
+</li>
+<li><p><strong>序号</strong>：占<code>32</code>比特，取值范围[ 0 , 2^32^ − 1 ] ，序号增加到最后一个后，下一个序号就又回到<code>0</code>。</p>
+<blockquote>
+<p>作用是<strong>指出本TCP报文段数据载荷的第一个字节的序号</strong></p>
+</blockquote>
+</li>
+<li><p><strong>确认标志位ACK</strong>：取值为<code>1</code>时确认号字段才有效，为<code>0</code>时确认号字段无效</p>
+</li>
+<li><p><strong>确认号</strong>：占<code>32</code>比特，取值范围[ 0 , 2 ^32^ −1 ] ，序号增加到最后一个后，下一个序号就又回到<code>0</code>。</p>
+<blockquote>
+<p>可理解为<strong>若确认号&#x3D;n，则表明到序号n-1为止的所有数据都已正确接收，期望接收序号为n的数据</strong></p>
+</blockquote>
+</li>
+<li><p><strong>数据偏移</strong>：占<code>4</code>比特，并<strong>以4字节为单位</strong></p>
+<blockquote>
+<p>用来指出<code>TCP</code>报文段的数据载荷部分的起始处距离<code>TCP</code>报文段的起始处。这个字段<strong>实际上是指出TCP报文段的首部长度</strong></p>
+</blockquote>
+<blockquote>
+<p>首部固定长度为20字节，因此数据偏移字段的最小值(0101)<del>2</del>；首部最大长度为60字节，因此数据偏移字段最大值为(1111)<del>2</del></p>
+</blockquote>
+</li>
+<li><p><strong>保留字段</strong>：占<strong>6比特</strong>，保留为今后使用，但是目前应置为<code>0</code></p>
+</li>
+<li><p><strong>窗口</strong>：占<strong>16比特</strong>，以字节为单位。指出<strong>发送本报文段一方的接收窗口</strong></p>
+<p>窗口值作为接收方让发送方设置其发送窗口的依据，这是<strong>以接收方的接收能力来控制发送方的发送能力</strong>，称为流量控制</p>
+</li>
+<li><p><strong>检验和</strong>：占<strong>16比特</strong>，检测范围<strong>包括TCP报文段的首部和数据载荷两部分</strong></p>
+<p>在计算校验和时，要在<code>TCP</code>报文段的前面加上<code>12</code>字节的伪首部</p>
+</li>
+<li><p><strong>同步标志位SYN</strong>：在<code>TCP</code>连接建立时用来同步序号</p>
+</li>
+<li><p><strong>终止标志位FIN</strong>：用来释放<code>TCP</code>连接</p>
+</li>
+<li><p><strong>复位标志位RST</strong>：用来复位<code>TCP</code>连接</p>
+<p>当<code>RST=1</code>时，表明<code>TCP</code>连接出现了异常，必须释放连接，然后再重新建立连接；<code>RST</code>置<code>1</code>还用来拒绝一个非法的报文段或拒绝打开一个<code>TCP</code>连接</p>
+</li>
+<li><p><strong>推送标志位PSH</strong>：接收方的<code>TCP</code>收到该<strong>标志位为1的报文段会尽快上交应用进程</strong>，而不必等到接收缓存都填满后再向上交付</p>
+</li>
+<li><p><strong>紧急标志位URG</strong>：取值<strong>为1</strong>时<strong>紧急指针字段有效</strong>；取值为<code>0</code>时紧急指针字段无效。</p>
+</li>
+<li><p><strong>紧急指针</strong>：占<code>16</code>比特，以字节为单位，用来指明紧急数据的长度</p>
+<p>当发送方有紧急数据时，可<strong>将紧急数据插队到发送缓存的最前面</strong>，并立刻封装到一个<code>TCP</code>报文段中进行发送。紧急指针会指出本报文段数据载荷部分包含了多长的紧急数据，紧急数据之后是普通数据</p>
+</li>
+<li><p><strong>选项</strong>：增加选项可以增加<code>TCP</code>的功能</p>
+<ul>
+<li><strong>最大报文段长度MSS选项</strong>：<code>TCP</code>报文段数据载荷部分的最大长度</li>
+<li><strong>窗口扩大选项</strong>：为了扩大窗口(提高吞吐率)</li>
+<li>时间戳选项：<ul>
+<li>用来计算往返时间<code>RTT</code></li>
+<li>用于处理序号超范围的情况，又称为防止序号绕回<code>PAWS</code></li>
+</ul>
+</li>
+<li><strong>选择确认选项</strong>：实现选择确认功能</li>
+</ul>
+</li>
+<li><p><strong>填充</strong>：由于选项长度可变，因此<strong>使用填充来保证报文段首部能被4整除</strong></p>
+</li>
+</ul>
+</article>
+<div class="article-footer">
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(4)%E7%BD%91%E7%BB%9C%E5%B1%82/">湖科大(4)网络层</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/network/%E6%B9%96%E7%A7%91%E5%A4%A7(6)%E5%BA%94%E7%94%A8%E5%B1%82/">湖科大(6)应用层</a></div></section></div>
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Fancy</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+<widget class="widget-wrapper ghrepo"><div class="widget-body"><div class="items data-service ds-ghinfo" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note"><a class="repo" href="https://github.com/Back2Zer0/md-CS_Note" target="_blank" rel="external nofollow noopener noreferrer"><div class="repo-name flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>Back2Zer0/md-CS_Note</div><div class="repo-desc"><span type="text" id="description">&nbsp;</span></div><div class="grid"><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z"></path></svg><span type="text" id="stargazers_count"></span></div><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg><span type="text" id="forks_count"></span></div><div class="flex-row data-service ds-ghinfo" index="0" data-api="https://api.github.com/repos/Back2Zer0/md-CS_Note/tags"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z"></path></svg><span type="text" id="latest-tag-name">0</span></div></div></a></div></div></widget>
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%90%E8%BE%93%E5%B1%82"><span class="toc-text">运输层</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5%EF%BC%9A%E7%AB%AF%E5%8F%A3%E5%8F%B7%E3%80%81%E5%A4%8D%E7%94%A8%E3%80%81%E5%88%86%E7%94%A8"><span class="toc-text">概念：端口号、复用、分用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3"><span class="toc-text">端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E7%94%A8%E3%80%81%E5%88%86%E7%94%A8"><span class="toc-text">复用、分用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UDP%E5%92%8CTCP%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-text">UDP和TCP的对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="toc-text">流量控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="toc-text">拥塞控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%85%A2%E5%BC%80%E5%A7%8B"><span class="toc-text">慢开始</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%A5%E5%A1%9E%E9%81%BF%E5%85%8D"><span class="toc-text">拥塞避免</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%87%8D%E4%BC%A0"><span class="toc-text">快重传</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E6%81%A2%E5%A4%8D"><span class="toc-text">快恢复</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B6%85%E6%97%B6%E9%87%8D%E4%BC%A0%E3%80%81%E5%BE%80%E8%BF%94%E6%97%B6%E9%97%B4"><span class="toc-text">超时重传、往返时间</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B6%85%E6%97%B6%E9%87%8D%E4%BC%A0%E6%97%B6%E9%97%B4%E7%9A%84%E9%80%89%E6%8B%A9"><span class="toc-text">超时重传时间的选择</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%80%E8%BF%94%E6%97%B6%E9%97%B4%E6%B5%8B%E9%87%8F%E9%97%AE%E9%A2%98"><span class="toc-text">往返时间测量问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93"><span class="toc-text">可靠传输</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E8%BE%93%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86"><span class="toc-text">运输连接管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%B8%89%E6%8F%A1%E6%89%8B"><span class="toc-text">TCP连接建立：三握手</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E8%BF%9E%E6%8E%A5%E9%87%8A%E6%94%BE%EF%BC%9A%E5%9B%9B%E6%8C%A5%E6%89%8B"><span class="toc-text">TCP连接释放：四挥手</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP-%E9%A6%96%E9%83%A8%E6%A0%BC%E5%BC%8F"><span class="toc-text">TCP 首部格式</span></a></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
