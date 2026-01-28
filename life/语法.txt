@@ -1,0 +1,30 @@
+语法备忘录:
+
+1. `<!-- okr [name] percent:[] status:[]>` 
+
+状态有：off_track 风险，unfinished 未完成，off_track 延期 
+
+回车紧随其后是这一KR的对应内容。
+
+name 和 percent 随便写。
+
+2.字体颜色
+
+- {% mark [content] %} 正常高亮
+- {% mark color:green [content] %} 绿色高亮
+
+3.`{% tabs align:left %}` 标签功能
+
+每一个标签的格式：`<!-- tab [contend] -->`
+
+标签，回车紧随其后是标签对应的内容。
+
+4.`{% quot icon:hashtag [content] %} `
+
+井号大标题
+
+5.`{% checkbox [content] %}`待完成
+
+6.`{% image [url] height:64px [desc] ratio:512/512 %}` 
+
+插入图片
