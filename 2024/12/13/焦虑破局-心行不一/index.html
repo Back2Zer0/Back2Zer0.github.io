@@ -38,7 +38,7 @@
   
   
   
-  <meta name="keywords" content="随笔,成长">
+  <meta name="keywords" content="成长,随笔">
 
   <!-- feed -->
   
@@ -52,7 +52,7 @@
 
   
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"dateCreated":"2024-12-13T19:13:51+08:00","dateModified":"2026-01-28T16:57:13+08:00","datePublished":"2024-12-13T19:13:51+08:00","description":"","headline":"焦虑破局-心行不一","mainEntityOfPage":{"@type":"WebPage","@id":"https://back2zer0.github.io/2024/12/13/%E7%84%A6%E8%99%91%E7%A0%B4%E5%B1%80-%E5%BF%83%E8%A1%8C%E4%B8%8D%E4%B8%80/"},"publisher":{"@type":"Organization","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png","logo":{"@type":"ImageObject","url":"https://www.emojiall.com/images/240/twitter/1f416.png"}},"url":"https://back2zer0.github.io/2024/12/13/%E7%84%A6%E8%99%91%E7%A0%B4%E5%B1%80-%E5%BF%83%E8%A1%8C%E4%B8%8D%E4%B8%80/","keywords":"随笔, 成长","thumbnailUrl":"https://picgo-1398775008.cos.ap-guangzhou.myqcloud.com/%E4%B8%8B%E8%BD%BD.jpg","image":1}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"dateCreated":"2024-12-13T19:13:51+08:00","dateModified":"2026-01-28T16:57:13+08:00","datePublished":"2024-12-13T19:13:51+08:00","description":"","headline":"焦虑破局-心行不一","mainEntityOfPage":{"@type":"WebPage","@id":"https://back2zer0.github.io/2024/12/13/%E7%84%A6%E8%99%91%E7%A0%B4%E5%B1%80-%E5%BF%83%E8%A1%8C%E4%B8%8D%E4%B8%80/"},"publisher":{"@type":"Organization","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png","logo":{"@type":"ImageObject","url":"https://www.emojiall.com/images/240/twitter/1f416.png"}},"url":"https://back2zer0.github.io/2024/12/13/%E7%84%A6%E8%99%91%E7%A0%B4%E5%B1%80-%E5%BF%83%E8%A1%8C%E4%B8%8D%E4%B8%80/","keywords":"成长, 随笔","thumbnailUrl":"https://picgo-1398775008.cos.ap-guangzhou.myqcloud.com/%E4%B8%8B%E8%BD%BD.jpg","image":1}</script>
   
 </head>
 <body>
@@ -941,19 +941,18 @@
 <!-- inject -->
 
 </div><!-- hexo injector body_end start -->
-<!-- Waline 评论 -->
+<!-- Waline 评论 - 强制定位版 -->
 <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
-<div id="waline" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--color-border);"></div>
+<div id="waline"></div>
 <script type="module">
 import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
 
-// 等待页面加载完成
 window.addEventListener('load', () => {
-  // 找到评论标题“快来参与讨论吧~”
-  const commentTitle = document.querySelector('.comment-title');
-  if (commentTitle) {
-    // 把 Waline 插到标题下面
-    commentTitle.parentNode.insertBefore(document.getElementById('waline'), commentTitle.nextSibling);
+  // 找到“快来参与讨论吧~”的父容器
+  const commentWrapper = document.querySelector('footer.footer').previousElementSibling;
+  if (commentWrapper) {
+    // 把 Waline 插入到版权信息的前面
+    document.body.insertBefore(document.getElementById('waline'), document.querySelector('footer.footer'));
   }
 
   // 初始化 Waline
@@ -961,10 +960,18 @@ window.addEventListener('load', () => {
     el: "#waline",
     serverURL: "https://waline.fancybyte.top",
     anonymous: true,
-    placeholder: "欢迎积极交流，共同进步，支持匿名评论哦~",
+    placeholder: "欢迎交流，共同进步，支持匿名评论哦~",
     requireEmail: false,
     dark: document.documentElement.classList.contains('dark')
   });
 });
 </script>
+<style>
+/* 强制调整评论区样式，避免和版权信息重叠 */
+#waline {
+  margin: 2rem auto;
+  max-width: var(--main-width);
+  padding: 0 1rem;
+}
+</style>
   <!-- hexo injector body_end end --></body></html>

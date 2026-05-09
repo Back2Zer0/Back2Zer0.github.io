@@ -1036,19 +1036,18 @@
 <!-- inject -->
 
 </div><!-- hexo injector body_end start -->
-<!-- Waline 评论 -->
+<!-- Waline 评论 - 强制定位版 -->
 <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
-<div id="waline" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--color-border);"></div>
+<div id="waline"></div>
 <script type="module">
 import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
 
-// 等待页面加载完成
 window.addEventListener('load', () => {
-  // 找到评论标题“快来参与讨论吧~”
-  const commentTitle = document.querySelector('.comment-title');
-  if (commentTitle) {
-    // 把 Waline 插到标题下面
-    commentTitle.parentNode.insertBefore(document.getElementById('waline'), commentTitle.nextSibling);
+  // 找到“快来参与讨论吧~”的父容器
+  const commentWrapper = document.querySelector('footer.footer').previousElementSibling;
+  if (commentWrapper) {
+    // 把 Waline 插入到版权信息的前面
+    document.body.insertBefore(document.getElementById('waline'), document.querySelector('footer.footer'));
   }
 
   // 初始化 Waline
@@ -1056,10 +1055,18 @@ window.addEventListener('load', () => {
     el: "#waline",
     serverURL: "https://waline.fancybyte.top",
     anonymous: true,
-    placeholder: "欢迎积极交流，共同进步，支持匿名评论哦~",
+    placeholder: "欢迎交流，共同进步，支持匿名评论哦~",
     requireEmail: false,
     dark: document.documentElement.classList.contains('dark')
   });
 });
 </script>
+<style>
+/* 强制调整评论区样式，避免和版权信息重叠 */
+#waline {
+  margin: 2rem auto;
+  max-width: var(--main-width);
+  padding: 0 1rem;
+}
+</style>
   <!-- hexo injector body_end end --></body></html>
