@@ -160,7 +160,7 @@
     </div>
     <div class="okr-center">
       <span class="title">适量运动，一定不要急功近利。运动的前提是平和。</span>
-      <div class="note"><p>前提：跑步，跳绳，有氧操。</p><div class="tag-plugin tabs" align="left"id="tab_2"><div class="nav-tabs"><div class="tab active"><a href="#tab_2-1">核心力量</a></div><div class="tab"><a href="#tab_2-2">下肢</a></div></div><div class="tab-content"><div class="tab-pane active" id="tab_2-1"><p>俯卧撑 + 平板支撑 + 死虫</p></div><div class="tab-pane" id="tab_2-2"><p>下肢——力量 &#x2F; 稳定 &#x2F; 速率</p></div></div></div></div>
+      <div class="note"><p>前提：跑步，跳绳，有氧操。</p><div class="tag-plugin tabs" align="left"id="tab_1"><div class="nav-tabs"><div class="tab active"><a href="#tab_1-1">核心力量</a></div><div class="tab"><a href="#tab_1-2">下肢</a></div></div><div class="tab-content"><div class="tab-pane active" id="tab_1-1"><p>俯卧撑 + 平板支撑 + 死虫</p></div><div class="tab-pane" id="tab_1-2"><p>下肢——力量 &#x2F; 稳定 &#x2F; 速率</p></div></div></div></div>
     </div>
     <div class="okr-right colorful" color="orange">
       <div class="labels">
@@ -740,7 +740,7 @@
 <!-- optional -->
 
   <script type="module">
-  import { init } from 'https://unpkg.com/@waline/client@v2/dist/waline.js';
+  import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
 
   const el = document.getElementById('waline_container');
   util.viewportLazyload(el, load_waline, false);
@@ -748,11 +748,11 @@
   function load_waline(){
     if (!el) return;
 
-    utils.css('https://unpkg.com/@waline/client@v2/dist/waline.css');
+    utils.css('https://unpkg.com/@waline/client@v3/dist/waline.css');
     utils.css('https://gcore.jsdelivr.net/npm/@waline/client@3.1/dist/waline-meta.css');
 
     const path = el.getAttribute('comment_id') ?? decodeURI(window.location.pathname);
-    const waline = init(Object.assign({"js":"https://unpkg.com/@waline/client@v2/dist/waline.js","css":"https://unpkg.com/@waline/client@v2/dist/waline.css","meta_css":"https://gcore.jsdelivr.net/npm/@waline/client@3.1/dist/waline-meta.css","serverURL":"https://waline.fancybyte.top","commentCount":true,"pageview":false,"locale":{"placeholder":"欢迎评论，彼此交流，共同进步~~# 输入框内提示文字"},"emoji":["https://gcore.jsdelivr.net/gh/norevi/waline-blobcatemojis@1.0/blobs"]}, {
+    const waline = init(Object.assign({"js":"https://unpkg.com/@waline/client@v3/dist/waline.js","css":"https://unpkg.com/@waline/client@v3/dist/waline.css","meta_css":"https://gcore.jsdelivr.net/npm/@waline/client@3.1/dist/waline-meta.css","serverURL":"https://waline.fancybyte.top","commentCount":true,"pageview":false,"locale":{"placeholder":"欢迎评论，彼此交流，共同进步~~"}}, {
       el: '#waline_container',
       path: path,
       

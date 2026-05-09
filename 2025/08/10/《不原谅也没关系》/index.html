@@ -1169,7 +1169,7 @@
 <!-- optional -->
 
   <script type="module">
-  import { init } from 'https://unpkg.com/@waline/client@v2/dist/waline.js';
+  import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
 
   const el = document.getElementById('waline_container');
   util.viewportLazyload(el, load_waline, false);
@@ -1177,11 +1177,11 @@
   function load_waline(){
     if (!el) return;
 
-    utils.css('https://unpkg.com/@waline/client@v2/dist/waline.css');
+    utils.css('https://unpkg.com/@waline/client@v3/dist/waline.css');
     utils.css('https://gcore.jsdelivr.net/npm/@waline/client@3.1/dist/waline-meta.css');
 
     const path = el.getAttribute('comment_id') ?? decodeURI(window.location.pathname);
-    const waline = init(Object.assign({"js":"https://unpkg.com/@waline/client@v2/dist/waline.js","css":"https://unpkg.com/@waline/client@v2/dist/waline.css","meta_css":"https://gcore.jsdelivr.net/npm/@waline/client@3.1/dist/waline-meta.css","serverURL":"https://waline.fancybyte.top","commentCount":true,"pageview":false,"locale":{"placeholder":"欢迎评论，彼此交流，共同进步~~# 输入框内提示文字"},"emoji":["https://gcore.jsdelivr.net/gh/norevi/waline-blobcatemojis@1.0/blobs"]}, {
+    const waline = init(Object.assign({"js":"https://unpkg.com/@waline/client@v3/dist/waline.js","css":"https://unpkg.com/@waline/client@v3/dist/waline.css","meta_css":"https://gcore.jsdelivr.net/npm/@waline/client@3.1/dist/waline-meta.css","serverURL":"https://waline.fancybyte.top","commentCount":true,"pageview":false,"locale":{"placeholder":"欢迎评论，彼此交流，共同进步~~"}}, {
       el: '#waline_container',
       path: path,
       
