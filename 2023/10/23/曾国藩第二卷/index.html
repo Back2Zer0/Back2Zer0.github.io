@@ -1114,4 +1114,18 @@
 
 <!-- inject -->
 
-</div></body></html>
+</div><!-- hexo injector body_end start -->
+<!-- Waline 评论 -->
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<div id="waline" style="margin-top: 2rem;"></div>
+<script type="module">
+import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+init({
+  el: "#waline",
+  serverURL: "https://waline.fancybyte.top",
+  anonymous: true,
+  placeholder: "匿名评论，无需登录~",
+  requireEmail: false
+});
+</script>
+  <!-- hexo injector body_end end --></body></html>
