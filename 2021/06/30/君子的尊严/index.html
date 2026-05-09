@@ -53,35 +53,7 @@
 
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"dateCreated":"2021-06-30T00:00:00+08:00","dateModified":"2026-03-26T17:10:12+08:00","datePublished":"2021-06-30T00:00:00+08:00","description":"","headline":"君子的尊严","mainEntityOfPage":{"@type":"WebPage","@id":"https://back2zer0.github.io/2021/06/30/%E5%90%9B%E5%AD%90%E7%9A%84%E5%B0%8A%E4%B8%A5/"},"publisher":{"@type":"Organization","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png","logo":{"@type":"ImageObject","url":"https://www.emojiall.com/images/240/twitter/1f416.png"}},"url":"https://back2zer0.github.io/2021/06/30/%E5%90%9B%E5%AD%90%E7%9A%84%E5%B0%8A%E4%B8%A5/","keywords":"认知","image":[]}</script>
   
-<!-- hexo injector head_end start -->
-<!-- Waline 评论区 - 适配 Stellar 主题 -->
-<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
-<div id="waline" class="waline-container" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--color-border);"></div>
-<script type="module">
-import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
-init({
-  el: "#waline",
-  serverURL: "https://waline.fancybyte.top",
-  anonymous: true,
-  placeholder: "欢迎留言交流~",
-  dark: document.documentElement.classList.contains('dark')
-});
-
-// 监听主题切换，自动适配深色模式
-const observer = new MutationObserver(() => {
-  const isDark = document.documentElement.classList.contains('dark');
-  init({
-    el: "#waline",
-    serverURL: "https://waline.fancybyte.top",
-    dark: isDark
-  });
-});
-observer.observe(document.documentElement, {
-  attributes: true,
-  attributeFilter: ['class']
-});
-</script>
-  <!-- hexo injector head_end end --></head>
+</head>
 <body>
 
 <div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
@@ -895,4 +867,31 @@ observer.observe(document.documentElement, {
 
 <!-- inject -->
 
-</div></body></html>
+</div><!-- hexo injector body_end start -->
+<!-- Waline 评论 -->
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<div id="waline" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--color-border);"></div>
+<script type="module">
+import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+
+// 等待页面加载完成
+window.addEventListener('load', () => {
+  // 找到评论标题“有没有什么想说的话呢~”
+  const commentTitle = document.querySelector('.comment-title');
+  if (commentTitle) {
+    // 把 Waline 插到标题下面
+    commentTitle.parentNode.insertBefore(document.getElementById('waline'), commentTitle.nextSibling);
+  }
+
+  // 初始化 Waline
+  init({
+    el: "#waline",
+    serverURL: "https://waline.fancybyte.top",
+    anonymous: true,
+    placeholder: "欢迎积极交流，共同进步，支持匿名评论哦~",
+    requireEmail: false,
+    dark: document.documentElement.classList.contains('dark')
+  });
+});
+</script>
+  <!-- hexo injector body_end end --></body></html>
