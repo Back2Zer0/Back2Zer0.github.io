@@ -1408,18 +1408,18 @@
 <!-- inject -->
 
 </div><!-- hexo injector body_end start -->
-<!-- Waline 评论 - 强制定位版 -->
+<!-- Waline 评论 - Stellar 专用固定版 -->
 <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
 <div id="waline"></div>
+
 <script type="module">
 import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
 
 window.addEventListener('load', () => {
-  // 找到“快来参与讨论吧~”的父容器
-  const commentWrapper = document.querySelector('footer.footer').previousElementSibling;
-  if (commentWrapper) {
-    // 把 Waline 插入到版权信息的前面
-    document.body.insertBefore(document.getElementById('waline'), document.querySelector('footer.footer'));
+  // 找到 Stellar 主题文章区的最底部
+  const article = document.querySelector('.main');
+  if (article) {
+    article.appendChild(document.getElementById('waline'));
   }
 
   // 初始化 Waline
@@ -1427,18 +1427,23 @@ window.addEventListener('load', () => {
     el: "#waline",
     serverURL: "https://waline.fancybyte.top",
     anonymous: true,
-    placeholder: "欢迎交流，共同进步，支持匿名评论哦~",
+    placeholder: "欢迎留言~",
     requireEmail: false,
     dark: document.documentElement.classList.contains('dark')
   });
 });
 </script>
+
 <style>
-/* 强制调整评论区样式，避免和版权信息重叠 */
 #waline {
-  margin: 2rem auto;
-  max-width: var(--main-width);
-  padding: 0 1rem;
+  margin-top: 30px !important;
+  max-width: var(--main-width) !important;
+  padding: 0 20px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 </style>
   <!-- hexo injector body_end end --></body></html>

@@ -38,7 +38,7 @@
   
   
   
-  <meta name="keywords" content="成长,随笔">
+  <meta name="keywords" content="随笔,成长">
 
   <!-- feed -->
   
@@ -52,7 +52,7 @@
 
   
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"dateCreated":"2024-10-05T13:29:27+08:00","dateModified":"2026-01-28T16:57:43+08:00","datePublished":"2024-10-05T13:29:27+08:00","description":"","headline":"何为心流","mainEntityOfPage":{"@type":"WebPage","@id":"https://back2zer0.github.io/2024/10/05/%E5%BF%83%E6%B5%81/"},"publisher":{"@type":"Organization","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png","logo":{"@type":"ImageObject","url":"https://www.emojiall.com/images/240/twitter/1f416.png"}},"url":"https://back2zer0.github.io/2024/10/05/%E5%BF%83%E6%B5%81/","keywords":"成长, 随笔","thumbnailUrl":"https://picgo-1398775008.cos.ap-guangzhou.myqcloud.com/Image_355544412860515.jpg","image":1}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"dateCreated":"2024-10-05T13:29:27+08:00","dateModified":"2026-01-28T16:57:43+08:00","datePublished":"2024-10-05T13:29:27+08:00","description":"","headline":"何为心流","mainEntityOfPage":{"@type":"WebPage","@id":"https://back2zer0.github.io/2024/10/05/%E5%BF%83%E6%B5%81/"},"publisher":{"@type":"Organization","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png","logo":{"@type":"ImageObject","url":"https://www.emojiall.com/images/240/twitter/1f416.png"}},"url":"https://back2zer0.github.io/2024/10/05/%E5%BF%83%E6%B5%81/","keywords":"随笔, 成长","thumbnailUrl":"https://picgo-1398775008.cos.ap-guangzhou.myqcloud.com/Image_355544412860515.jpg","image":1}</script>
   
 </head>
 <body>
@@ -1279,18 +1279,18 @@
 <!-- inject -->
 
 </div><!-- hexo injector body_end start -->
-<!-- Waline 评论 - 强制定位版 -->
+<!-- Waline 评论 - Stellar 专用固定版 -->
 <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
 <div id="waline"></div>
+
 <script type="module">
 import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
 
 window.addEventListener('load', () => {
-  // 找到“快来参与讨论吧~”的父容器
-  const commentWrapper = document.querySelector('footer.footer').previousElementSibling;
-  if (commentWrapper) {
-    // 把 Waline 插入到版权信息的前面
-    document.body.insertBefore(document.getElementById('waline'), document.querySelector('footer.footer'));
+  // 找到 Stellar 主题文章区的最底部
+  const article = document.querySelector('.main');
+  if (article) {
+    article.appendChild(document.getElementById('waline'));
   }
 
   // 初始化 Waline
@@ -1298,18 +1298,23 @@ window.addEventListener('load', () => {
     el: "#waline",
     serverURL: "https://waline.fancybyte.top",
     anonymous: true,
-    placeholder: "欢迎交流，共同进步，支持匿名评论哦~",
+    placeholder: "欢迎留言~",
     requireEmail: false,
     dark: document.documentElement.classList.contains('dark')
   });
 });
 </script>
+
 <style>
-/* 强制调整评论区样式，避免和版权信息重叠 */
 #waline {
-  margin: 2rem auto;
-  max-width: var(--main-width);
-  padding: 0 1rem;
+  margin-top: 30px !important;
+  max-width: var(--main-width) !important;
+  padding: 0 20px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 </style>
   <!-- hexo injector body_end end --></body></html>
