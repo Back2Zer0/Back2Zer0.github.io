@@ -53,7 +53,35 @@
 
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"dateCreated":"2022-08-19T00:00:00+08:00","dateModified":"2026-05-07T19:03:28+08:00","datePublished":"2022-08-19T00:00:00+08:00","description":"","headline":"个人偏方因素汇总参考","mainEntityOfPage":{"@type":"WebPage","@id":"https://back2zer0.github.io/2022/08/19/%E4%B8%AA%E4%BA%BA%E5%81%8F%E5%A5%BD%E5%9B%A0%E7%B4%A0%E6%B1%87%E6%80%BB%E5%8F%82%E8%80%83/"},"publisher":{"@type":"Organization","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png","logo":{"@type":"ImageObject","url":"https://www.emojiall.com/images/240/twitter/1f416.png"}},"url":"https://back2zer0.github.io/2022/08/19/%E4%B8%AA%E4%BA%BA%E5%81%8F%E5%A5%BD%E5%9B%A0%E7%B4%A0%E6%B1%87%E6%80%BB%E5%8F%82%E8%80%83/","keywords":"随笔","image":[]}</script>
   
-</head>
+<!-- hexo injector head_end start -->
+<!-- Waline 评论区 - 适配 Stellar 主题 -->
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<div id="waline" class="waline-container" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--color-border);"></div>
+<script type="module">
+import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+init({
+  el: "#waline",
+  serverURL: "https://waline.fancybyte.top",
+  anonymous: true,
+  placeholder: "欢迎留言交流~",
+  dark: document.documentElement.classList.contains('dark')
+});
+
+// 监听主题切换，自动适配深色模式
+const observer = new MutationObserver(() => {
+  const isDark = document.documentElement.classList.contains('dark');
+  init({
+    el: "#waline",
+    serverURL: "https://waline.fancybyte.top",
+    dark: isDark
+  });
+});
+observer.observe(document.documentElement, {
+  attributes: true,
+  attributeFilter: ['class']
+});
+</script>
+  <!-- hexo injector head_end end --></head>
 <body>
 
 <div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
@@ -938,18 +966,4 @@
 
 <!-- inject -->
 
-</div><!-- hexo injector body_end start -->
-<!-- Waline 评论 -->
-<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
-<div id="waline" style="margin-top: 2rem;"></div>
-<script type="module">
-import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
-init({
-  el: "#waline",
-  serverURL: "https://waline.fancybyte.top",
-  anonymous: true,
-  placeholder: "匿名评论，无需登录~",
-  requireEmail: false
-});
-</script>
-  <!-- hexo injector body_end end --></body></html>
+</div></body></html>

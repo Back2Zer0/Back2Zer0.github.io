@@ -54,7 +54,35 @@
 
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png"},"dateCreated":"2026-03-13T00:00:00+08:00","dateModified":"2026-03-27T16:49:24+08:00","datePublished":"2026-03-13T00:00:00+08:00","description":"","headline":"考研身心消磨之后的坍塌与重建","mainEntityOfPage":{"@type":"WebPage","@id":"https://back2zer0.github.io/2026/03/13/%E8%80%83%E7%A0%94%E6%B6%88%E7%A3%A8%E8%BA%AB%E5%BF%83%E4%B9%8B%E5%90%8E%E7%9A%84%E5%9D%8D%E5%A1%8C%E4%B8%8E%E9%87%8D%E5%BB%BA/"},"publisher":{"@type":"Organization","name":"Fancy","sameAs":[],"image":"https://www.emojiall.com/images/240/twitter/1f416.png","logo":{"@type":"ImageObject","url":"https://www.emojiall.com/images/240/twitter/1f416.png"}},"url":"https://back2zer0.github.io/2026/03/13/%E8%80%83%E7%A0%94%E6%B6%88%E7%A3%A8%E8%BA%AB%E5%BF%83%E4%B9%8B%E5%90%8E%E7%9A%84%E5%9D%8D%E5%A1%8C%E4%B8%8E%E9%87%8D%E5%BB%BA/","keywords":"随笔, 儒释道","thumbnailUrl":"https://picgo-1398775008.cos.ap-guangzhou.myqcloud.com/640%20%281%29.jpg","image":1}</script>
   
-</head>
+<!-- hexo injector head_end start -->
+<!-- Waline 评论区 - 适配 Stellar 主题 -->
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<div id="waline" class="waline-container" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--color-border);"></div>
+<script type="module">
+import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+init({
+  el: "#waline",
+  serverURL: "https://waline.fancybyte.top",
+  anonymous: true,
+  placeholder: "欢迎留言交流~",
+  dark: document.documentElement.classList.contains('dark')
+});
+
+// 监听主题切换，自动适配深色模式
+const observer = new MutationObserver(() => {
+  const isDark = document.documentElement.classList.contains('dark');
+  init({
+    el: "#waline",
+    serverURL: "https://waline.fancybyte.top",
+    dark: isDark
+  });
+});
+observer.observe(document.documentElement, {
+  attributes: true,
+  attributeFilter: ['class']
+});
+</script>
+  <!-- hexo injector head_end end --></head>
 <body>
 
 <div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
@@ -959,18 +987,4 @@
 
 <!-- inject -->
 
-</div><!-- hexo injector body_end start -->
-<!-- Waline 评论 -->
-<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
-<div id="waline" style="margin-top: 2rem;"></div>
-<script type="module">
-import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
-init({
-  el: "#waline",
-  serverURL: "https://waline.fancybyte.top",
-  anonymous: true,
-  placeholder: "匿名评论，无需登录~",
-  requireEmail: false
-});
-</script>
-  <!-- hexo injector body_end end --></body></html>
+</div></body></html>
