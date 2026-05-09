@@ -1140,43 +1140,4 @@
 
 <!-- inject -->
 
-</div><!-- hexo injector body_end start -->
-<!-- Waline 评论 - Stellar 专用固定版 -->
-<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
-<div id="waline"></div>
-
-<script type="module">
-import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
-
-window.addEventListener('load', () => {
-  // 找到 Stellar 主题文章区的最底部
-  const article = document.querySelector('.main');
-  if (article) {
-    article.appendChild(document.getElementById('waline'));
-  }
-
-  // 初始化 Waline
-  init({
-    el: "#waline",
-    serverURL: "https://waline.fancybyte.top",
-    anonymous: true,
-    placeholder: "欢迎留言~",
-    requireEmail: false,
-    dark: document.documentElement.classList.contains('dark')
-  });
-});
-</script>
-
-<style>
-#waline {
-  margin-top: 30px !important;
-  max-width: var(--main-width) !important;
-  padding: 0 20px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-</style>
-  <!-- hexo injector body_end end --></body></html>
+</div></body></html>
